@@ -3,6 +3,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from config.states import REVIEWS
 
+from config.config import REVIEW
+
 async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -36,7 +38,7 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     markup = InlineKeyboardMarkup(keyboard)
     
     await context.bot.send_message(
-        chat_id= -1003705854359,
+        chat_id= REVIEW,
         text=f"Новый отзыв от {update.effective_user.first_name}: {context.user_data['review']}",
     )
 
