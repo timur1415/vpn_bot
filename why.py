@@ -10,13 +10,14 @@ async def why_vpn(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton("в главное меню", callback_data="main_menu")]]
     markup = InlineKeyboardMarkup(keyboard)
 
-    await context.bot.send_message(
+    await context.bot.send_video(
         chat_id=update.effective_chat.id,
-        text="Почему этот VPN?\n\n"
-        "1. Высокая скорость для видео и игр\n\n"
-        "2. Безопасность и шифрование\n\n"
-        "3. Доступ к заблокированным ресурсам\n\n"
-        "4. Поддержка всех платформ (Windows, macOS, iOS, Android)\n\n"
-        "5. Отличная поддержка клиентов",
-        reply_markup=markup
+        video=open("photo/work_vpn.MP4", "rb"),
+        caption="Почему стоит выбрать именно наш VPN?\n\n"
+                "1. Высокая скорость и стабильность соединения.\n"
+                "2. Современные технологии шифрования для защиты ваших данных.\n"
+                "3. Доступ к заблокированным ресурсам и контенту.\n"
+                "4. Удобное приложение для всех устройств.\n\n"
+                "Выбирайте наш VPN и наслаждайтесь безопасным и свободным интернетом!",
+        reply_markup=markup,
     )
