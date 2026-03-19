@@ -36,15 +36,23 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['review'] = update.message.text
     keyboard = [[InlineKeyboardButton('главное меню', callback_data='main_menu')]]
     markup = InlineKeyboardMarkup(keyboard)
-    
-    await context.bot.send_message(
-        chat_id= REVIEW,
-        text=f"Новый отзыв от {update.effective_user.first_name}: {context.user_data['review']}",
-    )
+    try:
+        await context.bot.send_message(
+                chat_id=REVIEW,
+                text=f"Новый отзыв от {update.effective_user.first_name}: {context.user_data['review']}",
+            )
 
-    await context.bot.send_message(
+        await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Спасибо за ваш отзыв! Мы ценим ваше мнение и будем работать над улучшением нашего сервиса.",
         reply_markup=markup
     )
+    except Exception as e:
+        print(f"Error sending review to admin: {e}")
+        await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Произошла ошибка при отправке вашего отзыва. Пожалуйста, попробуйте позже.",
+        reply_markup=markup
+    )
+    
 
