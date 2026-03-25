@@ -16,15 +16,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        await context.bot.send_message(
+        await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            text="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+            photo=open("photo/welcome.jpg", "rb"),
+            caption="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
             reply_markup=markup,
         )
     else:
-        await context.bot.send_message(
+        await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            text="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+            photo=open("photo/welcome.jpg", "rb"),
+            caption="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
             reply_markup=markup,
         )
     return MAIN_MENU

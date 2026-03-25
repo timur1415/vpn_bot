@@ -14,10 +14,11 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton("в главное меню", callback_data="main_menu")]]
     markup = InlineKeyboardMarkup(keyboard)
 
-    await context.bot.send_message(
+    await context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        text="Выберите тарифный план для приобретения VPN:",
-        reply_markup=markup
+        photo=open("photo/pay.jpg", "rb"),
+        caption="Выберите тарифный план, который вам подходит:",
+        reply_markup=markup,
     )
 
 
@@ -54,8 +55,8 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text=message_to_admin
     )
     
-    # Подтверждение пользователю
-    await context.bot.send_message(
-        chat_id=query.from_user.id,
-        text=f"✅ Заказ принят! Выбран тариф: {button_text}\n\nСкоро с вами свяжутся."
+    await context.bot.send_photo(
+        chat_id=update.effective_chat.id,
+        photo=open("photo/chil.jpg", "rb"),
+        caption="Спасибо за ваш выбор! Наш менеджер свяжется с вами в ближайшее время для оформления заказа.",
     )
