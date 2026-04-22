@@ -24,19 +24,22 @@ def create_user(id, name, user_name):
     if user_data is None:
         cur.execute(f"INSERT INTO users VALUES({id}, '{name}', '{user_name}')")
         conn.commit()
+    conn.close()
 
 
-def get_all_users(id):
+def get_all_users():
     lst = []
 
     conn = sqlite3.connect("VPN_bot.db")
     cur = conn.cursor()
 
-    cur.execute(f"SELECT id, name, user_name FROM users WHERE id={id}")
+    cur.execute("SELECT id, name, user_name FROM users")
     data = cur.fetchall()
-    print(data)
-    id = data[0][0]
-    name = data[0][1]
-    user_name = data[0][2]
-    lst.append([id, name, user_name])
+    for user in data:
+        print(user)
+        id = user[0]
+        name = user[1]
+        user_name = user[2]
+        lst.append([id, name, user_name])
+    conn.close()
     return lst

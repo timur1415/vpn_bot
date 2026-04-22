@@ -14,7 +14,8 @@ async def tables_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text='вход тоько для админов',
     )
     else:
-        users = get_all_users(update.effective_user.id)
+        users = get_all_users()
+        print(users)
 
         message = " ID                             Name      Username \n"
         for user in users:
