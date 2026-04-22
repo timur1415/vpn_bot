@@ -14,13 +14,17 @@ from config.config import TOKEN
 from config.states import MAIN_MENU, REVIEWS
 
 from reviews.reviews import finish_review, reviews_handler
-from start import start
+from handlers.start import start
 
-from why import why_vpn
+from handlers.why import why_vpn
 
-from buy import buy, buy_callback
+from handlers.buy import buy, buy_callback
 
 from reviews.reviews import leave_review
+
+from db.db import create_table
+
+from admin.users_info import tables_users
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -28,6 +32,8 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
+create_table()
 
 if __name__ == "__main__":
     persistence = PicklePersistence(filepath="vpn_bot")
@@ -55,5 +61,6 @@ if __name__ == "__main__":
     )
 
     application.add_handler(conv_handler)
+    application.add_handler(CommandHandler("admin", tables_users))
 
     application.run_polling()

@@ -2,6 +2,7 @@ from telegram.ext import ContextTypes
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from config.states import MAIN_MENU
+from db.db import create_user
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -19,14 +20,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=open("photo/welcome.jpg", "rb"),
-            caption="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+            caption=f"Приветствую {update.effective_user.first_name}! Я бот для продажи VPN. Выберите интересующий вас пункт:",
             reply_markup=markup,
         )
     else:
+        create_user(update.effective_user.id, update.effective_user.first_name, update.effective_user.name)
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=open("photo/welcome.jpg", "rb"),
-            caption="Приветствую! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+            caption=f"Приветствую {update.effective_user.first_name}! Я бот для продажи VPN. Выберите интересующий вас пункт:",
             reply_markup=markup,
         )
     return MAIN_MENU
