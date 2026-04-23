@@ -17,16 +17,16 @@ async def tables_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
         users = get_all_users()
         print(users)
 
-        message = " ID                             Name      Username \n"
-        for user in users:
-            print(user)
-            id = user[0]
-            user_first_name = user[1]
-            user_name = user[2]
-            message += f"{id}          {user_first_name}      {user_name} \n"
-        
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=message,
-            parse_mode='MarkdownV2'
-        )
+    message = "```\nID                Name          Username\n"
+    for user in users:
+        id_str = str(user[0]).ljust(20)
+        name_str = (user[1] or "-").ljust(15)
+        username_str = user[2] or "-"
+        message += f"{id_str}{name_str}{username_str}\n"
+    message += "```"
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=message,
+        parse_mode='MarkdownV2'
+    )
