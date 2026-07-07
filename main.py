@@ -60,6 +60,5 @@ if __name__ == "__main__":
     )
 
     application.add_handler(conv_handler)
-    application.add_handler(CommandHandler("admin"))
 
     application.run_polling()
