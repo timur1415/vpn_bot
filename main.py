@@ -23,9 +23,6 @@ from handlers.info import legal_docs, support_contacts, tariffs_info
 
 from reviews.reviews import leave_review
 
-from db.db import create_table
-
-from admin.users_info import tables_users
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -34,7 +31,6 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-create_table()
 
 if __name__ == "__main__":
     persistence = PicklePersistence(filepath="vpn_bot")
@@ -64,6 +60,6 @@ if __name__ == "__main__":
     )
 
     application.add_handler(conv_handler)
-    application.add_handler(CommandHandler("admin", tables_users))
+    application.add_handler(CommandHandler("admin"))
 
     application.run_polling()
