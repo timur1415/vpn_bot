@@ -19,6 +19,7 @@ from handlers.start import start
 from handlers.why import why_vpn
 
 from handlers.buy import buy, buy_callback
+from handlers.info import legal_docs, support_contacts, tariffs_info
 
 from reviews.reviews import leave_review
 
@@ -44,9 +45,11 @@ if __name__ == "__main__":
             MAIN_MENU: [
                 CallbackQueryHandler(buy, pattern="^buy$"),
                 CallbackQueryHandler(buy_callback, pattern="^buy_"),
+                CallbackQueryHandler(tariffs_info, pattern="^tariffs$"),
                 CallbackQueryHandler(why_vpn, pattern="^why_vpn$"),
                 CallbackQueryHandler(reviews_handler, pattern="^reviews$"),
-                CallbackQueryHandler(start, pattern="^support$"),
+                CallbackQueryHandler(legal_docs, pattern="^legal_docs$"),
+                CallbackQueryHandler(support_contacts, pattern="^support$"),
                 CallbackQueryHandler(start, pattern="^main_menu$"),
                 CallbackQueryHandler(leave_review, pattern="^leave_review$"),
             ],

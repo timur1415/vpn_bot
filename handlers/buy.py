@@ -7,10 +7,11 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     
-    keyboard = [[InlineKeyboardButton("1 месяц - 150 руб.", callback_data="buy_1month")],
-                [InlineKeyboardButton("3 месяца - 400 руб.", callback_data="buy_3month")],
-                [InlineKeyboardButton("6 месяцев - 750 руб.", callback_data="buy_6month")],
-                [InlineKeyboardButton("12 месяцев - 1400 руб.", callback_data="buy_12month")],
+    keyboard = [[InlineKeyboardButton("7 дней - 59 руб.", callback_data="buy_7days")],
+                [InlineKeyboardButton("1 месяц - 199 руб.", callback_data="buy_1month")],
+                [InlineKeyboardButton("3 месяца - 499 руб.", callback_data="buy_3month")],
+                [InlineKeyboardButton("6 месяцев - 899 руб.", callback_data="buy_6month")],
+                [InlineKeyboardButton("12 месяцев - 1499 руб.", callback_data="buy_12month")],
                 [InlineKeyboardButton("в главное меню", callback_data="main_menu")]]
     markup = InlineKeyboardMarkup(keyboard)
 
@@ -27,10 +28,11 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     
     PRICES = {
-        'buy_1month': '1 месяц - 150 руб.',
-        'buy_3month': '3 месяца - 400 руб.',
-        'buy_6month': '6 месяцев - 750 руб.',
-        'buy_12month': '12 месяцев - 1400 руб.',
+        'buy_7days': '7 дней - 59 руб.',
+        'buy_1month': '1 месяц - 199 руб.',
+        'buy_3month': '3 месяца - 499 руб.',
+        'buy_6month': '6 месяцев - 899 руб.',
+        'buy_12month': '12 месяцев - 1499 руб.',
 }
 
 

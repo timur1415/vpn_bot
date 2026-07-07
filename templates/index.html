@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет VPN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-soft: #f5f8ff;
+            --bg-main: #ecf6ff;
+            --card: #ffffff;
+            --ink: #122034;
+            --muted: #5f728a;
+            --line: #dce7f5;
+            --accent: #0ea5a4;
+            --accent-2: #1d6cf2;
+            --accent-3: #ff8b37;
+            --success: #0f9f4f;
+            --danger: #c23934;
+            --shadow: 0 18px 38px rgba(18, 32, 52, 0.08);
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Space Grotesk", sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background:
+                radial-gradient(900px 500px at 15% 0%, rgba(14, 165, 164, 0.18), transparent 65%),
+                radial-gradient(800px 420px at 100% 20%, rgba(29, 108, 242, 0.16), transparent 62%),
+                linear-gradient(160deg, var(--bg-soft), var(--bg-main));
+            padding: 28px;
+        }
+
+        .cabinet {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
+        }
+
+        .hero {
+            background: linear-gradient(125deg, rgba(29, 108, 242, 0.94), rgba(14, 165, 164, 0.93));
+            color: #ffffff;
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            animation: rise 500ms ease;
+        }
+
+        .hero h1 {
+            font-family: "Exo 2", sans-serif;
+            font-size: clamp(28px, 4vw, 40px);
+            line-height: 1.05;
+            letter-spacing: 0.2px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            max-width: 560px;
+            opacity: 0.95;
+        }
+
+        .plan-badge {
+            min-width: 220px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            backdrop-filter: blur(3px);
+        }
+
+        .plan-badge small {
+            opacity: 0.9;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .plan-badge strong {
+            font-family: "Exo 2", sans-serif;
+            font-size: 30px;
+            line-height: 1;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            padding: 22px;
+            animation: rise 550ms ease;
+        }
+
+        .panel h2 {
+            font-family: "Exo 2", sans-serif;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent-3), #ffc368);
+            color: #1c2a40;
+            font-family: "Exo 2", sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .user strong {
+            display: block;
+            font-size: 20px;
+        }
+
+        .user span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .chip {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 11px;
+            background: #fbfdff;
+        }
+
+        .chip small {
+            display: block;
+            color: var(--muted);
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .chip strong {
+            font-size: 17px;
+            font-family: "Exo 2", sans-serif;
+        }
+
+        .ok {
+            color: var(--success);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 11px;
+            padding: 11px 12px;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 180ms ease, opacity 180ms ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .btn-main {
+            background: var(--accent-2);
+            color: #ffffff;
+        }
+
+        .btn-soft {
+            background: #eaf4ff;
+            color: var(--ink);
+            border: 1px solid #cde1ff;
+        }
+
+        .btn-warning {
+            background: #fff2e8;
+            color: #8a3a03;
+            border: 1px solid #ffd5b5;
+        }
+
+        .btn-danger {
+            background: #fff0ef;
+            color: var(--danger);
+            border: 1px solid #f8cbc9;
+        }
+
+        .right {
+            display: grid;
+            gap: 20px;
+            align-content: start;
+        }
+
+        .tariffs,
+        .payments,
+        .contacts {
+            display: grid;
+            gap: 10px;
+        }
+
+        .row {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 11px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .row b {
+            font-family: "Exo 2", sans-serif;
+        }
+
+        .row small {
+            color: var(--muted);
+        }
+
+        .pay-ok {
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .pay-pending {
+            color: #9b6f11;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .contact-link {
+            text-decoration: none;
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .plan-badge {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 14px;
+            }
+
+            .hero,
+            .panel {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .stats,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="cabinet">
+        <section class="hero">
+            <div>
+                <h1>Личный кабинет</h1>
+                <p>Управляйте подпиской, устройствами и оплатой в одном месте. Здесь же доступны контакты поддержки и юридические документы.</p>
+            </div>
+            <aside class="plan-badge">
+                <small>Активный тариф</small>
+                <strong id="activeTariff">3 месяца</strong>
+                <span>Действует до: <span id="expiresAt">14.10.2026</span></span>
+            </aside>
+        </section>
+
+        <section class="grid">
+            <article class="panel">
+                <h2>Профиль</h2>
+                <p class="subtitle">Ваши данные и быстрые действия</p>
+
+                <div class="user">
+                    <div class="avatar" id="avatarText">ТК</div>
+                    <div>
+                        <strong id="fullName">Тимур К.</strong>
+                        <span id="username">@timur_vpn_user</span>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="chip">
+                        <small>Статус</small>
+                        <strong class="ok" id="subStatus">Активна</strong>
+                    </div>
+                    <div class="chip">
+                        <small>Устройств</small>
+                        <strong id="devices">3 / 5</strong>
+                    </div>
+                    <div class="chip">
+                        <small>Баланс</small>
+                        <strong id="balance">0 руб.</strong>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="chip">
+                        <small>Информация о человеке</small>
+                        <strong id="personInfo">ID: 0</strong>
+                    </div>
+                    <div class="chip">
+                        <small>Информация о платеже</small>
+                        <strong id="paymentInfo">Нет данных</strong>
+                    </div>
+                    <div class="chip">
+                        <small>Сумма оплаты</small>
+                        <strong id="paymentAmount">0 руб.</strong>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-main" type="button">Продлить подписку</button>
+                    <button class="btn btn-soft" type="button">Сменить тариф</button>
+                    <button class="btn btn-warning" type="button">Скачать конфиг</button>
+                    <button class="btn btn-danger" type="button">Отключить устройство</button>
+                </div>
+            </article>
+
+            <aside class="right">
+                <section class="panel">
+                    <h2>Тарифы</h2>
+                    <p class="subtitle">Текущая тарифная сетка</p>
+                    <div class="tariffs">
+                        <div class="row"><small>7 дней</small><b>59 руб.</b></div>
+                        <div class="row"><small>1 месяц</small><b>199 руб.</b></div>
+                        <div class="row"><small>3 месяца</small><b>499 руб.</b></div>
+                        <div class="row"><small>6 месяцев</small><b>899 руб.</b></div>
+                        <div class="row"><small>12 месяцев</small><b>1499 руб.</b></div>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <h2>История платежей</h2>
+                    <p class="subtitle">Последние операции</p>
+                    <div class="payments" id="paymentsList">
+                        <div class="row"><small>03.07.2026 - 3 месяца</small><span class="pay-ok">Оплачен</span></div>
+                        <div class="row"><small>03.04.2026 - 3 месяца</small><span class="pay-ok">Оплачен</span></div>
+                        <div class="row"><small>01.01.2026 - 1 месяц</small><span class="pay-pending">На проверке</span></div>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <h2>Поддержка и документы</h2>
+                    <p class="subtitle">Куда обратиться и где ознакомиться с правилами</p>
+                    <div class="contacts">
+                        <div class="row">
+                            <small>Поддержка</small>
+                            <a class="contact-link" href="https://t.me/i1i1i1iij" target="_blank" rel="noopener noreferrer">@i1i1i1iij</a>
+                        </div>
+                        <div class="row">
+                            <small>Политика конфиденциальности</small>
+                            <a class="contact-link" href="https://telegra.ph/Politika-konfidencialnosti-06-21-31" target="_blank" rel="noopener noreferrer">Открыть</a>
+                        </div>
+                        <div class="row">
+                            <small>Пользовательское соглашение</small>
+                            <a class="contact-link" href="https://telegra.ph/Polzovatelskoe-soglashenie-04-01-19" target="_blank" rel="noopener noreferrer">Открыть</a>
+                        </div>
+                    </div>
+                    <p class="muted">Для связи используется формат личных обращений, не группа.</p>
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        function getParam(name, fallback) {
+            const value = new URLSearchParams(window.location.search).get(name);
+            if (value === null || value === "") {
+                return fallback;
+            }
+            return value;
+        }
+
+        const fullName = getParam("full_name", "Тимур К.");
+        const username = getParam("username", "@timur_vpn_user");
+        const userId = getParam("user_id", "0");
+
+        const activeTariff = getParam("tariff", "3 месяца");
+        const expiresAt = getParam("expires_at", "14.10.2026");
+        const subStatus = getParam("status", "Активна");
+        const devicesUsed = getParam("devices_used", "3");
+        const devicesLimit = getParam("devices_limit", "5");
+        const balance = getParam("balance", "0 руб.");
+
+        const paymentTariff = getParam("payment_tariff", activeTariff);
+        const paymentAmount = getParam("payment_amount", "499 руб.");
+        const paymentDate = getParam("payment_date", "03.07.2026");
+        const paymentStatus = getParam("payment_status", "Оплачен");
+
+        const avatarText = fullName
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map(part => part[0].toUpperCase())
+            .join("") || "U";
+
+        document.getElementById("activeTariff").textContent = activeTariff;
+        document.getElementById("expiresAt").textContent = expiresAt;
+        document.getElementById("avatarText").textContent = avatarText;
+        document.getElementById("fullName").textContent = fullName;
+        document.getElementById("username").textContent = username.startsWith("@") ? username : `@${username}`;
+        document.getElementById("subStatus").textContent = subStatus;
+        document.getElementById("devices").textContent = `${devicesUsed} / ${devicesLimit}`;
+        document.getElementById("balance").textContent = balance;
+
+        document.getElementById("personInfo").textContent = `ID: ${userId}`;
+        document.getElementById("paymentInfo").textContent = `${paymentDate} - ${paymentTariff}`;
+        document.getElementById("paymentAmount").textContent = paymentAmount;
+
+        const paymentsList = document.getElementById("paymentsList");
+        const statusClass = paymentStatus.toLowerCase().includes("оплач") ? "pay-ok" : "pay-pending";
+        paymentsList.innerHTML = `
+            <div class="row"><small>${paymentDate} - ${paymentTariff}</small><span class="${statusClass}">${paymentStatus}</span></div>
+            <div class="row"><small>Сумма</small><span class="${statusClass}">${paymentAmount}</span></div>
+        `;
+    </script>
+</body>
+</html>

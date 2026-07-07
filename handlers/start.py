@@ -8,9 +8,11 @@ from db.db import create_user
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("приобрести", callback_data="buy")],
+        [InlineKeyboardButton("тарифы и цены", callback_data="tariffs")],
         [InlineKeyboardButton("почему именно этот впн?", callback_data="why_vpn")],
         [InlineKeyboardButton("отзывы", callback_data="reviews")],
-        [InlineKeyboardButton("поддержка", url="https://t.me/i1i1i1iij")],
+        [InlineKeyboardButton("документы", callback_data="legal_docs")],
+        [InlineKeyboardButton("поддержка", callback_data="support")],
     ]
     markup = InlineKeyboardMarkup(keyboard)
     
