@@ -1,34 +1,65 @@
-from telegram.ext import ContextTypes
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+import html
 
+from telegram.ext import ContextTypes
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputMediaPhoto,
+    WebAppInfo,
+)
+
+from config.config import ADMIN_ID, WEBHOOK_URL
 from config.states import MAIN_MENU
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    first_name = html.escape(update.effective_user.first_name or "пользователь")
     keyboard = [
-        [InlineKeyboardButton("приобрести", callback_data="buy")],
-        [InlineKeyboardButton("тарифы и цены", callback_data="tariffs")],
-        [InlineKeyboardButton("почему именно этот впн?", callback_data="why_vpn")],
-        [InlineKeyboardButton("отзывы", callback_data="reviews")],
-        [InlineKeyboardButton("документы", callback_data="legal_docs")],
-        [InlineKeyboardButton("поддержка", callback_data="support")],
+        [InlineKeyboardButton("🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP", web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"))],
+        [InlineKeyboardButton("💳 Приобрести", callback_data="buy")],
+        [InlineKeyboardButton("💸 Тарифы и цены", callback_data="tariffs")],
+        [InlineKeyboardButton("🛡 Почему именно этот VPN?", callback_data="why_vpn")],
+        [InlineKeyboardButton("⭐ Отзывы", callback_data="reviews")],
+        [InlineKeyboardButton("📄 Документы", callback_data="legal_docs")],
+        [InlineKeyboardButton("🆘 Поддержка", callback_data="support")],
     ]
+
+    if update.effective_user and update.effective_user.id == ADMIN_ID:
+        keyboard.insert(
+            0,
+            [
+                InlineKeyboardButton(
+                    "🛠 АДМИН ПАНЕЛЬ · MINI APP",
+                    web_app=WebAppInfo(url=f"{WEBHOOK_URL}/admin?tg_id={ADMIN_ID}"),
+                )
+            ],
+        )
     markup = InlineKeyboardMarkup(keyboard)
+
+    caption = (
+        f"<b>Приветствую, {first_name}!</b>\n\n"
+        "Я бот для продажи VPN. Выберите интересующий вас пункт ниже.\n"
+        "Кнопки MINI APP отмечены иконкой 🧩/🛠."
+    )
     
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=open("photo/welcome.jpg", "rb"),
-            caption=f"Приветствую {update.effective_user.first_name}! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+        await query.edit_message_media(
+            media=InputMediaPhoto(
+                media=open("photo/chill.jpg", "rb"),
+                caption=caption,
+                parse_mode="HTML",
+            ),
             reply_markup=markup,
         )
     else:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            photo=open("photo/welcome.jpg", "rb"),
-            caption=f"Приветствую {update.effective_user.first_name}! Я бот для продажи VPN. Выберите интересующий вас пункт:",
+            photo=open("photo/chill.jpg", "rb"),
+            caption=caption,
             reply_markup=markup,
+            parse_mode="HTML",
         )
     return MAIN_MENU

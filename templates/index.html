@@ -6,493 +6,521 @@
     <title>Личный кабинет VPN</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-soft: #f5f8ff;
-            --bg-main: #ecf6ff;
-            --card: #ffffff;
-            --ink: #122034;
-            --muted: #5f728a;
-            --line: #dce7f5;
-            --accent: #0ea5a4;
-            --accent-2: #1d6cf2;
-            --accent-3: #ff8b37;
-            --success: #0f9f4f;
-            --danger: #c23934;
-            --shadow: 0 18px 38px rgba(18, 32, 52, 0.08);
-            --radius-xl: 22px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
+            --bg-1: #281a61;
+            --bg-2: #40308f;
+            --bg-3: #7150db;
+            --panel: rgba(255, 255, 255, 0.10);
+            --panel-strong: rgba(255, 255, 255, 0.15);
+            --line: rgba(255, 255, 255, 0.12);
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.74);
+            --blue: #7fc1ff;
+            --pink: #ff9ed8;
+            --green: #91f0b0;
+            --red: #ffb0b0;
+            --yellow: #ffe08a;
+            --shadow: 0 16px 36px rgba(20, 10, 50, 0.28);
+            --radius: 18px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { min-height: 100%; }
         body {
-            font-family: "Space Grotesk", sans-serif;
-            color: var(--ink);
-            min-height: 100vh;
+            font-family: Inter, system-ui, sans-serif;
+            color: var(--text);
+            min-height: 100dvh;
             background:
-                radial-gradient(900px 500px at 15% 0%, rgba(14, 165, 164, 0.18), transparent 65%),
-                radial-gradient(800px 420px at 100% 20%, rgba(29, 108, 242, 0.16), transparent 62%),
-                linear-gradient(160deg, var(--bg-soft), var(--bg-main));
-            padding: 28px;
+                radial-gradient(circle at 12% 10%, rgba(127, 193, 255, 0.35), transparent 18%),
+                radial-gradient(circle at 82% 12%, rgba(255, 158, 216, 0.28), transparent 16%),
+                radial-gradient(circle at 70% 82%, rgba(145, 240, 176, 0.16), transparent 16%),
+                linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+            overflow-x: hidden;
         }
 
-        .cabinet {
-            max-width: 1120px;
-            margin: 0 auto;
-            display: grid;
-            gap: 20px;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,0.95) 0 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(255,255,255,0.5) 0 1px, transparent 1.5px);
+            background-size: 120px 120px, 180px 180px;
+            background-position: 0 0, 40px 60px;
+            opacity: 0.35;
+            mix-blend-mode: screen;
+        }
+
+        .page {
+            width: 100%;
+            max-width: none;
+            min-height: 100dvh;
+            margin: 0;
+            padding: 8px;
         }
 
         .hero {
-            background: linear-gradient(125deg, rgba(29, 108, 242, 0.94), rgba(14, 165, 164, 0.93));
-            color: #ffffff;
-            border-radius: var(--radius-xl);
-            padding: 28px;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            animation: rise 500ms ease;
-        }
-
-        .hero h1 {
-            font-family: "Exo 2", sans-serif;
-            font-size: clamp(28px, 4vw, 40px);
-            line-height: 1.05;
-            letter-spacing: 0.2px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            max-width: 560px;
-            opacity: 0.95;
-        }
-
-        .plan-badge {
-            min-width: 220px;
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: var(--radius-lg);
-            padding: 16px;
-            backdrop-filter: blur(3px);
-        }
-
-        .plan-badge small {
-            opacity: 0.9;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .plan-badge strong {
-            font-family: "Exo 2", sans-serif;
-            font-size: 30px;
-            line-height: 1;
-            display: block;
+            display: grid;
+            grid-template-columns: 1.45fr 0.9fr;
+            gap: 8px;
             margin-bottom: 8px;
         }
 
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-main,
+        .hero-side,
+        .card {
+            padding: 14px;
+        }
+
+        .hero-main h1 {
+            font-size: clamp(30px, 4vw, 44px);
+            line-height: 1.02;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .hero-topline {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .screen-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hero-main p {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+            max-width: 760px;
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 12px;
+            align-content: center;
+        }
+
+        .side-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .big-number {
+            font-size: 54px;
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .badge-ok { color: #d6ffdf; background: rgba(145,240,176,0.16); }
+        .badge-warn { color: #ffe2a1; background: rgba(255,224,138,0.16); }
+        .badge-danger { color: #ffe0e0; background: rgba(255,176,176,0.16); }
+
         .grid {
             display: grid;
-            grid-template-columns: 1.25fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
-        .panel {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
-            padding: 22px;
-            animation: rise 550ms ease;
-        }
-
-        .panel h2 {
-            font-family: "Exo 2", sans-serif;
-            font-size: 24px;
-            margin-bottom: 6px;
+        .card h2 {
+            font-size: 20px;
+            line-height: 1.1;
+            margin-bottom: 8px;
         }
 
         .subtitle {
             color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 18px;
+            font-size: 13px;
+            margin-bottom: 16px;
         }
 
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 18px;
-        }
-
-        .avatar {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--accent-3), #ffc368);
-            color: #1c2a40;
-            font-family: "Exo 2", sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-        }
-
-        .user strong {
-            display: block;
-            font-size: 20px;
-        }
-
-        .user span {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .chip {
-            border: 1px solid var(--line);
-            border-radius: var(--radius-md);
-            padding: 11px;
-            background: #fbfdff;
-        }
-
-        .chip small {
-            display: block;
-            color: var(--muted);
-            margin-bottom: 5px;
-            font-size: 12px;
-        }
-
-        .chip strong {
-            font-size: 17px;
-            font-family: "Exo 2", sans-serif;
-        }
-
-        .ok {
-            color: var(--success);
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            border: 0;
-            border-radius: 11px;
-            padding: 11px 12px;
-            font-family: "Space Grotesk", sans-serif;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 180ms ease, opacity 180ms ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.95;
-        }
-
-        .btn-main {
-            background: var(--accent-2);
-            color: #ffffff;
-        }
-
-        .btn-soft {
-            background: #eaf4ff;
-            color: var(--ink);
-            border: 1px solid #cde1ff;
-        }
-
-        .btn-warning {
-            background: #fff2e8;
-            color: #8a3a03;
-            border: 1px solid #ffd5b5;
-        }
-
-        .btn-danger {
-            background: #fff0ef;
-            color: var(--danger);
-            border: 1px solid #f8cbc9;
-        }
-
-        .right {
-            display: grid;
-            gap: 20px;
-            align-content: start;
-        }
-
-        .tariffs,
-        .payments,
-        .contacts {
+        .subscription {
             display: grid;
             gap: 10px;
         }
 
-        .row {
-            border: 1px solid var(--line);
-            border-radius: var(--radius-md);
-            padding: 11px 12px;
+        .sub-row {
             display: flex;
             justify-content: space-between;
+            gap: 12px;
             align-items: center;
-            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.08);
         }
 
-        .row b {
-            font-family: "Exo 2", sans-serif;
-        }
-
-        .row small {
+        .sub-row small {
+            display: block;
             color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 4px;
         }
 
-        .pay-ok {
-            color: var(--success);
-            font-size: 13px;
-            font-weight: 700;
+        .sub-row b {
+            font-size: 15px;
         }
 
-        .pay-pending {
-            color: #9b6f11;
-            font-size: 13px;
-            font-weight: 700;
+        .section-title {
+            margin-bottom: 10px;
         }
 
-        .contact-link {
-            text-decoration: none;
-            color: var(--accent-2);
-            font-weight: 700;
-        }
-
-        .muted {
+        .section-title p {
             color: var(--muted);
             font-size: 13px;
             margin-top: 4px;
         }
 
-        @keyframes rise {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .row {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .row small {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .row b { font-size: 14px; }
+
+        .pay-ok { color: var(--green); font-size: 13px; font-weight: 700; }
+        .pay-pending { color: #ffe2a1; font-size: 13px; font-weight: 700; }
+        .pay-expired { color: #ffb0b0; font-size: 13px; font-weight: 700; }
+
+        .empty {
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            color: var(--muted);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .muted { color: var(--muted); }
+        .footer {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            text-align: right;
         }
 
         @media (max-width: 980px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .plan-badge {
-                min-width: auto;
-                width: 100%;
-            }
+            .hero,
+            .grid { grid-template-columns: 1fr; }
+            .stats,
+            .actions { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 640px) {
-            body {
-                padding: 14px;
-            }
-
-            .hero,
-            .panel {
-                padding: 16px;
-                border-radius: 16px;
-            }
-
-            .stats,
-            .actions {
-                grid-template-columns: 1fr;
-            }
+            .page { padding: 6px; }
+            .hero-main,
+            .hero-side,
+            .card { padding: 14px; }
+            .hero-topline { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <main class="cabinet">
+    <main class="page">
         <section class="hero">
-            <div>
+            <div class="panel hero-main">
+                <div class="hero-topline">
+                    <span>Telegram mini app</span>
+                    <span class="screen-badge" id="screenState">Полноэкранный режим</span>
+                </div>
                 <h1>Личный кабинет</h1>
-                <p>Управляйте подпиской, устройствами и оплатой в одном месте. Здесь же доступны контакты поддержки и юридические документы.</p>
+                <p>Тут видно только подписку и историю оплат. Лишние данные убраны, чтобы кабинет был проще и чище.</p>
             </div>
-            <aside class="plan-badge">
-                <small>Активный тариф</small>
-                <strong id="activeTariff">3 месяца</strong>
-                <span>Действует до: <span id="expiresAt">14.10.2026</span></span>
+            <aside class="panel hero-side">
+                <div>
+                    <div class="side-label">Статус подписки</div>
+                    <div class="badge badge-warn" id="badgeStatus">Ожидание данных</div>
+                </div>
+                <div>
+                    <div class="side-label">Осталось дней</div>
+                    <div class="big-number" id="daysLeft">--</div>
+                </div>
+                <div>
+                    <div class="side-label">Тариф</div>
+                    <div style="font-size: 26px; font-weight: 800; line-height: 1.05;" id="activeTariff">--</div>
+                </div>
             </aside>
         </section>
 
         <section class="grid">
-            <article class="panel">
-                <h2>Профиль</h2>
-                <p class="subtitle">Ваши данные и быстрые действия</p>
-
-                <div class="user">
-                    <div class="avatar" id="avatarText">ТК</div>
-                    <div>
-                        <strong id="fullName">Тимур К.</strong>
-                        <span id="username">@timur_vpn_user</span>
-                    </div>
+            <article class="panel card">
+                <div class="section-title">
+                    <h2>Подписка</h2>
+                    <p>Срок действия и предупреждения</p>
                 </div>
 
-                <div class="stats">
-                    <div class="chip">
-                        <small>Статус</small>
-                        <strong class="ok" id="subStatus">Активна</strong>
+                <div class="subscription">
+                    <div class="sub-row">
+                        <div>
+                            <small>Статус</small>
+                            <b id="subStatus">Нет данных</b>
+                        </div>
+                        <span class="badge badge-warn" id="subBadge">Ожидание</span>
                     </div>
-                    <div class="chip">
-                        <small>Устройств</small>
-                        <strong id="devices">3 / 5</strong>
+                    <div class="sub-row">
+                        <div>
+                            <small>Начало</small>
+                            <b id="startedAt">--</b>
+                        </div>
+                        <span class="muted">started_at</span>
                     </div>
-                    <div class="chip">
-                        <small>Баланс</small>
-                        <strong id="balance">0 руб.</strong>
+                    <div class="sub-row">
+                        <div>
+                            <small>Окончание</small>
+                            <b id="expiresAt">--</b>
+                        </div>
+                        <span class="muted">expires_at</span>
                     </div>
-                </div>
-
-                <div class="stats">
-                    <div class="chip">
-                        <small>Информация о человеке</small>
-                        <strong id="personInfo">ID: 0</strong>
+                    <div class="sub-row">
+                        <div>
+                            <small>Первое предупреждение</small>
+                            <b id="warn3At">--</b>
+                        </div>
+                        <span class="muted">warned_3_at</span>
                     </div>
-                    <div class="chip">
-                        <small>Информация о платеже</small>
-                        <strong id="paymentInfo">Нет данных</strong>
+                    <div class="sub-row">
+                        <div>
+                            <small>Повторные предупреждения</small>
+                            <b id="warnMoreAt">--</b>
+                        </div>
+                        <span class="muted">warned_2_at / warned_1_at</span>
                     </div>
-                    <div class="chip">
-                        <small>Сумма оплаты</small>
-                        <strong id="paymentAmount">0 руб.</strong>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <button class="btn btn-main" type="button">Продлить подписку</button>
-                    <button class="btn btn-soft" type="button">Сменить тариф</button>
-                    <button class="btn btn-warning" type="button">Скачать конфиг</button>
-                    <button class="btn btn-danger" type="button">Отключить устройство</button>
                 </div>
             </article>
 
-            <aside class="right">
-                <section class="panel">
-                    <h2>Тарифы</h2>
-                    <p class="subtitle">Текущая тарифная сетка</p>
-                    <div class="tariffs">
-                        <div class="row"><small>7 дней</small><b>59 руб.</b></div>
-                        <div class="row"><small>1 месяц</small><b>199 руб.</b></div>
-                        <div class="row"><small>3 месяца</small><b>499 руб.</b></div>
-                        <div class="row"><small>6 месяцев</small><b>899 руб.</b></div>
-                        <div class="row"><small>12 месяцев</small><b>1499 руб.</b></div>
-                    </div>
-                </section>
-
-                <section class="panel">
+            <article class="panel card">
+                <div class="section-title">
                     <h2>История платежей</h2>
-                    <p class="subtitle">Последние операции</p>
-                    <div class="payments" id="paymentsList">
-                        <div class="row"><small>03.07.2026 - 3 месяца</small><span class="pay-ok">Оплачен</span></div>
-                        <div class="row"><small>03.04.2026 - 3 месяца</small><span class="pay-ok">Оплачен</span></div>
-                        <div class="row"><small>01.01.2026 - 1 месяц</small><span class="pay-pending">На проверке</span></div>
-                    </div>
-                </section>
+                    <p><span id="paymentsCount">0 платежей</span></p>
+                </div>
+                <div class="list" id="paymentsList">
+                    <div class="empty">Платежи ещё не загружены</div>
+                </div>
+            </article>
 
-                <section class="panel">
-                    <h2>Поддержка и документы</h2>
-                    <p class="subtitle">Куда обратиться и где ознакомиться с правилами</p>
-                    <div class="contacts">
-                        <div class="row">
-                            <small>Поддержка</small>
-                            <a class="contact-link" href="https://t.me/i1i1i1iij" target="_blank" rel="noopener noreferrer">@i1i1i1iij</a>
-                        </div>
-                        <div class="row">
-                            <small>Политика конфиденциальности</small>
-                            <a class="contact-link" href="https://telegra.ph/Politika-konfidencialnosti-06-21-31" target="_blank" rel="noopener noreferrer">Открыть</a>
-                        </div>
-                        <div class="row">
-                            <small>Пользовательское соглашение</small>
-                            <a class="contact-link" href="https://telegra.ph/Polzovatelskoe-soglashenie-04-01-19" target="_blank" rel="noopener noreferrer">Открыть</a>
-                        </div>
-                    </div>
-                    <p class="muted">Для связи используется формат личных обращений, не группа.</p>
-                </section>
-            </aside>
         </section>
+
+        <div class="footer">Данные подгружаются из БД в реальном времени.</div>
     </main>
 
     <script>
-        function getParam(name, fallback) {
-            const value = new URLSearchParams(window.location.search).get(name);
-            if (value === null || value === "") {
-                return fallback;
-            }
-            return value;
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            window.addEventListener('load', () => {
+                try { tg.expand(); } catch (error) {}
+            });
+            if (tg.setHeaderColor) tg.setHeaderColor('#281a61');
+            if (tg.setBackgroundColor) tg.setBackgroundColor('#281a61');
+            const screenState = document.getElementById('screenState');
+            if (screenState) screenState.textContent = 'Открыт на весь экран';
         }
 
-        const fullName = getParam("full_name", "Тимур К.");
-        const username = getParam("username", "@timur_vpn_user");
-        const userId = getParam("user_id", "0");
+        const params = new URLSearchParams(window.location.search);
+        const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+        const tgId = params.get('tg_id') || (tgUser && tgUser.id ? String(tgUser.id) : '');
+        const apiUrl = tgId ? `/cabinet/api/profile?tg_id=${encodeURIComponent(tgId)}` : null;
 
-        const activeTariff = getParam("tariff", "3 месяца");
-        const expiresAt = getParam("expires_at", "14.10.2026");
-        const subStatus = getParam("status", "Активна");
-        const devicesUsed = getParam("devices_used", "3");
-        const devicesLimit = getParam("devices_limit", "5");
-        const balance = getParam("balance", "0 руб.");
+        const el = {
+            activeTariff: document.getElementById('activeTariff'),
+            daysLeft: document.getElementById('daysLeft'),
+            badgeStatus: document.getElementById('badgeStatus'),
+            subStatus: document.getElementById('subStatus'),
+            subBadge: document.getElementById('subBadge'),
+            startedAt: document.getElementById('startedAt'),
+            expiresAt: document.getElementById('expiresAt'),
+            warn3At: document.getElementById('warn3At'),
+            warnMoreAt: document.getElementById('warnMoreAt'),
+            paymentsList: document.getElementById('paymentsList'),
+            paymentsCount: document.getElementById('paymentsCount'),
+        };
 
-        const paymentTariff = getParam("payment_tariff", activeTariff);
-        const paymentAmount = getParam("payment_amount", "499 руб.");
-        const paymentDate = getParam("payment_date", "03.07.2026");
-        const paymentStatus = getParam("payment_status", "Оплачен");
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
 
-        const avatarText = fullName
-            .split(" ")
-            .filter(Boolean)
-            .slice(0, 2)
-            .map(part => part[0].toUpperCase())
-            .join("") || "U";
+        function formatDate(value) {
+            if (!value) return '--';
+            return String(value).replace('T', ' ').slice(0, 16);
+        }
 
-        document.getElementById("activeTariff").textContent = activeTariff;
-        document.getElementById("expiresAt").textContent = expiresAt;
-        document.getElementById("avatarText").textContent = avatarText;
-        document.getElementById("fullName").textContent = fullName;
-        document.getElementById("username").textContent = username.startsWith("@") ? username : `@${username}`;
-        document.getElementById("subStatus").textContent = subStatus;
-        document.getElementById("devices").textContent = `${devicesUsed} / ${devicesLimit}`;
-        document.getElementById("balance").textContent = balance;
+        function daysLabel(daysLeft) {
+            if (daysLeft === null || daysLeft === undefined) return '--';
+            if (daysLeft < 0) return 'Истекла';
+            return `${daysLeft} дн.`;
+        }
 
-        document.getElementById("personInfo").textContent = `ID: ${userId}`;
-        document.getElementById("paymentInfo").textContent = `${paymentDate} - ${paymentTariff}`;
-        document.getElementById("paymentAmount").textContent = paymentAmount;
+        function setStatus(status, daysLeft) {
+            const isActive = status === 'ACTIVE';
+            const isExpired = status === 'EXPIRED' || (typeof daysLeft === 'number' && daysLeft < 0);
+            if (isActive && typeof daysLeft === 'number' && daysLeft <= 3) {
+                el.badgeStatus.textContent = 'Скоро закончится';
+                el.badgeStatus.className = 'badge badge-warn';
+                el.subBadge.textContent = 'Внимание';
+                el.subBadge.className = 'badge badge-warn';
+                return;
+            }
+            if (isExpired) {
+                el.badgeStatus.textContent = 'Истекла';
+                el.badgeStatus.className = 'badge badge-danger';
+                el.subBadge.textContent = 'Нет доступа';
+                el.subBadge.className = 'badge badge-danger';
+                return;
+            }
+            if (isActive) {
+                el.badgeStatus.textContent = 'Активна';
+                el.badgeStatus.className = 'badge badge-ok';
+                el.subBadge.textContent = 'Активна';
+                el.subBadge.className = 'badge badge-ok';
+                return;
+            }
+            el.badgeStatus.textContent = 'Нет подписки';
+            el.badgeStatus.className = 'badge badge-warn';
+            el.subBadge.textContent = 'Ожидание';
+            el.subBadge.className = 'badge badge-warn';
+        }
 
-        const paymentsList = document.getElementById("paymentsList");
-        const statusClass = paymentStatus.toLowerCase().includes("оплач") ? "pay-ok" : "pay-pending";
-        paymentsList.innerHTML = `
-            <div class="row"><small>${paymentDate} - ${paymentTariff}</small><span class="${statusClass}">${paymentStatus}</span></div>
-            <div class="row"><small>Сумма</small><span class="${statusClass}">${paymentAmount}</span></div>
-        `;
+        function renderPayments(payments) {
+            if (!payments.length) {
+                el.paymentsList.innerHTML = '<div class="empty">Платежей пока нет</div>';
+                el.paymentsCount.textContent = '0 платежей';
+                return;
+            }
+
+            el.paymentsCount.textContent = `${payments.length} платежей`;
+            el.paymentsList.innerHTML = payments.map(payment => {
+                const paidAt = payment.paid_at || payment.created_at;
+                const status = String(payment.status || '').toUpperCase();
+                let badgeClass = 'pay-pending';
+                let badgeText = payment.status || 'PENDING';
+                if (status === 'CONFIRMED') {
+                    badgeClass = 'pay-ok';
+                    badgeText = 'Оплачен';
+                } else if (status === 'EXPIRED') {
+                    badgeClass = 'pay-expired';
+                    badgeText = 'Истек';
+                }
+                return `
+                    <div class="row">
+                        <div>
+                            <small>${formatDate(paidAt)} · ${escapeHtml(payment.tariff)}</small>
+                            <b>${escapeHtml(payment.amount)} руб.</b>
+                        </div>
+                        <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadProfile() {
+            if (!apiUrl) {
+                document.querySelector('.hero-main p').textContent = 'Не удалось определить Telegram ID. Открой кабинет из кнопки в боте.';
+                el.paymentsList.innerHTML = '<div class="empty">Нет данных для загрузки</div>';
+                return;
+            }
+
+            const response = await fetch(apiUrl, { headers: { 'Accept': 'application/json' } });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const data = await response.json();
+
+            const user = data.user;
+            const payments = data.payments || [];
+
+            if (!user) {
+                el.activeTariff.textContent = 'Нет подписки';
+                el.daysLeft.textContent = '--';
+                el.subStatus.textContent = 'Подписка не найдена';
+                el.startedAt.textContent = '--';
+                el.expiresAt.textContent = '--';
+                el.warn3At.textContent = '--';
+                el.warnMoreAt.textContent = '--';
+                setStatus('NONE', null);
+                el.paymentsList.innerHTML = '<div class="empty">Подписка ещё не оформлена</div>';
+                el.paymentsCount.textContent = '0 платежей';
+                return;
+            }
+
+            el.activeTariff.textContent = user.tariff || '--';
+            el.daysLeft.textContent = daysLabel(user.days_left);
+            el.subStatus.textContent = user.status === 'ACTIVE' ? 'Активна' : (user.status === 'EXPIRED' ? 'Истекла' : 'Нет данных');
+            el.startedAt.textContent = formatDate(user.started_at);
+            el.expiresAt.textContent = formatDate(user.expires_at);
+            el.warn3At.textContent = formatDate(user.warned_3_at);
+            el.warnMoreAt.textContent = `${formatDate(user.warned_2_at)} / ${formatDate(user.warned_1_at)}`;
+            setStatus(user.status, user.days_left);
+
+            renderPayments(payments);
+        }
+
+        loadProfile().catch(() => {
+            document.querySelector('.hero-main p').textContent = 'Не удалось загрузить данные кабинета. Попробуй открыть его еще раз из бота.';
+            el.paymentsList.innerHTML = '<div class="empty">Данные недоступны</div>';
+            if (tg && tg.showAlert) tg.showAlert('Не удалось загрузить личный кабинет');
+        });
     </script>
 </body>
 </html>
