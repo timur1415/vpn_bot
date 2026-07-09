@@ -84,7 +84,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "📲 Скачайте приложение заранее:\n\n"
             "iPhone / iOS:\n"
             "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
-            "⚠️ Важно: для iPhone в App Store может понадобиться регион Узбекистан, если приложение не отображается в вашем регионе.\n\n"
+            "⚠️ Важно: для iPhone в App Store может понадобиться регион ТУРЦИИ, если приложение не отображается в вашем регионе.\n\n"
             "Android:\n"
             "https://play.google.com/store/apps/details?id=org.amnezia.vpn\n\n"
             "Порядок такой:\n\n"
