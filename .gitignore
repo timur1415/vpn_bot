@@ -1,4 +1,4 @@
 .env
 __pycache__
-VPN_bot.db
+vpn_bot.db
 vpn_bot
