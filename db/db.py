@@ -40,6 +40,7 @@ async def init_db():
             "warned_3_at",
             "warned_2_at",
             "warned_1_at",
+            "warned_0_at",
             "created_at",
         }
         result = await conn.execute(text("PRAGMA table_info(paid_users)"))
@@ -68,6 +69,7 @@ async def init_db():
                     warned_3_at DATETIME,
                     warned_2_at DATETIME,
                     warned_1_at DATETIME,
+                    warned_0_at DATETIME,
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
                 )
                 """
@@ -92,6 +94,7 @@ async def init_db():
                             warned_3_at,
                             warned_2_at,
                             warned_1_at,
+                            warned_0_at,
                             created_at
                         )
                         SELECT
@@ -122,6 +125,7 @@ async def init_db():
                             warned_3_at,
                             warned_2_at,
                             warned_1_at,
+                            warned_0_at,
                             created_at
                         )
                         SELECT
@@ -131,6 +135,7 @@ async def init_db():
                             COALESCE(status, 'ACTIVE'),
                             started_at,
                             expires_at,
+                            NULL,
                             NULL,
                             NULL,
                             NULL,
@@ -149,6 +154,8 @@ async def init_db():
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_2_at DATETIME"))
         if "warned_1_at" not in paid_users_columns and paid_users_columns:
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_1_at DATETIME"))
+        if "warned_0_at" not in paid_users_columns and paid_users_columns:
+            await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_0_at DATETIME"))
 
 
 def _renew_days_from_tariff(tariff: str) -> int | None:
@@ -240,9 +247,10 @@ async def upsert_paid_user_from_payment(transaction_id: str, username: str | Non
                 status="ACTIVE",
                 started_at=paid_at,
                 expires_at=payment.renew_at,
-                warned_3_at=paid_at,
+                warned_3_at=None,
                 warned_2_at=None,
                 warned_1_at=None,
+                warned_0_at=None,
             )
             session.add(paid_user)
         else:
@@ -252,9 +260,10 @@ async def upsert_paid_user_from_payment(transaction_id: str, username: str | Non
             paid_user.status = "ACTIVE"
             paid_user.started_at = paid_at
             paid_user.expires_at = payment.renew_at
-            paid_user.warned_3_at = paid_at
+            paid_user.warned_3_at = None
             paid_user.warned_2_at = None
             paid_user.warned_1_at = None
+            paid_user.warned_0_at = None
 
         await session.commit()
 
@@ -308,6 +317,8 @@ async def mark_paid_user_warning(telegram_id: int, days_left: int) -> bool:
             paid_user.warned_2_at = now
         elif days_left == 1 and paid_user.warned_1_at is None:
             paid_user.warned_1_at = now
+        elif days_left == 0 and paid_user.warned_0_at is None:
+            paid_user.warned_0_at = now
         else:
             return False
 

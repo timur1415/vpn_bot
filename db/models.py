@@ -37,4 +37,5 @@ class PaidUser(Base):
     warned_3_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     warned_2_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     warned_1_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    warned_0_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
