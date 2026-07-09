@@ -16,7 +16,7 @@ from config.states import MAIN_MENU
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     first_name = html.escape(update.effective_user.first_name or "пользователь")
     keyboard = [
-        [InlineKeyboardButton("🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP", web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"))],
+        [InlineKeyboardButton("🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP", web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"), style='success')],
         [InlineKeyboardButton("💳 Приобрести", callback_data="buy")],
         [InlineKeyboardButton("💸 Тарифы и цены", callback_data="tariffs")],
         [InlineKeyboardButton("🛡 Почему именно этот VPN?", callback_data="why_vpn")],

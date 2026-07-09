@@ -56,9 +56,9 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id=user_id,
         tariff=tariff["title"],
     )
-
-    payment_url = payment.get("url") or payment.get("redirect")
-    transaction_id = str(payment.get("id") or payment.get("transaction_id") or payment.get("transactionId", ""))
+    logger.info(payment)
+    payment_url = payment.get("redirect")
+    transaction_id = payment.get("transactionId", "")
 
     if transaction_id:
         try:
@@ -71,8 +71,9 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error("Failed to save payment to DB: %s", e)
 
+    # success danger primary 
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("💳 Оплатить", url=payment_url)],
+        [InlineKeyboardButton("💳 Оплатить", url=payment_url,style='success')],
         [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy")],
     ])
 

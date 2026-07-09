@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Request
 
-from config.config import ADMIN_ID
+from config.config import ADMIN_ID, MERCHANT_ID, SECRET_KEY
 from db.db import get_payment, update_payment_status, upsert_paid_user_from_payment
 
 logger = logging.getLogger(__name__)
@@ -10,20 +10,32 @@ router = APIRouter()
 
 @router.post("/payment/callback")
 async def payment_callback(request: Request):
+    merchant_id_header = request.headers.get("X-MerchantId")
+    secret_header = request.headers.get("X-Secret")
+
+    if merchant_id_header != MERCHANT_ID or secret_header != SECRET_KEY:
+        logger.warning(
+            "Payment callback rejected: invalid merchant headers (X-MerchantId=%s)",
+            merchant_id_header,
+        )
+        return {"status": "forbidden"}
+    
     data = await request.json()
     logger.info("Payment callback received: %s", data)
 
-    transaction_id = data.get("id") or data.get("transaction_id") or data.get("transactionId")
+    transaction_id = data.get("transactionId")
     status = data.get("status", "").upper()
 
     if not transaction_id:
         logger.warning("Payment callback missing transaction_id: %s", data)
         return {"status": "ok"}
-
+    #добавить в гет пэймент проверку тг id
     payment = await get_payment(str(transaction_id))
     if not payment:
         logger.warning("Payment not found for transaction_id: %s", transaction_id)
         return {"status": "ok"}
+    
+
 
     status_updated = await update_payment_status(str(transaction_id), status)
 
