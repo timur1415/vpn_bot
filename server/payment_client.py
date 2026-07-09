@@ -1,9 +1,16 @@
 import json
 import requests
-from config.config import MERCHANT_ID, SECRET_KEY, WEBHOOK_URL, BASE_URL
+from config.config import (
+    MERCHANT_ID,
+    SECRET_KEY,
+    WEBHOOK_URL,
+    BASE_URL,
+    PAYMENT_CALLBACK_URL,
+)
 
 
 def create_payment(amount: int, user_id: int, tariff: str):
+    # User is redirected to site URL, provider notifies server callback URL.
     payload = {
         "command": "process",
         "paymentMethod": 2,
@@ -11,6 +18,8 @@ def create_payment(amount: int, user_id: int, tariff: str):
         "description": f"VPN тариф {tariff}",
         "return": WEBHOOK_URL,
         "failedUrl": WEBHOOK_URL,
+        "callback": PAYMENT_CALLBACK_URL,
+        "callbackUrl": PAYMENT_CALLBACK_URL,
         "payload": json.dumps({"telegram_id": user_id, "tariff": tariff}),
     }
 

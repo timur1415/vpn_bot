@@ -23,8 +23,19 @@ async def payment_callback(request: Request):
     data = await request.json()
     logger.info("Payment callback received: %s", data)
 
-    transaction_id = data.get("transactionId")
-    status = data.get("status", "").upper()
+    transaction_id = (
+        data.get("transactionId")
+        or data.get("transaction_id")
+        or data.get("id")
+    )
+    raw_status = data.get("status") or data.get("state") or ""
+    status = str(raw_status).upper()
+
+    if not status and data.get("success") is True:
+        status = "CONFIRMED"
+
+    if status in {"SUCCESS", "PAID", "COMPLETED"}:
+        status = "CONFIRMED"
 
     if not transaction_id:
         logger.warning("Payment callback missing transaction_id: %s", data)
@@ -37,7 +48,7 @@ async def payment_callback(request: Request):
     
 
 
-    status_updated = await update_payment_status(str(transaction_id), status)
+    status_updated = await update_payment_status(str(transaction_id), status or "PENDING")
 
     if status == "CONFIRMED" and status_updated:
         bot_app = request.app.state.bot_app
