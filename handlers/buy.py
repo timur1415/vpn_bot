@@ -79,9 +79,21 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_caption(
         caption=(
-            f"<b>Вы выбрали:</b> {tariff['title']}\n\n"
-            "Нажмите кнопку ниже, чтобы перейти к оплате.\n"
-            "После оплаты статус обновится автоматически."
+            "🔐 maksud_vpn\n\n"
+            "После оплаты с вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
+            "📲 Скачайте приложение заранее:\n\n"
+            "iPhone / iOS:\n"
+            "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
+            "⚠️ Важно: для iPhone в App Store может понадобиться регион Узбекистан, если приложение не отображается в вашем регионе.\n\n"
+            "Android:\n"
+            "https://play.google.com/store/apps/details?id=org.amnezia.vpn\n\n"
+            "Порядок такой:\n\n"
+            "1️⃣ Вы оплачиваете тариф\n"
+            "2️⃣ Менеджер проверяет оплату\n"
+            "3️⃣ Вам отправляют VPN-ключ\n"
+            "4️⃣ При необходимости помогают подключиться\n\n"
+            "⏳ Обычно выдача занимает 5–15 минут.\n\n"
+            "Перед оплатой убедитесь, что вам можно написать в личные сообщения Telegram."
         ),
         reply_markup=keyboard,
         parse_mode="HTML",
