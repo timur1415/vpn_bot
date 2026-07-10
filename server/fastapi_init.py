@@ -4,7 +4,7 @@ from datetime import datetime
 import asyncio
 import logging
 
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot_init import create_aplication
 from server.routes.admin_routes import router as admin_router
@@ -94,13 +94,17 @@ async def _send_subscription_reminders(app: FastAPI):
                         )
 
                     days_text = "сегодня" if days_left == 0 else f"через {days_left} дн."
+                    keyboard = None
+                    if payment_url:
+                        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("💳 Продлить подписку", url=payment_url)]])
                     await app.state.bot_app.bot.send_message(
                         chat_id=paid_user.telegram_id,
                         text=(
                             f"⚠️ Подписка заканчивается {days_text}\n"
-                            f"Тариф: {paid_user.tariff}\n\n"
-                            f"Ссылка на продление: {payment_url or 'ссылка временно недоступна'}"
+                            f"Тариф: {paid_user.tariff}"
+                            + ("" if payment_url else "\n\nСсылка на продление временно недоступна")
                         ),
+                        reply_markup=keyboard,
                     )
 
                     await mark_paid_user_warning(paid_user.telegram_id, days_left)
