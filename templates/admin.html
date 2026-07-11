@@ -428,6 +428,9 @@
 
       <section class="stats">
         <div class="stat">
+          <small>Зашли в бота</small><strong id="statVisitors">0</strong>
+        </div>
+        <div class="stat">
           <small>Всего</small><strong id="statTotal">0</strong>
         </div>
         <div class="stat">
@@ -477,6 +480,7 @@
       const filterButtons = Array.from(document.querySelectorAll(".chip"));
       let allRows = [];
       let activeFilter = "all";
+      let visitorsCount = 0;
 
       function escapeHtml(value) {
         return String(value ?? "")
@@ -507,6 +511,7 @@
       }
 
       function renderStats(users) {
+        document.getElementById("statVisitors").textContent = visitorsCount;
         document.getElementById("statTotal").textContent = users.length;
         document.getElementById("statActive").textContent = users.filter(
           (user) => user.status === "ACTIVE",
@@ -606,6 +611,7 @@
         })
         .then((data) => {
           allRows = data.users || [];
+          visitorsCount = Number(data.visitors_count || 0);
           renderRows(allRows);
           renderStats(allRows);
         })

@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 
 from config.config import ADMIN_ID
-from db.db import list_paid_users
+from db.db import get_bot_visitors_count, list_paid_users
 
 router = APIRouter()
 ADMIN_TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "admin.html"
@@ -33,6 +33,7 @@ async def admin_page(request: Request):
 async def admin_users(request: Request):
     _check_admin(request)
     users = await list_paid_users()
+    visitors_count = await get_bot_visitors_count()
 
     payload = []
     for user in users:
@@ -51,4 +52,4 @@ async def admin_users(request: Request):
             }
         )
 
-    return {"users": payload}
+    return {"users": payload, "visitors_count": visitors_count}

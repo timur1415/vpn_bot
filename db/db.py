@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 
 DATABASE_URL = "sqlite+aiosqlite:///vpn_bot.db"
 
@@ -156,6 +156,34 @@ async def init_db():
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_1_at DATETIME"))
         if "warned_0_at" not in paid_users_columns and paid_users_columns:
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_0_at DATETIME"))
+
+        await conn.execute(text(
+            """
+            CREATE TABLE IF NOT EXISTS bot_visitors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_id INTEGER NOT NULL UNIQUE,
+                username VARCHAR,
+                first_name VARCHAR,
+                visits_count INTEGER NOT NULL DEFAULT 1,
+                first_seen_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                last_seen_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        ))
+
+        result = await conn.execute(text("PRAGMA table_info(bot_visitors)"))
+        bot_visitors_columns = {row[1] for row in result.fetchall()}
+
+        if "username" not in bot_visitors_columns:
+            await conn.execute(text("ALTER TABLE bot_visitors ADD COLUMN username VARCHAR"))
+        if "first_name" not in bot_visitors_columns:
+            await conn.execute(text("ALTER TABLE bot_visitors ADD COLUMN first_name VARCHAR"))
+        if "visits_count" not in bot_visitors_columns:
+            await conn.execute(text("ALTER TABLE bot_visitors ADD COLUMN visits_count INTEGER NOT NULL DEFAULT 1"))
+        if "first_seen_at" not in bot_visitors_columns:
+            await conn.execute(text("ALTER TABLE bot_visitors ADD COLUMN first_seen_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"))
+        if "last_seen_at" not in bot_visitors_columns:
+            await conn.execute(text("ALTER TABLE bot_visitors ADD COLUMN last_seen_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"))
 
 
 def _renew_days_from_tariff(tariff: str) -> int | None:
@@ -340,3 +368,44 @@ async def mark_paid_user_expired(telegram_id: int) -> bool:
             return True
 
         return False
+
+
+async def register_bot_visit(
+    telegram_id: int,
+    username: str | None = None,
+    first_name: str | None = None,
+) -> None:
+    from db.models import BotVisitor
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(BotVisitor).where(BotVisitor.telegram_id == telegram_id)
+        )
+        visitor = result.scalar_one_or_none()
+
+        now = datetime.utcnow()
+        if visitor is None:
+            visitor = BotVisitor(
+                telegram_id=telegram_id,
+                username=username,
+                first_name=first_name,
+                visits_count=1,
+                first_seen_at=now,
+                last_seen_at=now,
+            )
+            session.add(visitor)
+        else:
+            visitor.username = username
+            visitor.first_name = first_name
+            visitor.visits_count += 1
+            visitor.last_seen_at = now
+
+        await session.commit()
+
+
+async def get_bot_visitors_count() -> int:
+    from db.models import BotVisitor
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(func.count(BotVisitor.id)))
+        return int(result.scalar_one() or 0)

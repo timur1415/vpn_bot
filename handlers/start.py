@@ -11,9 +11,17 @@ from telegram import (
 
 from config.config import ADMIN_ID, WEBHOOK_URL
 from config.states import MAIN_MENU
+from db.db import register_bot_visit
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user:
+        await register_bot_visit(
+            telegram_id=update.effective_user.id,
+            username=update.effective_user.username,
+            first_name=update.effective_user.first_name,
+        )
+
     first_name = html.escape(update.effective_user.first_name or "пользователь")
     keyboard = [
         [InlineKeyboardButton("🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP", web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"), style='primary')],
