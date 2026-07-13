@@ -18,9 +18,47 @@ TARIFFS = {
 }
 
 
+PURCHASE_INFO_TEXT = (
+    "🔐 maksud_vpn\n\n"
+    "После оплаты с вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
+    "📲 Скачайте приложение заранее:\n\n"
+    "iPhone / iOS:\n"
+    "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
+    "⚠️ Важно: для iPhone в App Store может понадобиться регион ТУРЦИИ, если приложение не отображается в вашем регионе.\n\n"
+    "Android:\n"
+    "https://play.google.com/store/apps/details?id=org.amnezia.vpn\n\n"
+    "Порядок такой:\n\n"
+    "1️⃣ Вы оплачиваете тариф\n"
+    "2️⃣ Менеджер проверяет оплату\n"
+    "3️⃣ Вам отправляют VPN-ключ\n"
+    "4️⃣ При необходимости помогают подключиться\n\n"
+    "⏳ Обычно выдача занимает 5–15 минут.\n\n"
+    "Перед оплатой убедитесь, что вам можно написать в личные сообщения Telegram."
+)
+
+
+FREE_TRIAL_INFO_TEXT = (
+    "🔐 maksud_vpn\n\n"
+    "Пробный тариф активирован на 3 дня. С вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
+    "📲 Скачайте приложение заранее:\n\n"
+    "iPhone / iOS:\n"
+    "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
+    "⚠️ Важно: для iPhone в App Store может понадобиться регион ТУРЦИИ, если приложение не отображается в вашем регионе.\n\n"
+    "Android:\n"
+    "https://play.google.com/store/apps/details?id=org.amnezia.vpn\n\n"
+    "Порядок такой:\n\n"
+    "1️⃣ Вы активируете пробный тариф\n"
+    "2️⃣ Менеджер отправляет VPN-ключ\n"
+    "3️⃣ При необходимости помогает подключиться\n\n"
+    "⏳ Обычно выдача занимает 5–15 минут.\n\n"
+    "Убедитесь, что вам можно написать в личные сообщения Telegram."
+)
+
+
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+
     user_id = update.effective_user.id
     free_trial_used = await has_used_free_trial(user_id)
 
@@ -75,15 +113,12 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 logger.error("Failed to notify admin about free trial activation: %s", notify_exc)
 
             await query.edit_message_caption(
-                caption=(
-                    "🎁 Пробный тариф активирован\n\n"
-                    "Вы получили 3 дня бесплатного доступа к VPN.\n"
-                    "После окончания пробного периода можно выбрать любой платный тариф."
-                ),
+                caption=FREE_TRIAL_INFO_TEXT,
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
                     [InlineKeyboardButton("💳 К тарифам", callback_data="buy")],
                 ]),
+                parse_mode="HTML",
             )
         else:
             await query.edit_message_caption(
@@ -120,30 +155,13 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error("Failed to save payment to DB: %s", e)
 
-    # success danger primary 
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("💳 Оплатить", url=payment_url,style='success')],
+        [InlineKeyboardButton("💳 Оплатить", url=payment_url)],
         [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy")],
     ])
 
     await query.edit_message_caption(
-        caption=(
-            "🔐 maksud_vpn\n\n"
-            "После оплаты с вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
-            "📲 Скачайте приложение заранее:\n\n"
-            "iPhone / iOS:\n"
-            "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
-            "⚠️ Важно: для iPhone в App Store может понадобиться регион ТУРЦИИ, если приложение не отображается в вашем регионе.\n\n"
-            "Android:\n"
-            "https://play.google.com/store/apps/details?id=org.amnezia.vpn\n\n"
-            "Порядок такой:\n\n"
-            "1️⃣ Вы оплачиваете тариф\n"
-            "2️⃣ Менеджер проверяет оплату\n"
-            "3️⃣ Вам отправляют VPN-ключ\n"
-            "4️⃣ При необходимости помогают подключиться\n\n"
-            "⏳ Обычно выдача занимает 5–15 минут.\n\n"
-            "Перед оплатой убедитесь, что вам можно написать в личные сообщения Telegram."
-        ),
+        caption=PURCHASE_INFO_TEXT,
         reply_markup=keyboard,
         parse_mode="HTML",
     )
