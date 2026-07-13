@@ -8,26 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg-1: #251a5d;
-        --bg-2: #3f2d8f;
-        --bg-3: #6c4bd8;
-        --panel: rgba(255, 255, 255, 0.1);
-        --panel-strong: rgba(255, 255, 255, 0.15);
-        --line: rgba(255, 255, 255, 0.12);
-        --text: #ffffff;
-        --muted: rgba(255, 255, 255, 0.74);
-        --blue: #7fc1ff;
-        --pink: #ff9ed8;
-        --green: #91f0b0;
-        --red: #ffb0b0;
-        --yellow: #ffe08a;
-        --shadow: 0 16px 36px rgba(20, 10, 50, 0.28);
-        --radius: 18px;
+        --bg-1: #0a1f2e;
+        --bg-2: #123549;
+        --bg-3: #1f4f62;
+        --paper: rgba(250, 255, 255, 0.9);
+        --panel: rgba(243, 252, 255, 0.88);
+        --panel-strong: rgba(229, 245, 250, 0.96);
+        --line: rgba(18, 53, 73, 0.14);
+        --text: #0f2837;
+        --muted: rgba(15, 40, 55, 0.62);
+        --accent: #0d8ea3;
+        --good: #0f8f5f;
+        --bad: #d54545;
+        --warn: #bb7b00;
+        --shadow: 0 18px 42px rgba(7, 31, 44, 0.16);
+        --radius: 20px;
       }
 
       * {
@@ -40,28 +40,28 @@
       body {
         margin: 0;
         min-height: 100dvh;
-        font-family: Inter, system-ui, sans-serif;
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
         color: var(--text);
         background:
           radial-gradient(
-            circle at 12% 10%,
-            rgba(127, 193, 255, 0.35),
-            transparent 18%
+            circle at 14% 8%,
+            rgba(71, 207, 230, 0.23),
+            transparent 24%
           ),
           radial-gradient(
-            circle at 82% 12%,
-            rgba(255, 158, 216, 0.28),
-            transparent 16%
+            circle at 84% 12%,
+            rgba(255, 211, 145, 0.22),
+            transparent 22%
           ),
           radial-gradient(
-            circle at 70% 82%,
-            rgba(145, 240, 176, 0.16),
-            transparent 16%
+            circle at 76% 82%,
+            rgba(101, 198, 154, 0.19),
+            transparent 20%
           ),
           linear-gradient(
             160deg,
             var(--bg-1) 0%,
-            var(--bg-2) 55%,
+            var(--bg-2) 48%,
             var(--bg-3) 100%
           );
         overflow-x: hidden;
@@ -72,25 +72,10 @@
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background-image:
-          radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.95) 0 1px,
-            transparent 1.5px
-          ),
-          radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.5) 0 1px,
-            transparent 1.5px
-          );
-        background-size:
-          120px 120px,
-          180px 180px;
-        background-position:
-          0 0,
-          40px 60px;
-        opacity: 0.35;
-        mix-blend-mode: screen;
+        background: linear-gradient(
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.01)
+        );
       }
 
       .wrap {
@@ -107,7 +92,7 @@
 
       .hero {
         display: grid;
-        grid-template-columns: 1.45fr 0.95fr;
+        grid-template-columns: 1fr;
         gap: 8px;
         margin-bottom: 8px;
       }
@@ -117,13 +102,23 @@
         border: 1px solid var(--line);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(6px);
+        animation: rise-in 420ms ease both;
+      }
+
+      @keyframes rise-in {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
 
       .hero-main,
-      .hero-side,
-      .card,
-      .searchbar {
+      .card {
         padding: 14px;
       }
 
@@ -132,6 +127,7 @@
         font-size: clamp(28px, 4vw, 42px);
         line-height: 1.05;
         letter-spacing: -0.03em;
+        font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
       }
 
       .hero-main p,
@@ -165,67 +161,24 @@
         gap: 8px;
         padding: 8px 12px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(13, 142, 163, 0.12);
+        border: 1px solid rgba(13, 142, 163, 0.25);
         color: var(--text);
         font-size: 12px;
         font-weight: 700;
       }
 
-      .searchbar {
-        display: grid;
-        gap: 10px;
-        align-content: center;
-      }
-
-      .searchbar input {
-        width: 100%;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(11, 7, 32, 0.28);
-        color: var(--text);
-        border-radius: 14px;
-        padding: 13px 14px;
-        outline: none;
-        font-size: 14px;
-      }
-
-      .searchbar input::placeholder {
-        color: rgba(255, 255, 255, 0.6);
-      }
-
-      .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .chip {
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--text);
-        padding: 9px 12px;
-        border-radius: 999px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 13px;
-      }
-
-      .chip.active {
-        background: rgba(127, 193, 255, 0.25);
-        border-color: rgba(127, 193, 255, 0.38);
-      }
-
       .stats {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 8px;
         margin-bottom: 8px;
       }
 
       .stat {
         padding: 14px;
-        border-radius: 18px;
-        background: var(--panel);
+        border-radius: 16px;
+        background: var(--panel-strong);
         border: 1px solid var(--line);
         box-shadow: var(--shadow);
       }
@@ -244,22 +197,38 @@
       }
 
       .good {
-        color: var(--green);
+        color: var(--good);
       }
       .bad {
-        color: var(--red);
+        color: var(--bad);
       }
       .warn {
-        color: var(--yellow);
+        color: var(--warn);
       }
 
       .table-wrap {
-        border-radius: 18px;
+        border-radius: 16px;
         border: 1px solid var(--line);
         overflow: auto;
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.86);
         box-shadow: var(--shadow);
         width: 100%;
+      }
+
+      .section-title {
+        margin: 0 0 10px;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+
+      .trial-wrap {
+        margin-top: 8px;
+      }
+
+      .hint-inline {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 10px;
       }
 
       table {
@@ -271,7 +240,7 @@
       th,
       td {
         padding: 12px 10px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(18, 53, 73, 0.08);
         text-align: left;
         vertical-align: top;
         font-size: 14px;
@@ -280,15 +249,15 @@
       th {
         position: sticky;
         top: 0;
-        background: rgba(47, 34, 111, 0.98);
-        color: rgba(255, 255, 255, 0.82);
+        background: rgba(231, 246, 250, 0.97);
+        color: rgba(15, 40, 55, 0.72);
         text-transform: uppercase;
         letter-spacing: 0.04em;
         font-size: 11px;
       }
 
       tbody tr:hover {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(13, 142, 163, 0.06);
       }
 
       .badge {
@@ -298,27 +267,27 @@
         border-radius: 999px;
         font-size: 12px;
         font-weight: 700;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(18, 53, 73, 0.14);
       }
 
       .status-active {
-        background: rgba(145, 240, 176, 0.16);
-        color: #d6ffdf;
+        background: rgba(15, 143, 95, 0.14);
+        color: #0c6e49;
       }
       .status-expired {
-        background: rgba(255, 176, 176, 0.16);
-        color: #ffe3e3;
+        background: rgba(213, 69, 69, 0.13);
+        color: #9b2f2f;
       }
       .days-ok {
-        color: var(--green);
+        color: var(--good);
         font-weight: 700;
       }
       .days-warn {
-        color: var(--yellow);
+        color: var(--warn);
         font-weight: 700;
       }
       .days-bad {
-        color: var(--red);
+        color: var(--bad);
         font-weight: 700;
       }
 
@@ -336,9 +305,8 @@
       }
 
       @media (max-width: 980px) {
-        .hero,
         .stats {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -347,11 +315,13 @@
           padding: 6px;
         }
         .hero-main,
-        .hero-side,
         .card,
-        .searchbar,
         .stat {
           padding: 12px;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
         }
 
         .topline {
@@ -363,18 +333,34 @@
   </head>
   <body>
     <main class="wrap">
+      <section class="hero">
+        <div class="panel hero-main">
+          <div class="topline">
+            <span>Telegram mini app</span>
+            <span class="screen-badge" id="screenState"
+              >Полноэкранный режим</span
+            >
+          </div>
+          <h1>Панель управления VPN</h1>
+          <p>
+            Новый формат: чистая таблица подписок, выделенный блок бесплатного
+            тарифа и более читабельная статистика.
+          </p>
+        </div>
+      </section>
+
       <section class="table-first table-wrap">
         <table id="usersTable">
           <thead>
             <tr>
-              <th>telegram_id</th>
-              <th>username</th>
-              <th>tariff</th>
-              <th>status</th>
-              <th>started_at</th>
-              <th>expires_at</th>
-              <th>days_left</th>
-              <th>created_at</th>
+              <th>Telegram ID</th>
+              <th>Username</th>
+              <th>Тариф</th>
+              <th>Статус</th>
+              <th>Старт</th>
+              <th>Окончание</th>
+              <th>Осталось</th>
+              <th>Добавлен</th>
             </tr>
           </thead>
           <tbody id="usersBody">
@@ -385,50 +371,9 @@
         </table>
       </section>
 
-      <section class="hero">
-        <div class="panel hero-main">
-          <div class="topline">
-            <span>Telegram mini app</span>
-            <span class="screen-badge" id="screenState"
-              >Полноэкранный режим</span
-            >
-          </div>
-          <h1>Админ-панель VPN</h1>
-          <p>
-            Список пользователей, тарифы, username и срок подписки. Интерфейс
-            подстроен под мягкие сине-фиолетовые тона из ваших картинок.
-          </p>
-        </div>
-        <div class="panel searchbar">
-          <div>
-            <div class="section-label">Быстрый поиск</div>
-            <div class="hint">ID, username, тариф, статус</div>
-          </div>
-          <input
-            id="search"
-            type="search"
-            placeholder="Поиск по пользователям"
-          />
-          <div class="filters">
-            <button class="chip active" data-filter="all" type="button">
-              Все
-            </button>
-            <button class="chip" data-filter="active" type="button">
-              Активные
-            </button>
-            <button class="chip" data-filter="expired" type="button">
-              Истекшие
-            </button>
-            <button class="chip" data-filter="soon" type="button">
-              До 3 дней
-            </button>
-          </div>
-        </div>
-      </section>
-
       <section class="stats">
         <div class="stat">
-          <small>Зашли в бота</small><strong id="statVisitors">0</strong>
+          <small>Посетили бота</small><strong id="statVisitors">0</strong>
         </div>
         <div class="stat">
           <small>Всего</small><strong id="statTotal">0</strong>
@@ -442,6 +387,33 @@
         <div class="stat">
           <small>Скоро закончатся</small
           ><strong class="warn" id="statSoon">0</strong>
+        </div>
+        <div class="stat">
+          <small>Бесплатный тариф</small><strong id="statFree">0</strong>
+        </div>
+      </section>
+
+      <section class="panel card trial-wrap">
+        <h2 class="section-title">Пользователи бесплатного тарифа</h2>
+        <div class="hint-inline">Показываются все пользователи с тарифом, где есть слово "бесплат".</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Telegram ID</th>
+                <th>Username</th>
+                <th>Статус</th>
+                <th>Старт</th>
+                <th>Окончание</th>
+                <th>Осталось</th>
+              </tr>
+            </thead>
+            <tbody id="trialBody">
+              <tr>
+                <td colspan="6" class="loader">Загрузка...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -475,11 +447,9 @@
         apiParams.set("tg_id", tgId);
       }
       const apiUrl = `/admin/api/users${apiParams.toString() ? `?${apiParams.toString()}` : ""}`;
-      const searchInput = document.getElementById("search");
       const body = document.getElementById("usersBody");
-      const filterButtons = Array.from(document.querySelectorAll(".chip"));
+      const trialBody = document.getElementById("trialBody");
       let allRows = [];
-      let activeFilter = "all";
       let visitorsCount = 0;
 
       function escapeHtml(value) {
@@ -494,20 +464,26 @@
       function formatDays(daysLeft) {
         if (daysLeft === null || daysLeft === undefined) return "-";
         if (daysLeft < 0) return "Истекла";
-        return `${daysLeft} дн.`;
+        const mod10 = daysLeft % 10;
+        const mod100 = daysLeft % 100;
+        let unit = "дней";
+        if (mod10 === 1 && mod100 !== 11) unit = "день";
+        else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) unit = "дня";
+        return `${daysLeft} ${unit}`;
       }
 
-      function matchesFilter(user) {
-        if (activeFilter === "all") return true;
-        if (activeFilter === "active") return user.status === "ACTIVE";
-        if (activeFilter === "expired") return user.status === "EXPIRED";
-        if (activeFilter === "soon")
-          return (
-            typeof user.days_left === "number" &&
-            user.days_left >= 0 &&
-            user.days_left <= 3
-          );
-        return true;
+      function formatDateTime(value) {
+        if (!value) return "-";
+        const safe = String(value).replace(" ", "T");
+        const dt = new Date(safe);
+        if (Number.isNaN(dt.getTime())) return escapeHtml(value);
+        return dt.toLocaleString("ru-RU", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
       }
 
       function renderStats(users) {
@@ -524,6 +500,9 @@
             typeof user.days_left === "number" &&
             user.days_left >= 0 &&
             user.days_left <= 3,
+        ).length;
+        document.getElementById("statFree").textContent = users.filter((user) =>
+          String(user.tariff || "").toLowerCase().includes("бесплат"),
         ).length;
       }
 
@@ -549,15 +528,9 @@
                   : user.days_left <= 3
                     ? "days-warn"
                     : "days-ok";
-            const startedAt = user.started_at
-              ? escapeHtml(user.started_at)
-              : "-";
-            const expiresAt = user.expires_at
-              ? escapeHtml(user.expires_at)
-              : "-";
-            const createdAt = user.created_at
-              ? escapeHtml(user.created_at)
-              : "-";
+            const startedAt = formatDateTime(user.started_at);
+            const expiresAt = formatDateTime(user.expires_at);
+            const createdAt = formatDateTime(user.created_at);
             return `
                     <tr>
                         <td>${user.telegram_id}</td>
@@ -574,35 +547,44 @@
           .join("");
       }
 
-      function applySearch() {
-        const value = searchInput.value.trim().toLowerCase();
-        const filtered = allRows.filter((user) => {
-          const haystack = [
-            user.telegram_id,
-            user.username,
-            user.tariff,
-            user.status,
-            user.started_at,
-            user.expires_at,
-            user.created_at,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-          return haystack.includes(value) && matchesFilter(user);
-        });
-        renderRows(filtered);
-        renderStats(filtered);
-      }
+      function renderTrialRows(users) {
+        if (!users.length) {
+          trialBody.innerHTML =
+            '<tr><td colspan="6" class="loader">Пользователей с бесплатным тарифом пока нет</td></tr>';
+          return;
+        }
 
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          filterButtons.forEach((item) => item.classList.remove("active"));
-          button.classList.add("active");
-          activeFilter = button.dataset.filter || "all";
-          applySearch();
-        });
-      });
+        trialBody.innerHTML = users
+          .map((user) => {
+            const username = user.username
+              ? `@${escapeHtml(user.username)}`
+              : "-";
+            const statusClass =
+              user.status === "ACTIVE" ? "status-active" : "status-expired";
+            const daysClass =
+              user.days_left === null
+                ? "muted"
+                : user.days_left < 0
+                  ? "days-bad"
+                  : user.days_left <= 3
+                    ? "days-warn"
+                    : "days-ok";
+            const startedAt = formatDateTime(user.started_at);
+            const expiresAt = formatDateTime(user.expires_at);
+
+            return `
+              <tr>
+                <td>${user.telegram_id}</td>
+                <td>${username}</td>
+                <td><span class="badge ${statusClass}">${escapeHtml(user.status)}</span></td>
+                <td>${startedAt}</td>
+                <td>${expiresAt}</td>
+                <td class="${daysClass}">${formatDays(user.days_left)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
 
       fetch(apiUrl)
         .then((response) => {
@@ -612,20 +594,27 @@
         .then((data) => {
           allRows = data.users || [];
           visitorsCount = Number(data.visitors_count || 0);
-          renderRows(allRows);
           renderStats(allRows);
+          renderRows(allRows);
+          renderTrialRows(
+            allRows.filter((user) =>
+              String(user.tariff || "").toLowerCase().includes("бесплат"),
+            ),
+          );
         })
         .catch(() => {
           body.innerHTML =
             '<tr><td colspan="8" class="loader">Не удалось загрузить данные</td></tr>';
+          trialBody.innerHTML =
+            '<tr><td colspan="6" class="loader">Не удалось загрузить данные</td></tr>';
         });
 
       if (!tgId) {
         body.innerHTML =
           '<tr><td colspan="8" class="loader">Не удалось определить Telegram ID</td></tr>';
+        trialBody.innerHTML =
+          '<tr><td colspan="6" class="loader">Не удалось определить Telegram ID</td></tr>';
       }
-
-      searchInput.addEventListener("input", applySearch);
     </script>
   </body>
 </html>

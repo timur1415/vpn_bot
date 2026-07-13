@@ -71,6 +71,7 @@ async def tariffs_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
             media=open("photo/chill.jpg", "rb"),
             caption=(
                 "<b>Тарифы и цены</b>\n\n"
+                "• 3 дня бесплатно (один раз на пользователя)\n"
                 "• 7 дней - 59 руб.\n"
                 "• 1 месяц - 199 руб.\n"
                 "• 3 месяца - 499 руб.\n"

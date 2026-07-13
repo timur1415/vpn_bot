@@ -14,23 +14,9 @@ from server.routes.payment_routes import router as payment_router
 
 from config.config import WEBHOOK_URL, TELEGRAM_WEBHOOK_PATH, SECRET_TOKEN, ADMIN_ID
 
-from db.db import init_db, list_paid_users, mark_paid_user_warning, mark_paid_user_expired, save_payment
-from server.payment_client import create_payment
+from db.db import init_db, list_paid_users, mark_paid_user_warning, mark_paid_user_expired
 
 logger = logging.getLogger(__name__)
-def _tariff_amount(tariff: str) -> int | None:
-    tariff_lower = tariff.lower()
-    if "7 дней" in tariff_lower:
-        return 59
-    if "1 месяц" in tariff_lower:
-        return 199
-    if "3 месяца" in tariff_lower:
-        return 499
-    if "6 месяцев" in tariff_lower:
-        return 899
-    if "12 месяцев" in tariff_lower:
-        return 1499
-    return None
 
 
 async def _send_subscription_reminders(app: FastAPI):
@@ -71,40 +57,29 @@ async def _send_subscription_reminders(app: FastAPI):
                     ):
                         continue
 
-                    amount = _tariff_amount(paid_user.tariff)
-                    if amount is None:
-                        logger.warning("Unknown tariff for renewal link: %s", paid_user.tariff)
-                        continue
-
-                    payment = await asyncio.to_thread(
-                        create_payment,
-                        amount,
-                        paid_user.telegram_id,
-                        f"{paid_user.tariff} (продление)",
-                    )
-
-                    payment_url = payment.get("url") or payment.get("redirect")
-                    transaction_id = str(payment.get("id") or payment.get("transaction_id") or payment.get("transactionId", ""))
-                    if transaction_id:
-                        await save_payment(
-                            transaction_id=transaction_id,
-                            telegram_id=paid_user.telegram_id,
-                            tariff=paid_user.tariff,
-                            amount=amount,
-                        )
-
                     days_text = "сегодня" if days_left == 0 else f"через {days_left} дн."
-                    keyboard = None
-                    if payment_url:
-                        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("💳 Продлить подписку", url=payment_url)]])
+                    keyboard = InlineKeyboardMarkup(
+                        [[InlineKeyboardButton("💳 Продлить подписку", callback_data="tariffs")]]
+                    )
                     await app.state.bot_app.bot.send_message(
                         chat_id=paid_user.telegram_id,
                         text=(
                             f"⚠️ Подписка заканчивается {days_text}\n"
                             f"Тариф: {paid_user.tariff}"
-                            + ("" if payment_url else "\n\nСсылка на продление временно недоступна")
                         ),
                         reply_markup=keyboard,
+                    )
+
+                    await app.state.bot_app.bot.send_message(
+                        chat_id=ADMIN_ID,
+                        text=(
+                            "⚠️ Подписка скоро закончится\n"
+                            f"ID: {paid_user.telegram_id}\n"
+                            f"Username: {f'@{paid_user.username}' if paid_user.username else '-'}\n"
+                            f"Тариф: {paid_user.tariff}\n"
+                            f"Осталось: {days_text}\n"
+                            f"Дата окончания: {paid_user.expires_at}"
+                        ),
                     )
 
                     await mark_paid_user_warning(paid_user.telegram_id, days_left)

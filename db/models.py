@@ -51,3 +51,11 @@ class BotVisitor(Base):
     visits_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     first_seen_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     last_seen_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+class FreeTrialUsage(Base):
+    __tablename__ = "free_trial_usages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    telegram_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    used_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

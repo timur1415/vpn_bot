@@ -3,7 +3,8 @@ from telegram.ext import ContextTypes
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 
 from server.payment_client import create_payment
-from db.db import save_payment
+from db.db import save_payment, has_used_free_trial, activate_free_trial, get_paid_user
+from config.config import ADMIN_ID
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +21,11 @@ TARIFFS = {
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+    user_id = update.effective_user.id
+    free_trial_used = await has_used_free_trial(user_id)
 
     keyboard = [
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days")]]),
         [InlineKeyboardButton("🗓 7 дней - 59 руб.", callback_data="buy_7days")],
         [InlineKeyboardButton("📅 1 месяц - 199 руб.", callback_data="buy_1month")],
         [InlineKeyboardButton("🧭 3 месяца - 499 руб.", callback_data="buy_3month")],
@@ -48,8 +52,53 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    tariff = TARIFFS[query.data]
     user_id = update.effective_user.id
+    username = update.effective_user.username
+
+    if query.data == "buy_free3days":
+        activated = await activate_free_trial(user_id, username=username)
+
+        if activated:
+            try:
+                paid_user = await get_paid_user(user_id)
+                await context.bot.send_message(
+                    chat_id=ADMIN_ID,
+                    text=(
+                        "🎁 Активирован бесплатный тариф\n"
+                        f"ID: {user_id}\n"
+                        f"Username: {f'@{username}' if username else '-'}\n"
+                        "Тариф: 3 дня бесплатно\n"
+                        f"Действует до: {paid_user.expires_at if paid_user else '-'}"
+                    ),
+                )
+            except Exception as notify_exc:
+                logger.error("Failed to notify admin about free trial activation: %s", notify_exc)
+
+            await query.edit_message_caption(
+                caption=(
+                    "🎁 Пробный тариф активирован\n\n"
+                    "Вы получили 3 дня бесплатного доступа к VPN.\n"
+                    "После окончания пробного периода можно выбрать любой платный тариф."
+                ),
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+                    [InlineKeyboardButton("💳 К тарифам", callback_data="buy")],
+                ]),
+            )
+        else:
+            await query.edit_message_caption(
+                caption=(
+                    "⚠️ Пробный тариф уже использован\n\n"
+                    "Бесплатный доступ на 3 дня можно активировать только один раз."
+                ),
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("💳 Выбрать платный тариф", callback_data="buy")],
+                    [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+                ]),
+            )
+        return
+
+    tariff = TARIFFS[query.data]
 
     payment = create_payment(
         amount=tariff["amount"],

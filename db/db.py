@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import func, select, text
+from sqlalchemy.exc import IntegrityError
 
 DATABASE_URL = "sqlite+aiosqlite:///vpn_bot.db"
 
@@ -409,3 +410,62 @@ async def get_bot_visitors_count() -> int:
     async with AsyncSessionLocal() as session:
         result = await session.execute(select(func.count(BotVisitor.id)))
         return int(result.scalar_one() or 0)
+
+
+async def has_used_free_trial(telegram_id: int) -> bool:
+    from db.models import FreeTrialUsage
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(FreeTrialUsage).where(FreeTrialUsage.telegram_id == telegram_id)
+        )
+        return result.scalar_one_or_none() is not None
+
+
+async def activate_free_trial(telegram_id: int, username: str | None = None) -> bool:
+    from db.models import FreeTrialUsage, PaidUser
+
+    async with AsyncSessionLocal() as session:
+        used = FreeTrialUsage(telegram_id=telegram_id)
+        session.add(used)
+        try:
+            await session.flush()
+        except IntegrityError:
+            await session.rollback()
+            return False
+
+        now = datetime.utcnow()
+        expires_at = now + timedelta(days=3)
+
+        paid_user_result = await session.execute(
+            select(PaidUser).where(PaidUser.telegram_id == telegram_id)
+        )
+        paid_user = paid_user_result.scalar_one_or_none()
+
+        if paid_user is None:
+            paid_user = PaidUser(
+                telegram_id=telegram_id,
+                username=username,
+                tariff="3 дня бесплатно",
+                status="ACTIVE",
+                started_at=now,
+                expires_at=expires_at,
+                warned_3_at=None,
+                warned_2_at=None,
+                warned_1_at=None,
+                warned_0_at=None,
+            )
+            session.add(paid_user)
+        else:
+            paid_user.username = username
+            paid_user.tariff = "3 дня бесплатно"
+            paid_user.status = "ACTIVE"
+            paid_user.started_at = now
+            paid_user.expires_at = expires_at
+            paid_user.warned_3_at = None
+            paid_user.warned_2_at = None
+            paid_user.warned_1_at = None
+            paid_user.warned_0_at = None
+
+        await session.commit()
+        return True
