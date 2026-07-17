@@ -6,10 +6,11 @@ from fastapi.responses import FileResponse
 
 from config.config import ADMIN_ID
 from db.db import (
+    delete_all_expired_paid_users,
+    delete_paid_user_if_expired,
+    delete_user_data_by_telegram_id,
     get_bot_visitors_count,
     list_paid_users,
-    delete_paid_user_if_expired,
-    delete_all_expired_paid_users,
 )
 
 router = APIRouter()
@@ -69,8 +70,14 @@ async def admin_delete_all_expired_users(request: Request):
 
 
 @router.delete("/admin/api/users/{telegram_id}")
-async def admin_delete_expired_user(telegram_id: int, request: Request):
+async def admin_delete_expired_user(telegram_id: int, request: Request, force: bool = False):
     _check_admin(request)
+
+    if force:
+        deleted = await delete_user_data_by_telegram_id(telegram_id)
+        if sum(deleted.values()) == 0:
+            raise HTTPException(status_code=404, detail="Пользователь не найден")
+        return {"ok": True, "force": True, "deleted": deleted}
 
     deleted = await delete_paid_user_if_expired(telegram_id)
     if not deleted:

@@ -420,6 +420,53 @@ async def delete_all_expired_paid_users() -> int:
         return len(expired_users)
 
 
+async def delete_user_data_by_telegram_id(telegram_id: int) -> dict[str, int]:
+    from db.models import BotVisitor, FreeTrialUsage, PaidUser, Payment
+
+    async with AsyncSessionLocal() as session:
+        deleted = {
+            "payments": 0,
+            "paid_users": 0,
+            "free_trial_usages": 0,
+            "bot_visitors": 0,
+        }
+
+        payment_result = await session.execute(
+            select(Payment).where(Payment.telegram_id == telegram_id)
+        )
+        payments = payment_result.scalars().all()
+        for payment in payments:
+            await session.delete(payment)
+        deleted["payments"] = len(payments)
+
+        paid_user_result = await session.execute(
+            select(PaidUser).where(PaidUser.telegram_id == telegram_id)
+        )
+        paid_user = paid_user_result.scalar_one_or_none()
+        if paid_user:
+            await session.delete(paid_user)
+            deleted["paid_users"] = 1
+
+        free_trial_result = await session.execute(
+            select(FreeTrialUsage).where(FreeTrialUsage.telegram_id == telegram_id)
+        )
+        free_trial = free_trial_result.scalar_one_or_none()
+        if free_trial:
+            await session.delete(free_trial)
+            deleted["free_trial_usages"] = 1
+
+        visitor_result = await session.execute(
+            select(BotVisitor).where(BotVisitor.telegram_id == telegram_id)
+        )
+        visitor = visitor_result.scalar_one_or_none()
+        if visitor:
+            await session.delete(visitor)
+            deleted["bot_visitors"] = 1
+
+        await session.commit()
+        return deleted
+
+
 async def register_bot_visit(
     telegram_id: int,
     username: str | None = None,

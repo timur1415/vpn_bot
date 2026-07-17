@@ -586,10 +586,7 @@
             const startedAt = formatDateTime(user.started_at);
             const expiresAt = formatDateTime(user.expires_at);
             const createdAt = formatDateTime(user.created_at);
-            const canDelete = user.status === "EXPIRED" || (typeof user.days_left === "number" && user.days_left < 0);
-            const actionsCell = canDelete
-              ? `<button class="delete-btn" data-telegram-id="${user.telegram_id}">Удалить</button>`
-              : "-";
+            const actionsCell = `<button class="delete-btn" data-telegram-id="${user.telegram_id}">Удалить из БД</button>`;
             return `
                     <tr>
                         <td>${user.telegram_id}</td>
@@ -686,11 +683,11 @@
         const telegramId = button.getAttribute("data-telegram-id");
         if (!telegramId) return;
 
-        const approved = window.confirm(`Удалить пользователя ${telegramId} из БД?`);
+        const approved = window.confirm(`Удалить пользователя ${telegramId} из БД полностью?`);
         if (!approved) return;
 
         button.disabled = true;
-        fetch(`/admin/api/users/${telegramId}?${apiParams.toString()}`, {
+        fetch(`/admin/api/users/${telegramId}?${apiParams.toString()}&force=true`, {
           method: "DELETE",
         })
           .then(async (response) => {
