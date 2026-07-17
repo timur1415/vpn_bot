@@ -371,6 +371,55 @@ async def mark_paid_user_expired(telegram_id: int) -> bool:
         return False
 
 
+async def delete_paid_user_if_expired(telegram_id: int) -> bool:
+    from db.models import PaidUser
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(PaidUser).where(PaidUser.telegram_id == telegram_id)
+        )
+        paid_user = result.scalar_one_or_none()
+        if not paid_user:
+            return False
+
+        now_date = datetime.utcnow().date()
+        is_expired = (
+            paid_user.status == "EXPIRED"
+            or (paid_user.expires_at is not None and paid_user.expires_at.date() < now_date)
+        )
+        if not is_expired:
+            return False
+
+        await session.delete(paid_user)
+        await session.commit()
+        return True
+
+
+async def delete_all_expired_paid_users() -> int:
+    from db.models import PaidUser
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(PaidUser))
+        users = result.scalars().all()
+
+        now_date = datetime.utcnow().date()
+        expired_users = [
+            user
+            for user in users
+            if user.status == "EXPIRED"
+            or (user.expires_at is not None and user.expires_at.date() < now_date)
+        ]
+
+        if not expired_users:
+            return 0
+
+        for user in expired_users:
+            await session.delete(user)
+
+        await session.commit()
+        return len(expired_users)
+
+
 async def register_bot_visit(
     telegram_id: int,
     username: str | None = None,

@@ -5,7 +5,12 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 
 from config.config import ADMIN_ID
-from db.db import get_bot_visitors_count, list_paid_users
+from db.db import (
+    get_bot_visitors_count,
+    list_paid_users,
+    delete_paid_user_if_expired,
+    delete_all_expired_paid_users,
+)
 
 router = APIRouter()
 ADMIN_TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "admin.html"
@@ -53,3 +58,25 @@ async def admin_users(request: Request):
         )
 
     return {"users": payload, "visitors_count": visitors_count}
+
+
+@router.delete("/admin/api/users/{telegram_id}")
+async def admin_delete_expired_user(telegram_id: int, request: Request):
+    _check_admin(request)
+
+    deleted = await delete_paid_user_if_expired(telegram_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=400,
+            detail="Можно удалить только пользователя с истекшей подпиской",
+        )
+
+    return {"ok": True}
+
+
+@router.delete("/admin/api/users/expired")
+async def admin_delete_all_expired_users(request: Request):
+    _check_admin(request)
+
+    deleted_count = await delete_all_expired_paid_users()
+    return {"ok": True, "deleted_count": deleted_count}
