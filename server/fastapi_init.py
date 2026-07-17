@@ -14,7 +14,13 @@ from server.routes.payment_routes import router as payment_router
 
 from config.config import WEBHOOK_URL, TELEGRAM_WEBHOOK_PATH, SECRET_TOKEN, ADMIN_ID
 
-from db.db import init_db, list_paid_users, mark_paid_user_warning, mark_paid_user_expired
+from db.db import (
+    init_db,
+    list_paid_users,
+    mark_paid_user_warning,
+    mark_paid_user_expired,
+    delete_paid_user_if_expired,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +37,20 @@ async def _send_subscription_reminders(app: FastAPI):
                         continue
 
                     days_left = (paid_user.expires_at.date() - now.date()).days
+
+                    if days_left <= -3:
+                        deleted_now = await delete_paid_user_if_expired(paid_user.telegram_id)
+                        if deleted_now:
+                            await app.state.bot_app.bot.send_message(
+                                chat_id=ADMIN_ID,
+                                text=(
+                                    "🗑 Пользователь удален из БД после окончания подписки\n"
+                                    f"ID: {paid_user.telegram_id}\n"
+                                    f"Тариф: {paid_user.tariff}\n"
+                                    f"Дата окончания: {paid_user.expires_at}"
+                                ),
+                            )
+                        continue
 
                     if days_left < 0:
                         expired_now = await mark_paid_user_expired(paid_user.telegram_id)
