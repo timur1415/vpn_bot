@@ -728,7 +728,7 @@
           if (!approved) return;
 
           deleteAllExpiredBtn.disabled = true;
-          fetch(`/admin/api/users/expired?${apiParams.toString()}`, {
+          fetch(`/admin/api/users/delete-expired?${apiParams.toString()}`, {
             method: "DELETE",
           })
             .then(async (response) => {

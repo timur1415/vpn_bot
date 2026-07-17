@@ -60,6 +60,14 @@ async def admin_users(request: Request):
     return {"users": payload, "visitors_count": visitors_count}
 
 
+@router.delete("/admin/api/users/delete-expired")
+async def admin_delete_all_expired_users(request: Request):
+    _check_admin(request)
+
+    deleted_count = await delete_all_expired_paid_users()
+    return {"ok": True, "deleted_count": deleted_count}
+
+
 @router.delete("/admin/api/users/{telegram_id}")
 async def admin_delete_expired_user(telegram_id: int, request: Request):
     _check_admin(request)
@@ -72,11 +80,3 @@ async def admin_delete_expired_user(telegram_id: int, request: Request):
         )
 
     return {"ok": True}
-
-
-@router.delete("/admin/api/users/expired")
-async def admin_delete_all_expired_users(request: Request):
-    _check_admin(request)
-
-    deleted_count = await delete_all_expired_paid_users()
-    return {"ok": True, "deleted_count": deleted_count}
