@@ -29,12 +29,15 @@ async def init_db():
             await conn.execute(text("ALTER TABLE payments ADD COLUMN paid_at DATETIME"))
         if "renew_at" not in columns:
             await conn.execute(text("ALTER TABLE payments ADD COLUMN renew_at DATETIME"))
+        if "device_count" not in columns:
+            await conn.execute(text("ALTER TABLE payments ADD COLUMN device_count INTEGER NOT NULL DEFAULT 1"))
 
         required_paid_users_columns = {
             "id",
             "telegram_id",
             "username",
             "tariff",
+            "device_count",
             "status",
             "started_at",
             "expires_at",
@@ -64,6 +67,7 @@ async def init_db():
                     telegram_id INTEGER NOT NULL UNIQUE,
                     username VARCHAR,
                     tariff VARCHAR NOT NULL,
+                    device_count INTEGER NOT NULL DEFAULT 1,
                     status VARCHAR NOT NULL DEFAULT 'ACTIVE',
                     started_at DATETIME,
                     expires_at DATETIME,
@@ -89,6 +93,7 @@ async def init_db():
                             telegram_id,
                             username,
                             tariff,
+                            device_count,
                             status,
                             started_at,
                             expires_at,
@@ -102,6 +107,7 @@ async def init_db():
                             telegram_id,
                             NULL,
                             COALESCE(current_tariff, ''),
+                            1,
                             COALESCE(current_status, 'ACTIVE'),
                             last_paid_at,
                             renew_at,
@@ -120,6 +126,7 @@ async def init_db():
                             telegram_id,
                             username,
                             tariff,
+                            device_count,
                             status,
                             started_at,
                             expires_at,
@@ -133,6 +140,7 @@ async def init_db():
                             telegram_id,
                             NULL,
                             tariff,
+                            1,
                             COALESCE(status, 'ACTIVE'),
                             started_at,
                             expires_at,
@@ -149,6 +157,8 @@ async def init_db():
 
         if "username" not in paid_users_columns and paid_users_columns:
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN username VARCHAR"))
+        if "device_count" not in paid_users_columns and paid_users_columns:
+            await conn.execute(text("ALTER TABLE paid_users ADD COLUMN device_count INTEGER NOT NULL DEFAULT 1"))
         if "warned_3_at" not in paid_users_columns and paid_users_columns:
             await conn.execute(text("ALTER TABLE paid_users ADD COLUMN warned_3_at DATETIME"))
         if "warned_2_at" not in paid_users_columns and paid_users_columns:
@@ -202,7 +212,7 @@ def _renew_days_from_tariff(tariff: str) -> int | None:
     return None
 
 
-async def save_payment(transaction_id: str, telegram_id: int, tariff: str, amount: int) -> None:
+async def save_payment(transaction_id: str, telegram_id: int, tariff: str, amount: int, device_count: int = 1) -> None:
     from db.models import Payment
     async with AsyncSessionLocal() as session:
         payment = Payment(
@@ -210,6 +220,7 @@ async def save_payment(transaction_id: str, telegram_id: int, tariff: str, amoun
             telegram_id=telegram_id,
             tariff=tariff,
             amount=amount,
+            device_count=device_count,
             status="PENDING",
         )
         session.add(payment)
@@ -273,6 +284,7 @@ async def upsert_paid_user_from_payment(transaction_id: str, username: str | Non
                 telegram_id=payment.telegram_id,
                 username=username,
                 tariff=payment.tariff,
+                device_count=getattr(payment, "device_count", 1) or 1,
                 status="ACTIVE",
                 started_at=paid_at,
                 expires_at=payment.renew_at,
@@ -286,6 +298,7 @@ async def upsert_paid_user_from_payment(transaction_id: str, username: str | Non
             if username is not None:
                 paid_user.username = username
             paid_user.tariff = payment.tariff
+            paid_user.device_count = getattr(payment, "device_count", 1) or 1
             paid_user.status = "ACTIVE"
             paid_user.started_at = paid_at
             paid_user.expires_at = payment.renew_at
@@ -518,7 +531,11 @@ async def has_used_free_trial(telegram_id: int) -> bool:
         return result.scalar_one_or_none() is not None
 
 
-async def activate_free_trial(telegram_id: int, username: str | None = None) -> bool:
+async def activate_free_trial(
+    telegram_id: int,
+    username: str | None = None,
+    device_count: int = 1,
+) -> bool:
     from db.models import FreeTrialUsage, PaidUser
 
     async with AsyncSessionLocal() as session:
@@ -537,12 +554,14 @@ async def activate_free_trial(telegram_id: int, username: str | None = None) -> 
             select(PaidUser).where(PaidUser.telegram_id == telegram_id)
         )
         paid_user = paid_user_result.scalar_one_or_none()
+        device_count = max(1, int(device_count or 1))
 
         if paid_user is None:
             paid_user = PaidUser(
                 telegram_id=telegram_id,
                 username=username,
                 tariff="3 дня бесплатно",
+                device_count=device_count,
                 status="ACTIVE",
                 started_at=now,
                 expires_at=expires_at,
@@ -555,6 +574,7 @@ async def activate_free_trial(telegram_id: int, username: str | None = None) -> 
         else:
             paid_user.username = username
             paid_user.tariff = "3 дня бесплатно"
+            paid_user.device_count = device_count
             paid_user.status = "ACTIVE"
             paid_user.started_at = now
             paid_user.expires_at = expires_at

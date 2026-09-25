@@ -1,10 +1,11 @@
 import logging
-from telegram.ext import ContextTypes
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 
-from server.payment_client import create_payment
-from db.db import save_payment, has_used_free_trial, activate_free_trial, get_paid_user
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
+from telegram.ext import ContextTypes
+
 from config.config import ADMIN_ID
+from db.db import activate_free_trial, get_paid_user, has_used_free_trial, save_payment
+from server.payment_client import create_payment
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,21 @@ TARIFFS = {
     "buy_3month": {"title": "3 месяца - 499 руб.", "amount": 499},
     "buy_6month": {"title": "6 месяцев - 899 руб.", "amount": 899},
     "buy_12month": {"title": "12 месяцев - 1499 руб.", "amount": 1499},
+    "buy_7days_1config": {"title": "7 дней - 99 руб.", "amount": 99},
+    "buy_1month_1config": {"title": "1 месяц - 349 руб.", "amount": 349},
+    "buy_3month_1config": {"title": "3 месяца - 899 руб.", "amount": 899},
+    "buy_6month_1config": {"title": "6 месяцев - 1599 руб.", "amount": 1599},
+    "buy_12month_1config": {"title": "12 месяцев - 2699 руб.", "amount": 2699},
+    "buy_7days_2config": {"title": "7 дней - 99 руб.", "amount": 99},
+    "buy_1month_2config": {"title": "1 месяц - 349 руб.", "amount": 349},
+    "buy_3month_2config": {"title": "3 месяца - 899 руб.", "amount": 899},
+    "buy_6month_2config": {"title": "6 месяцев - 1599 руб.", "amount": 1599},
+    "buy_12month_2config": {"title": "12 месяцев - 2699 руб.", "amount": 2699},
+    "buy_7days_3config": {"title": "7 дней - 139 руб.", "amount": 139},
+    "buy_1month_3config": {"title": "1 месяц - 499 руб.", "amount": 499},
+    "buy_3month_3config": {"title": "3 месяца - 1299 руб.", "amount": 1299},
+    "buy_6month_3config": {"title": "6 месяцев - 2299 руб.", "amount": 2299},
+    "buy_12month_3config": {"title": "12 месяцев - 3899 руб.", "amount": 3899},
 }
 
 
@@ -55,7 +71,27 @@ FREE_TRIAL_INFO_TEXT = (
 )
 
 
-async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def how_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    keyboard = [[InlineKeyboardButton("1 устройство 🔧", callback_data="1_config")],
+                [InlineKeyboardButton("2 устройства 🔧", callback_data="2_config")],
+                [InlineKeyboardButton("3 устройства 🔧", callback_data="3_config")],
+                [InlineKeyboardButton("В главное меню 🏠", callback_data="main_menu")]]
+
+    await query.edit_message_media(
+        media=InputMediaPhoto(
+            media=open("photo/chill.jpg", "rb"),
+            caption="<b>Выберите количество устройств</b>\n\nВыберите, сколько устройств нужно подключить к VPN.",
+            parse_mode="HTML",
+        ),
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+
+
+
+async def buy_1_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
@@ -63,7 +99,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     free_trial_used = await has_used_free_trial(user_id)
 
     keyboard = [
-        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days")]]),
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_1")]]),
         [InlineKeyboardButton("🗓 7 дней - 59 руб.", callback_data="buy_7days")],
         [InlineKeyboardButton("📅 1 месяц - 199 руб.", callback_data="buy_1month")],
         [InlineKeyboardButton("🧭 3 месяца - 499 руб.", callback_data="buy_3month")],
@@ -86,6 +122,68 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def buy_2_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    user_id = update.effective_user.id
+    free_trial_used = await has_used_free_trial(user_id)
+
+    keyboard = [
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_2")]]),
+        [InlineKeyboardButton("🗓 7 дней - 99 руб.", callback_data="buy_7days_2config")],
+        [InlineKeyboardButton("📅 1 месяц - 349 руб.", callback_data="buy_1month_2config")],
+        [InlineKeyboardButton("🧭 3 месяца - 899 руб.", callback_data="buy_3month_2config")],
+        [InlineKeyboardButton("🛫 6 месяцев - 1599 руб.", callback_data="buy_6month_2config")],
+        [InlineKeyboardButton("🏆 12 месяцев - 2699 руб.", callback_data="buy_12month_2config")],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+    ]
+
+    await query.edit_message_media(
+        media=InputMediaPhoto(
+            media=open("photo/chill.jpg", "rb"),
+            caption=(
+                "<b>Выберите тарифный план</b>\n\n"
+                "Ниже собраны все доступные варианты.\n"
+                "После выбора вы получите кнопку для оплаты."
+            ),
+            parse_mode="HTML",
+        ),
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+
+async def buy_3_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    user_id = update.effective_user.id
+    free_trial_used = await has_used_free_trial(user_id)
+
+    keyboard = [
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_3")]]),
+        [InlineKeyboardButton("🗓 7 дней - 139 руб.", callback_data="buy_7days_3config")],
+        [InlineKeyboardButton("📅 1 месяц - 499 руб.", callback_data="buy_1month_3config")],
+        [InlineKeyboardButton("🧭 3 месяца - 1299 руб.", callback_data="buy_3month_3config")],
+        [InlineKeyboardButton("🛫 6 месяцев - 2299 руб.", callback_data="buy_6month_3config")],
+        [InlineKeyboardButton("🏆 12 месяцев - 3899 руб.", callback_data="buy_12month_3config")],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+    ]
+
+    await query.edit_message_media(
+        media=InputMediaPhoto(
+            media=open("photo/chill.jpg", "rb"),
+            caption=(
+                "<b>Выберите тарифный план</b>\n\n"
+                "Ниже собраны все доступные варианты.\n"
+                "После выбора вы получите кнопку для оплаты."
+            ),
+            parse_mode="HTML",
+        ),
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+
+
+
 async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -93,10 +191,16 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     username = update.effective_user.username
 
-    if query.data == "buy_free3days":
-        activated = await activate_free_trial(user_id, username=username)
+    if query.data.startswith("buy_free3days"):
+        device_count = 1
+        if query.data.endswith("_2"):
+            device_count = 2
+        elif query.data.endswith("_3"):
+            device_count = 3
 
-        if activated:
+        activated = await activate_free_trial(user_id, username=username, device_count=device_count)
+
+        if activated: 
             try:
                 paid_user = await get_paid_user(user_id)
                 await context.bot.send_message(
@@ -106,6 +210,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f"ID: {user_id}\n"
                         f"Username: {f'@{username}' if username else '-'}\n"
                         "Тариф: 3 дня бесплатно\n"
+                        f"Устройств: {getattr(paid_user, 'device_count', device_count) or device_count}\n"
                         f"Действует до: {paid_user.expires_at if paid_user else '-'}"
                     ),
                 )
@@ -134,6 +239,13 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     tariff = TARIFFS[query.data]
+    device_count = 1
+    if query.data.endswith("_1config"):
+        device_count = 1
+    elif query.data.endswith("_2config"):
+        device_count = 2
+    elif query.data.endswith("_3config"):
+        device_count = 3
 
     payment = create_payment(
         amount=tariff["amount"],
@@ -151,6 +263,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 telegram_id=user_id,
                 tariff=tariff["title"],
                 amount=tariff["amount"],
+                device_count=device_count,
             )
         except Exception as e:
             logger.error("Failed to save payment to DB: %s", e)

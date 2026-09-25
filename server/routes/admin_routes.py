@@ -51,6 +51,7 @@ async def admin_users(request: Request):
                 "username": user.username,
                 "tariff": user.tariff,
                 "status": user.status,
+                "device_count": getattr(user, "device_count", 1) or 1,
                 "started_at": user.started_at.isoformat(sep=" ") if user.started_at else None,
                 "expires_at": user.expires_at.isoformat(sep=" ") if user.expires_at else None,
                 "days_left": days_left,

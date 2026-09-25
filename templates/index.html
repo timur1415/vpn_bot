@@ -296,6 +296,10 @@
                     <div class="side-label">Тариф</div>
                     <div style="font-size: 26px; font-weight: 800; line-height: 1.05;" id="activeTariff">--</div>
                 </div>
+                <div>
+                    <div class="side-label">Устройств</div>
+                    <div style="font-size: 26px; font-weight: 800; line-height: 1.05;" id="deviceCount">--</div>
+                </div>
             </aside>
         </section>
 
@@ -313,6 +317,13 @@
                             <b id="subStatus">Нет данных</b>
                         </div>
                         <span class="badge badge-warn" id="subBadge">Ожидание</span>
+                    </div>
+                    <div class="sub-row">
+                        <div>
+                            <small>Устройств</small>
+                            <b id="deviceCountRow">--</b>
+                        </div>
+                        <span class="muted">device_count</span>
                     </div>
                     <div class="sub-row">
                         <div>
@@ -381,6 +392,8 @@
 
         const el = {
             activeTariff: document.getElementById('activeTariff'),
+            deviceCount: document.getElementById('deviceCount'),
+            deviceCountRow: document.getElementById('deviceCountRow'),
             daysLeft: document.getElementById('daysLeft'),
             badgeStatus: document.getElementById('badgeStatus'),
             subStatus: document.getElementById('subStatus'),
@@ -493,6 +506,8 @@
 
             if (!user) {
                 el.activeTariff.textContent = 'Нет подписки';
+                el.deviceCount.textContent = '--';
+                el.deviceCountRow.textContent = '--';
                 el.daysLeft.textContent = '--';
                 el.subStatus.textContent = 'Подписка не найдена';
                 el.startedAt.textContent = '--';
@@ -505,7 +520,10 @@
                 return;
             }
 
+            const deviceCount = Number(user.device_count || 1);
             el.activeTariff.textContent = user.tariff || '--';
+            el.deviceCount.textContent = String(deviceCount);
+            el.deviceCountRow.textContent = String(deviceCount);
             el.daysLeft.textContent = daysLabel(user.days_left);
             el.subStatus.textContent = user.status === 'ACTIVE' ? 'Активна' : (user.status === 'EXPIRED' ? 'Истекла' : 'Нет данных');
             el.startedAt.textContent = formatDate(user.started_at);

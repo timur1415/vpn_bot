@@ -1,26 +1,24 @@
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from datetime import datetime
 import asyncio
 import logging
+from contextlib import asynccontextmanager
+from datetime import datetime
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from fastapi import FastAPI
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 from bot_init import create_aplication
-from server.routes.admin_routes import router as admin_router
-from server.routes.cabinet_routes import router as cabinet_router
-from server.routes.telegram_routes import router as telegram_router
-from server.routes.payment_routes import router as payment_router
-
-from config.config import WEBHOOK_URL, TELEGRAM_WEBHOOK_PATH, SECRET_TOKEN, ADMIN_ID
-
+from config.config import ADMIN_ID, SECRET_TOKEN, TELEGRAM_WEBHOOK_PATH, WEBHOOK_URL
 from db.db import (
+    delete_paid_user_if_expired,
     init_db,
     list_paid_users,
-    mark_paid_user_warning,
     mark_paid_user_expired,
-    delete_paid_user_if_expired,
+    mark_paid_user_warning,
 )
+from server.routes.admin_routes import router as admin_router
+from server.routes.cabinet_routes import router as cabinet_router
+from server.routes.payment_routes import router as payment_router
+from server.routes.telegram_routes import router as telegram_router
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +77,7 @@ async def _send_subscription_reminders(app: FastAPI):
 
                     days_text = "сегодня" if days_left == 0 else f"через {days_left} дн."
                     keyboard = InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("💳 Продлить подписку", callback_data="tariffs")]]
+                        [[InlineKeyboardButton("💳 Продлить подписку", callback_data="buy")]]
                     )
                     await app.state.bot_app.bot.send_message(
                         chat_id=paid_user.telegram_id,

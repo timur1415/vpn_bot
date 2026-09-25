@@ -16,6 +16,7 @@ class Payment(Base):
 
     tariff: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    device_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
 
     status: Mapped[str] = mapped_column(String, default="PENDING")
 
@@ -31,6 +32,7 @@ class PaidUser(Base):
     telegram_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     username: Mapped[str | None] = mapped_column(String, nullable=True)
     tariff: Mapped[str] = mapped_column(String, nullable=False)
+    device_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     status: Mapped[str] = mapped_column(String, default="ACTIVE", nullable=False)
     started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

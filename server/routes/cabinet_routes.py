@@ -48,6 +48,7 @@ async def cabinet_profile(request: Request):
             "telegram_id": paid_user.telegram_id,
             "username": paid_user.username,
             "tariff": paid_user.tariff,
+            "device_count": getattr(paid_user, "device_count", 1) or 1,
             "status": paid_user.status,
             "started_at": paid_user.started_at.isoformat(sep=" ") if paid_user.started_at else None,
             "expires_at": paid_user.expires_at.isoformat(sep=" ") if paid_user.expires_at else None,

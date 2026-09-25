@@ -1,28 +1,28 @@
 import logging
+
 from telegram.ext import (
     ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    filters,
-    ConversationHandler,
     CallbackQueryHandler,
+    CommandHandler,
+    ConversationHandler,
+    MessageHandler,
     PicklePersistence,
+    filters,
 )
 
 from config.config import TOKEN
-
 from config.states import MAIN_MENU, REVIEWS
-
-from reviews.reviews import finish_review, reviews_handler
-from handlers.start import start
-
-from handlers.why import why_vpn
-
-from handlers.buy import buy, buy_callback
+from handlers.buy import (
+    buy_1_config,
+    buy_2_config,
+    buy_3_config,
+    buy_callback,
+    how_config,
+)
 from handlers.info import legal_docs, support_contacts, tariffs_info
-
-from reviews.reviews import leave_review
-
+from handlers.start import start
+from handlers.why import why_vpn
+from reviews.reviews import finish_review, leave_review, reviews_handler
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -39,7 +39,10 @@ async def create_aplication():
         entry_points=[CommandHandler("start", start)],
         states={
             MAIN_MENU: [
-                CallbackQueryHandler(buy, pattern="^buy$"),
+                CallbackQueryHandler(how_config, pattern="^buy$"),
+                CallbackQueryHandler(buy_1_config, pattern="^1_config$"),
+                CallbackQueryHandler(buy_2_config, pattern="^2_config$"),
+                CallbackQueryHandler(buy_3_config, pattern="^3_config$"),
                 CallbackQueryHandler(buy_callback, pattern="^buy_"),
                 CallbackQueryHandler(tariffs_info, pattern="^tariffs$"),
                 CallbackQueryHandler(why_vpn, pattern="^why_vpn$"),

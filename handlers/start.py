@@ -1,13 +1,13 @@
 import html
 
-from telegram.ext import ContextTypes
 from telegram import (
-    Update,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputMediaPhoto,
+    Update,
     WebAppInfo,
 )
+from telegram.ext import ContextTypes
 
 from config.config import ADMIN_ID, WEBHOOK_URL
 from config.states import MAIN_MENU

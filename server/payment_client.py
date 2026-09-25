@@ -1,11 +1,13 @@
 import json
+
 import requests
+
 from config.config import (
+    BASE_URL,
     MERCHANT_ID,
+    PAYMENT_CALLBACK_URL,
     SECRET_KEY,
     WEBHOOK_URL,
-    BASE_URL,
-    PAYMENT_CALLBACK_URL,
 )
 
 

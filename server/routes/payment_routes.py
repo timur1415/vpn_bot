@@ -1,4 +1,5 @@
 import logging
+
 from fastapi import APIRouter, Request
 
 from config.config import ADMIN_ID, MERCHANT_ID, SECRET_KEY
@@ -53,6 +54,13 @@ async def payment_callback(request: Request):
     if status == "CONFIRMED" and status_updated:
         bot_app = request.app.state.bot_app
         try:
+            payment = await get_payment(str(transaction_id))
+            if not payment:
+                logger.warning("Payment disappeared after confirmation: %s", transaction_id)
+                return {"status": "ok"}
+
+            device_count = int(getattr(payment, "device_count", 1) or 1)
+
             user_name = "-"
             username = None
             try:
@@ -72,6 +80,7 @@ async def payment_callback(request: Request):
                     f"Имя: {user_name or '-'}\n"
                     f"Username: {f'@{username}' if username else '-'}\n"
                     f"Тариф: {payment.tariff}\n"
+                    f"Устройств: {device_count}\n"
                     f"Сумма: {payment.amount} RUB\n"
                     f"Оплачено: {payment.paid_at or '-'}\n"
                     f"Продлить до: {payment.renew_at or '-'}"
@@ -82,7 +91,8 @@ async def payment_callback(request: Request):
                 chat_id=payment.telegram_id,
                 text=(
                     f"✅ Оплата прошла успешно!\n"
-                    f"Тариф: {payment.tariff}\n\n"
+                    f"Тариф: {payment.tariff}\n"
+                    f"Устройств: {device_count}\n\n"
                     f"Спасибо за покупку! Ваш VPN-ключ будет отправлен в ближайшее время."
                 ),
             )
