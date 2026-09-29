@@ -13,18 +13,18 @@ async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton(
-                "👀 Посмотреть отзывы", url="https://t.me/+WUxKV7A4n601MTVi"
+                "👀 Посмотреть отзывы", url="https://t.me/+WUxKV7A4n601MTVi", style='primary'
             )
         ],
-        [InlineKeyboardButton("✍️ Оставить отзыв", callback_data="leave_review")],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        [InlineKeyboardButton("✍️ Оставить отзыв", callback_data="leave_review", style='success')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
 
     markup = InlineKeyboardMarkup(keyboard)
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Отзывы наших клиентов</b>\n\n"
                 "Присоединяйтесь к числу довольных пользователей и оставьте свой отзыв.\n"
@@ -45,7 +45,7 @@ async def leave_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Оставить отзыв</b>\n\n"
                 "Напишите свой отзыв одним сообщением.\n"
@@ -74,7 +74,7 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_id=chat_id,
                 message_id=message_id,
                 media=InputMediaPhoto(
-                    media=open("photo/chill.jpg", "rb"),
+                    media=open("photo/rkn.jpg", "rb"),
                     caption=(
                         "<b>Спасибо за ваш отзыв!</b>\n\n"
                         "Мы ценим ваше мнение и будем работать над улучшением сервиса."
@@ -86,7 +86,7 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
-                photo=open("photo/chill.jpg", "rb"),
+                photo=open("photo/rkn.jpg", "rb"),
                 caption=(
                     "<b>Спасибо за ваш отзыв!</b>\n\n"
                     "Мы ценим ваше мнение и будем работать над улучшением сервиса."

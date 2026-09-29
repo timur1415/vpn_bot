@@ -207,33 +207,36 @@
       }
 
       .table-wrap {
-        border-radius: 16px;
-        border: 1px solid var(--line);
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         overflow: auto;
-        background: rgba(255, 255, 255, 0.86);
-        box-shadow: var(--shadow);
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 18px 48px rgba(8, 26, 46, 0.12);
         width: 100%;
+        backdrop-filter: blur(10px);
       }
 
       .table-actions {
         display: flex;
         justify-content: flex-end;
-        margin: 0 0 8px;
+        margin: 0 0 10px;
       }
 
       .bulk-delete-btn {
-        border: 1px solid rgba(213, 69, 69, 0.35);
-        background: rgba(213, 69, 69, 0.12);
-        color: #8f2626;
-        border-radius: 10px;
-        padding: 9px 12px;
+        border: 1px solid rgba(213, 69, 69, 0.3);
+        background: linear-gradient(135deg, rgba(213, 69, 69, 0.14), rgba(213, 69, 69, 0.22));
+        color: #8d2c2c;
+        border-radius: 12px;
+        padding: 10px 14px;
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
+        transition: transform 0.18s ease, filter 0.18s ease;
       }
 
       .bulk-delete-btn:hover {
-        background: rgba(213, 69, 69, 0.2);
+        transform: translateY(-1px);
+        filter: brightness(0.98);
       }
 
       .bulk-delete-btn:disabled {
@@ -248,19 +251,19 @@
       }
 
       .trial-wrap {
-        margin-top: 8px;
+        margin-top: 10px;
       }
 
       .hint-inline {
         color: var(--muted);
         font-size: 13px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 1040px;
+        min-width: 1120px;
       }
 
       th,
@@ -268,22 +271,27 @@
         padding: 12px 10px;
         border-bottom: 1px solid rgba(18, 53, 73, 0.08);
         text-align: left;
-        vertical-align: top;
+        vertical-align: middle;
         font-size: 14px;
       }
 
       th {
         position: sticky;
         top: 0;
-        background: rgba(231, 246, 250, 0.97);
+        background: rgba(231, 246, 250, 0.96);
         color: rgba(15, 40, 55, 0.72);
         text-transform: uppercase;
         letter-spacing: 0.04em;
         font-size: 11px;
+        font-weight: 700;
+      }
+
+      tbody tr {
+        transition: background 0.2s ease;
       }
 
       tbody tr:hover {
-        background: rgba(13, 142, 163, 0.06);
+        background: rgba(13, 142, 163, 0.05);
       }
 
       .badge {
@@ -294,6 +302,19 @@
         font-size: 12px;
         font-weight: 700;
         border: 1px solid rgba(18, 53, 73, 0.14);
+      }
+
+      .device-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        padding: 6px 8px;
+        border-radius: 10px;
+        background: rgba(13, 142, 163, 0.08);
+        border: 1px solid rgba(13, 142, 163, 0.15);
+        color: var(--text);
+        font-weight: 700;
       }
 
       .status-active {
@@ -330,10 +351,12 @@
         font-size: 12px;
         font-weight: 700;
         cursor: pointer;
+        transition: transform 0.18s ease, background 0.18s ease;
       }
 
       .delete-btn:hover {
-        background: rgba(213, 69, 69, 0.2);
+        background: rgba(213, 69, 69, 0.18);
+        transform: translateY(-1px);
       }
 
       .delete-btn:disabled {
@@ -409,6 +432,7 @@
               <th>Telegram ID</th>
               <th>Username</th>
               <th>Тариф</th>
+              <th>Устройств</th>
               <th>Статус</th>
               <th>Старт</th>
               <th>Окончание</th>
@@ -419,7 +443,7 @@
           </thead>
           <tbody id="usersBody">
             <tr>
-              <td colspan="9" class="loader">Загрузка...</td>
+              <td colspan="10" class="loader">Загрузка...</td>
             </tr>
           </tbody>
         </table>
@@ -456,6 +480,7 @@
               <tr>
                 <th>Telegram ID</th>
                 <th>Username</th>
+                <th>Устройств</th>
                 <th>Статус</th>
                 <th>Старт</th>
                 <th>Окончание</th>
@@ -464,7 +489,7 @@
             </thead>
             <tbody id="trialBody">
               <tr>
-                <td colspan="6" class="loader">Загрузка...</td>
+                <td colspan="7" class="loader">Загрузка...</td>
               </tr>
             </tbody>
           </table>
@@ -564,7 +589,7 @@
       function renderRows(users) {
         if (!users.length) {
           body.innerHTML =
-            '<tr><td colspan="9" class="loader">Пользователей пока нет</td></tr>';
+            '<tr><td colspan="10" class="loader">Пользователей пока нет</td></tr>';
           return;
         }
 
@@ -573,6 +598,7 @@
             const username = user.username
               ? `@${escapeHtml(user.username)}`
               : "-";
+            const deviceCount = Number(user.device_count || 1);
             const statusClass =
               user.status === "ACTIVE" ? "status-active" : "status-expired";
             const daysClass =
@@ -592,6 +618,7 @@
                         <td>${user.telegram_id}</td>
                         <td>${username}</td>
                         <td>${escapeHtml(user.tariff)}</td>
+                        <td><span class="device-badge">${deviceCount}</span></td>
                         <td><span class="badge ${statusClass}">${escapeHtml(user.status)}</span></td>
                         <td>${startedAt}</td>
                         <td>${expiresAt}</td>
@@ -607,9 +634,9 @@
       function loadUsers() {
         if (!tgId) {
           body.innerHTML =
-            '<tr><td colspan="9" class="loader">Не удалось определить Telegram ID</td></tr>';
+            '<tr><td colspan="10" class="loader">Не удалось определить Telegram ID</td></tr>';
           trialBody.innerHTML =
-            '<tr><td colspan="6" class="loader">Не удалось определить Telegram ID</td></tr>';
+            '<tr><td colspan="7" class="loader">Не удалось определить Telegram ID</td></tr>';
           return;
         }
 
@@ -631,16 +658,16 @@
           })
           .catch(() => {
             body.innerHTML =
-              '<tr><td colspan="9" class="loader">Не удалось загрузить данные</td></tr>';
+              '<tr><td colspan="10" class="loader">Не удалось загрузить данные</td></tr>';
             trialBody.innerHTML =
-              '<tr><td colspan="6" class="loader">Не удалось загрузить данные</td></tr>';
+              '<tr><td colspan="7" class="loader">Не удалось загрузить данные</td></tr>';
           });
       }
 
       function renderTrialRows(users) {
         if (!users.length) {
           trialBody.innerHTML =
-            '<tr><td colspan="6" class="loader">Пользователей с бесплатным тарифом пока нет</td></tr>';
+            '<tr><td colspan="7" class="loader">Пользователей с бесплатным тарифом пока нет</td></tr>';
           return;
         }
 
@@ -649,6 +676,7 @@
             const username = user.username
               ? `@${escapeHtml(user.username)}`
               : "-";
+            const deviceCount = Number(user.device_count || 1);
             const statusClass =
               user.status === "ACTIVE" ? "status-active" : "status-expired";
             const daysClass =
@@ -666,6 +694,7 @@
               <tr>
                 <td>${user.telegram_id}</td>
                 <td>${username}</td>
+                <td><span class="device-badge">${deviceCount}</span></td>
                 <td><span class="badge ${statusClass}">${escapeHtml(user.status)}</span></td>
                 <td>${startedAt}</td>
                 <td>${expiresAt}</td>

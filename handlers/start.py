@@ -24,14 +24,28 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     first_name = html.escape(update.effective_user.first_name or "пользователь")
     keyboard = [
-        [InlineKeyboardButton("🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP", web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"), style='primary')],
-        [InlineKeyboardButton("💳 Приобрести", callback_data="buy")],
-        [InlineKeyboardButton("💸 Тарифы и цены", callback_data="tariffs")],
-        [InlineKeyboardButton("🛡 Почему именно этот VPN?", callback_data="why_vpn")],
-        [InlineKeyboardButton("⭐ Отзывы", callback_data="reviews")],
-        [InlineKeyboardButton("📄 Документы", callback_data="legal_docs")],
-        [InlineKeyboardButton("🆘 Поддержка", callback_data="support")],
-    ]
+    [
+        InlineKeyboardButton(
+            "🧩 ЛИЧНЫЙ КАБИНЕТ · MINI APP",
+            web_app=WebAppInfo(
+                url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"
+            ),
+            style="primary"
+        )
+    ],
+    [
+        InlineKeyboardButton("💳 Приобрести", callback_data="buy", style="success"),
+        InlineKeyboardButton("💸 Тарифы и цены", callback_data="tariffs", style="success"),
+    ],
+    [
+        InlineKeyboardButton("🛡 Почему именно этот VPN?", callback_data="why_vpn", style="primary"),
+        InlineKeyboardButton("⭐ Отзывы", callback_data="reviews", style="primary"),
+    ],
+    [
+        InlineKeyboardButton("📄 Документы", callback_data="legal_docs", style="primary"),
+        InlineKeyboardButton("🆘 Поддержка", callback_data="support", style="danger"),
+    ],
+]
 
     if update.effective_user and update.effective_user.id == ADMIN_ID:
         keyboard.insert(
@@ -56,7 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.answer()
         await query.edit_message_media(
             media=InputMediaPhoto(
-                media=open("photo/chill.jpg", "rb"),
+                media=open("photo/rkn.jpg", "rb"),
                 caption=caption,
                 parse_mode="HTML",
             ),
@@ -65,7 +79,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            photo=open("photo/chill.jpg", "rb"),
+            photo=open("photo/rkn.jpg", "rb"),
             caption=caption,
             reply_markup=markup,
             parse_mode="HTML",

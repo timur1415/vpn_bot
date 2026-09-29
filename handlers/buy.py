@@ -75,14 +75,14 @@ async def how_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    keyboard = [[InlineKeyboardButton("1 устройство 🔧", callback_data="1_config")],
-                [InlineKeyboardButton("2 устройства 🔧", callback_data="2_config")],
-                [InlineKeyboardButton("3 устройства 🔧", callback_data="3_config")],
-                [InlineKeyboardButton("В главное меню 🏠", callback_data="main_menu")]]
+    keyboard = [[InlineKeyboardButton("1 устройство 🔧", callback_data="1_config", style="primary")],
+                [InlineKeyboardButton("2 устройства 🔧", callback_data="2_config", style="primary")],
+                [InlineKeyboardButton("3 устройства 🔧", callback_data="3_config", style="primary")],
+                [InlineKeyboardButton("В главное меню 🏠", callback_data="main_menu", style="danger")]]
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption="<b>Выберите количество устройств</b>\n\nВыберите, сколько устройств нужно подключить к VPN.",
             parse_mode="HTML",
         ),
@@ -110,7 +110,7 @@ async def buy_1_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"
@@ -130,18 +130,18 @@ async def buy_2_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
     free_trial_used = await has_used_free_trial(user_id)
 
     keyboard = [
-        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_2")]]),
-        [InlineKeyboardButton("🗓 7 дней - 99 руб.", callback_data="buy_7days_2config")],
-        [InlineKeyboardButton("📅 1 месяц - 349 руб.", callback_data="buy_1month_2config")],
-        [InlineKeyboardButton("🧭 3 месяца - 899 руб.", callback_data="buy_3month_2config")],
-        [InlineKeyboardButton("🛫 6 месяцев - 1599 руб.", callback_data="buy_6month_2config")],
-        [InlineKeyboardButton("🏆 12 месяцев - 2699 руб.", callback_data="buy_12month_2config")],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_2", style='primary')]]),
+        [InlineKeyboardButton("🗓 7 дней - 99 руб.", callback_data="buy_7days_2config", style='success')],
+        [InlineKeyboardButton("📅 1 месяц - 349 руб.", callback_data="buy_1month_2config", style='success')],
+        [InlineKeyboardButton("🧭 3 месяца - 899 руб.", callback_data="buy_3month_2config", style='success')],
+        [InlineKeyboardButton("🛫 6 месяцев - 1599 руб.", callback_data="buy_6month_2config", style='success')],
+        [InlineKeyboardButton("🏆 12 месяцев - 2699 руб.", callback_data="buy_12month_2config", style='success')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"
@@ -160,18 +160,18 @@ async def buy_3_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
     free_trial_used = await has_used_free_trial(user_id)
 
     keyboard = [
-        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_3")]]),
-        [InlineKeyboardButton("🗓 7 дней - 139 руб.", callback_data="buy_7days_3config")],
-        [InlineKeyboardButton("📅 1 месяц - 499 руб.", callback_data="buy_1month_3config")],
-        [InlineKeyboardButton("🧭 3 месяца - 1299 руб.", callback_data="buy_3month_3config")],
-        [InlineKeyboardButton("🛫 6 месяцев - 2299 руб.", callback_data="buy_6month_3config")],
-        [InlineKeyboardButton("🏆 12 месяцев - 3899 руб.", callback_data="buy_12month_3config")],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        *([] if free_trial_used else [[InlineKeyboardButton("🎁 3 дня бесплатно", callback_data="buy_free3days_3", style='primary')]]),
+        [InlineKeyboardButton("🗓 7 дней - 139 руб.", callback_data="buy_7days_3config", style='success')],
+        [InlineKeyboardButton("📅 1 месяц - 499 руб.", callback_data="buy_1month_3config", style='success')],
+        [InlineKeyboardButton("🧭 3 месяца - 1299 руб.", callback_data="buy_3month_3config", style='success')],
+        [InlineKeyboardButton("🛫 6 месяцев - 2299 руб.", callback_data="buy_6month_3config", style='success')],
+        [InlineKeyboardButton("🏆 12 месяцев - 3899 руб.", callback_data="buy_12month_3config", style='success')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"
@@ -246,8 +246,8 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "Бесплатный доступ на 3 дня можно активировать только один раз."
                 ),
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("💳 Выбрать платный тариф", callback_data="buy")],
-                    [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+                    [InlineKeyboardButton("💳 Выбрать платный тариф", callback_data="buy", style='success')],
+                    [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
                 ]),
             )
         return
@@ -283,8 +283,8 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.error("Failed to save payment to DB: %s", e)
 
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("💳 Оплатить", url=payment_url)],
-        [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy")],
+        [InlineKeyboardButton("💳 Оплатить", url=payment_url, style='success')],
+        [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy", style='primary')],
     ])
 
     await query.edit_message_caption(

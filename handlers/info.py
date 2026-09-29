@@ -11,15 +11,15 @@ async def legal_docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("🔐 Политика конфиденциальности", url=PRIVACY_POLICY_URL)],
-        [InlineKeyboardButton("📝 Пользовательское соглашение", url=USER_AGREEMENT_URL)],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        [InlineKeyboardButton("🔐 Политика конфиденциальности", url=PRIVACY_POLICY_URL, style='primary')],
+        [InlineKeyboardButton("📝 Пользовательское соглашение", url=USER_AGREEMENT_URL, style='primary')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
     markup = InlineKeyboardMarkup(keyboard)
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Юридическая информация</b>\n\n"
                 "• Политика конфиденциальности\n"
@@ -37,14 +37,14 @@ async def support_contacts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("💬 Написать в поддержку", url="https://t.me/i1i1i1iij")],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        [InlineKeyboardButton("💬 Написать в поддержку", url="https://t.me/i1i1i1iij", style='primary')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
     markup = InlineKeyboardMarkup(keyboard)
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Поддержка</b>\n\n"
                 "Telegram: @i1i1i1iij\n"
@@ -61,14 +61,14 @@ async def tariffs_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("💳 Приобрести", callback_data="buy")],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu")],
+        [InlineKeyboardButton("💳 Приобрести", callback_data="buy", style='success')],
+        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
     markup = InlineKeyboardMarkup(keyboard)
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Тарифы и цены</b>\n\n"
                 "• 3 дня бесплатно (один раз на пользователя)\n"

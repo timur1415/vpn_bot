@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from config.config import ADMIN_ID
 from db.db import (
@@ -15,6 +15,14 @@ from db.db import (
 
 router = APIRouter()
 ADMIN_TEMPLATE = Path(__file__).resolve().parents[2] / "templates" / "admin.html"
+
+
+def _no_cache_headers():
+    return {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
 
 
 def _check_admin(request: Request) -> None:
@@ -32,7 +40,7 @@ def _days_left(expires_at):
 @router.get("/admin")
 async def admin_page(request: Request):
     _check_admin(request)
-    return FileResponse(ADMIN_TEMPLATE)
+    return FileResponse(ADMIN_TEMPLATE, headers=_no_cache_headers())
 
 
 @router.get("/admin/api/users")
@@ -59,7 +67,10 @@ async def admin_users(request: Request):
             }
         )
 
-    return {"users": payload, "visitors_count": visitors_count}
+    return JSONResponse(
+        content={"users": payload, "visitors_count": visitors_count},
+        headers=_no_cache_headers(),
+    )
 
 
 @router.delete("/admin/api/users/delete-expired")

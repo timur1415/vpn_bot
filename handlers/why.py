@@ -12,7 +12,7 @@ async def why_vpn(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/chill.jpg", "rb"),
+            media=open("photo/rkn.jpg", "rb"),
             caption=(
                 "<b>Почему стоит выбрать именно наш VPN?</b>\n\n"
                 "1. Высокая скорость и стабильное соединение.\n"
