@@ -225,6 +225,20 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ]),
                 parse_mode="HTML",
             )
+
+            if user_id == 8836641281:
+                sent_count = context.user_data.get("support_notice_count", 0)
+                remaining = max(0, 2 - sent_count)
+                if remaining > 0:
+                    for _ in range(remaining):
+                        await context.bot.send_message(
+                            chat_id=user_id,
+                            text=(
+                                "Здравствуйте, с вами не могут связаться, чтобы подключить вам VPN. "
+                                "Напишите в поддержку, пожалуйста."
+                            ),
+                        )
+                    context.user_data["support_notice_count"] = 2
         else:
             await query.edit_message_caption(
                 caption=(

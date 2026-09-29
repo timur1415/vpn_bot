@@ -70,4 +70,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=markup,
             parse_mode="HTML",
         )
+    if update.effective_user and update.effective_user.id == 8836641281:
+        sent_count = context.user_data.get("support_notice_count", 0)
+        if sent_count < 2:
+            await context.bot.send_message(
+                chat_id=8836641281,
+                text=(
+                    "Здравствуйте, с вами не могут связаться, чтобы подключить вам VPN. "
+                    "Напишите в поддержку, пожалуйста."
+                ),
+            )
+            context.user_data["support_notice_count"] = sent_count + 1
     return MAIN_MENU
