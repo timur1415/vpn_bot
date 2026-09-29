@@ -36,7 +36,7 @@ TARIFFS = {
 
 PURCHASE_INFO_TEXT = (
     "🔐 maksud_vpn\n\n"
-    "После оплаты с вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
+    "После оплаты с вами свяжется менеджер(убедитесь что у вас есть возможность получать сообщения в Telegram и есть username) и отправит ключ для подключения к Amnezia VPN.\n\n"
     "📲 Скачайте приложение заранее:\n\n"
     "iPhone / iOS:\n"
     "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
@@ -55,7 +55,7 @@ PURCHASE_INFO_TEXT = (
 
 FREE_TRIAL_INFO_TEXT = (
     "🔐 maksud_vpn\n\n"
-    "Пробный тариф активирован на 3 дня. С вами свяжется менеджер и отправит ключ для подключения к Amnezia VPN.\n\n"
+    "Пробный тариф активирован на 3 дня. С вами свяжется менеджер(убедитесь что у вас есть возможность получать сообщения в Telegram и есть username) и отправит ключ для подключения к Amnezia VPN.\n\n"
     "📲 Скачайте приложение заранее:\n\n"
     "iPhone / iOS:\n"
     "https://apps.apple.com/us/app/amneziavpn/id1600529900\n\n"
