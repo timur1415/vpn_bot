@@ -70,7 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.answer()
         await query.edit_message_media(
             media=InputMediaPhoto(
-                media=open("photo/rkn.jpg", "rb"),
+                media=open("photo/flow.png", "rb"),
                 caption=caption,
                 parse_mode="HTML",
             ),
@@ -79,7 +79,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            photo=open("photo/rkn.jpg", "rb"),
+            photo=open("photo/flow.png", "rb"),
             caption=caption,
             reply_markup=markup,
             parse_mode="HTML",

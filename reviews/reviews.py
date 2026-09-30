@@ -24,7 +24,7 @@ async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Отзывы наших клиентов</b>\n\n"
                 "Присоединяйтесь к числу довольных пользователей и оставьте свой отзыв.\n"
@@ -45,7 +45,7 @@ async def leave_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Оставить отзыв</b>\n\n"
                 "Напишите свой отзыв одним сообщением.\n"
@@ -74,7 +74,7 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_id=chat_id,
                 message_id=message_id,
                 media=InputMediaPhoto(
-                    media=open("photo/rkn.jpg", "rb"),
+                    media=open("photo/flow.png", "rb"),
                     caption=(
                         "<b>Спасибо за ваш отзыв!</b>\n\n"
                         "Мы ценим ваше мнение и будем работать над улучшением сервиса."
@@ -86,7 +86,7 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
-                photo=open("photo/rkn.jpg", "rb"),
+                photo=open("photo/flow.png", "rb"),
                 caption=(
                     "<b>Спасибо за ваш отзыв!</b>\n\n"
                     "Мы ценим ваше мнение и будем работать над улучшением сервиса."

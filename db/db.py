@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
+from os import getenv
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
-DATABASE_URL = "sqlite+aiosqlite:///vpn_bot.db"
+DATABASE_URL = getenv("DATABASE_URL", "sqlite+aiosqlite:///vpn_bot.db")
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 

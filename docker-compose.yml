@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:////app/vpn_bot.db
     ports:
       - "8000:8000"
     volumes:

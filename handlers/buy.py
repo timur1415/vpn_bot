@@ -35,7 +35,7 @@ TARIFFS = {
 
 
 PURCHASE_INFO_TEXT = (
-    "🔐 maksud_vpn\n\n"
+    "🔐 flow vpn\n\n"
     "После оплаты с вами свяжется менеджер(убедитесь что у вас есть возможность получать сообщения в Telegram и есть username) и отправит ключ для подключения к Amnezia VPN.\n\n"
     "📲 Скачайте приложение заранее:\n\n"
     "iPhone / iOS:\n"
@@ -54,7 +54,7 @@ PURCHASE_INFO_TEXT = (
 
 
 FREE_TRIAL_INFO_TEXT = (
-    "🔐 maksud_vpn\n\n"
+    "🔐 flow vpn\n\n"
     "Пробный тариф активирован на 3 дня. С вами свяжется менеджер(убедитесь что у вас есть возможность получать сообщения в Telegram и есть username) и отправит ключ для подключения к Amnezia VPN.\n\n"
     "📲 Скачайте приложение заранее:\n\n"
     "iPhone / iOS:\n"
@@ -82,7 +82,7 @@ async def how_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption="<b>Выберите количество устройств</b>\n\nВыберите, сколько устройств нужно подключить к VPN.",
             parse_mode="HTML",
         ),
@@ -110,7 +110,7 @@ async def buy_1_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"
@@ -141,7 +141,7 @@ async def buy_2_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"
@@ -171,7 +171,7 @@ async def buy_3_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Выберите тарифный план</b>\n\n"
                 "Ниже собраны все доступные варианты.\n"

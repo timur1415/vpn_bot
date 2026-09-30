@@ -19,7 +19,7 @@ async def legal_docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Юридическая информация</b>\n\n"
                 "• Политика конфиденциальности\n"
@@ -44,7 +44,7 @@ async def support_contacts(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Поддержка</b>\n\n"
                 "Telegram: @i1i1i1iij\n"
@@ -68,7 +68,7 @@ async def tariffs_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_media(
         media=InputMediaPhoto(
-            media=open("photo/rkn.jpg", "rb"),
+            media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Тарифы и цены</b>\n\n"
                 "• 3 дня бесплатно (один раз на пользователя)\n"
