@@ -2,8 +2,10 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, InputMe
 from telegram.ext import ContextTypes
 
 
-PRIVACY_POLICY_URL = "https://telegra.ph/Politika-konfidencialnosti-06-21-31"
-USER_AGREEMENT_URL = "https://telegra.ph/Polzovatelskoe-soglashenie-04-01-19"
+PRIVACY_POLICY_URL = "https://telegra.ph/Politika-konfidencialnosti-09-30-168"
+USER_AGREEMENT_URL = "https://telegra.ph/Polzovatelskoe-soglashenie-09-30-50"
+SUPPORT_USERNAME = "@i1i1i1iij"
+SUPPORT_URL = f"https://t.me/{SUPPORT_USERNAME.replace('@', '')}"
 
 
 async def legal_docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -37,7 +39,7 @@ async def support_contacts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("💬 Написать в поддержку", url="https://t.me/i1i1i1iij", style='primary')],
+        [InlineKeyboardButton("💬 Написать в поддержку", url=SUPPORT_URL, style='primary')],
         [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
     ]
     markup = InlineKeyboardMarkup(keyboard)
@@ -47,7 +49,7 @@ async def support_contacts(update: Update, context: ContextTypes.DEFAULT_TYPE):
             media=open("photo/flow.png", "rb"),
             caption=(
                 "<b>Поддержка</b>\n\n"
-                "Telegram: @i1i1i1iij\n"
+                f"Telegram: {SUPPORT_USERNAME}\n"
                 "Формат связи: личные обращения в Telegram."
             ),
             parse_mode="HTML",
