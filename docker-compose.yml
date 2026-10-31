@@ -8,7 +8,7 @@ services:
     environment:
       DATABASE_URL: sqlite+aiosqlite:////app/vpn_bot.db
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./vpn_bot.db:/app/vpn_bot.db
       - ./photo:/app/photo
