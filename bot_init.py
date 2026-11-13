@@ -14,8 +14,8 @@ from config.config import TOKEN
 from config.states import MAIN_MENU, REVIEWS
 from handlers.buy import (
     buy_1_config,
-    buy_2_config,
     buy_3_config,
+    buy_8_config,
     buy_callback,
     how_config,
 )
@@ -41,8 +41,8 @@ async def create_aplication():
             MAIN_MENU: [
                 CallbackQueryHandler(how_config, pattern="^buy$"),
                 CallbackQueryHandler(buy_1_config, pattern="^1_config$"),
-                CallbackQueryHandler(buy_2_config, pattern="^2_config$"),
                 CallbackQueryHandler(buy_3_config, pattern="^3_config$"),
+                CallbackQueryHandler(buy_8_config, pattern="^8_config$"),
                 CallbackQueryHandler(buy_callback, pattern="^buy_"),
                 CallbackQueryHandler(tariffs_info, pattern="^tariffs$"),
                 CallbackQueryHandler(why_vpn, pattern="^why_vpn$"),
@@ -64,4 +64,3 @@ async def create_aplication():
 
     application.add_handler(conv_handler)
     return application
-
