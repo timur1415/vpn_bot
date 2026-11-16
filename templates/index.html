@@ -1,409 +1,521 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет VPN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>GLOW VPN · Кабинет</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-1: #281a61;
-            --bg-2: #40308f;
-            --bg-3: #7150db;
-            --panel: rgba(255, 255, 255, 0.10);
-            --panel-strong: rgba(255, 255, 255, 0.15);
-            --line: rgba(255, 255, 255, 0.12);
-            --text: #ffffff;
-            --muted: rgba(255, 255, 255, 0.74);
-            --blue: #7fc1ff;
-            --pink: #ff9ed8;
-            --green: #91f0b0;
-            --red: #ffb0b0;
-            --yellow: #ffe08a;
-            --shadow: 0 16px 36px rgba(20, 10, 50, 0.28);
-            --radius: 18px;
+            --bg: #07040f;
+            --bg-glow-1: rgba(139, 77, 255, 0.34);
+            --bg-glow-2: rgba(196, 120, 255, 0.16);
+            --surface: rgba(34, 19, 68, 0.42);
+            --surface-2: rgba(44, 26, 86, 0.62);
+            --border: rgba(178, 140, 255, 0.16);
+            --text: #f3eeff;
+            --muted: rgba(221, 206, 255, 0.6);
+            --faint: rgba(190, 160, 255, 0.12);
+            --accent: #9d6bff;
+            --accent-2: #d59bff;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #a66bff 55%, #d59bff 100%);
+            --neon: 0 0 22px rgba(157, 107, 255, 0.55);
+            --ok: #57e6a8;
+            --warn: #ffc35c;
+            --danger: #ff6b8e;
+            --info: #8fb2ff;
+            --shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --radius: 22px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { min-height: 100%; }
         body {
-            font-family: Inter, system-ui, sans-serif;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
             color: var(--text);
-            min-height: 100dvh;
             background:
-                radial-gradient(circle at 12% 10%, rgba(127, 193, 255, 0.35), transparent 18%),
-                radial-gradient(circle at 82% 12%, rgba(255, 158, 216, 0.28), transparent 16%),
-                radial-gradient(circle at 70% 82%, rgba(145, 240, 176, 0.16), transparent 16%),
-                linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image:
-                radial-gradient(circle, rgba(255,255,255,0.95) 0 1px, transparent 1.5px),
-                radial-gradient(circle, rgba(255,255,255,0.5) 0 1px, transparent 1.5px);
-            background-size: 120px 120px, 180px 180px;
-            background-position: 0 0, 40px 60px;
-            opacity: 0.35;
-            mix-blend-mode: screen;
+                radial-gradient(600px 380px at 0% -10%, var(--bg-glow-1), transparent 70%),
+                radial-gradient(520px 360px at 110% 20%, var(--bg-glow-2), transparent 70%),
+                var(--bg);
+            background-attachment: fixed;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .page {
-            width: 100%;
-            max-width: none;
-            min-height: 100dvh;
-            margin: 0;
-            padding: 8px;
-        }
-
-        .hero {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
             display: grid;
-            grid-template-columns: 1.45fr 0.9fr;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 14px;
         }
 
-        .panel {
-            background: var(--panel);
-            border: 1px solid var(--line);
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            animation: rise 0.45s cubic-bezier(.2,.8,.2,1) both;
+        }
+        .card:nth-child(2) { animation-delay: 0.05s; }
+        .card:nth-child(3) { animation-delay: 0.10s; }
+        .card:nth-child(4) { animation-delay: 0.15s; }
+        .card:nth-child(5) { animation-delay: 0.20s; }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: none; }
         }
 
-        .hero-main,
-        .hero-side,
-        .card {
-            padding: 14px;
-        }
-
-        .hero-main h1 {
-            font-size: clamp(30px, 4vw, 44px);
-            line-height: 1.02;
-            letter-spacing: -0.03em;
-            margin-bottom: 8px;
-        }
-
-        .hero-topline {
+        /* Header */
+        .top {
             display: flex;
-            justify-content: space-between;
-            gap: 10px;
             align-items: center;
-            margin-bottom: 12px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .screen-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.14);
-            color: var(--text);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .hero-main p {
-            color: var(--muted);
-            line-height: 1.6;
-            font-size: 14px;
-            max-width: 760px;
-        }
-
-        .hero-side {
-            display: grid;
             gap: 12px;
-            align-content: center;
+            padding: 4px 2px 2px;
         }
-
-        .side-label {
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 5px;
+        .avatar {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            display: grid; place-items: center;
+            font-weight: 800; font-size: 18px;
+            color: #fff;
+            background: var(--grad);
+            box-shadow: var(--neon);
+            flex-shrink: 0;
+            overflow: hidden;
+            margin-left: auto;
+            width: 38px; height: 38px; font-size: 15px;
         }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .hello { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+        .hello-sub { font-size: 13px; color: var(--muted); margin-top: 5px; }
 
-        .big-number {
-            font-size: 54px;
-            line-height: 1;
-            font-weight: 800;
-            letter-spacing: -0.04em;
-        }
-
-        .badge {
-            display: inline-flex;
+        /* Hero */
+        .hero {
+            padding: 22px 20px 20px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: url("data:image/webp;base64,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") center / cover no-repeat;
+            opacity: 0.32;
+            mix-blend-mode: screen;
+            -webkit-mask-image: radial-gradient(120% 100% at 25% 50%, #000 30%, transparent 85%);
+            mask-image: radial-gradient(120% 100% at 25% 50%, #000 30%, transparent 85%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 240px; height: 240px;
+            left: -60px; top: 50%;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--state-glow, rgba(157,107,255,0.35)), transparent 70%);
+            pointer-events: none;
+        }
+        .ring, .hero-info { z-index: 1; }
+
+        .ring {
+            --state: var(--accent);
+            position: relative;
+            width: 128px; height: 128px;
+        }
+        .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .ring .track { stroke: var(--faint); }
+        .ring .bar {
+            stroke: var(--state);
+            transition: stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1), stroke 0.3s;
+            filter: drop-shadow(0 0 7px var(--ring-glow, #9d6bff));
+        }
+        .ring-center {
+            position: absolute; inset: 0;
+            display: grid; place-content: center;
+            text-align: center;
+        }
+        .ring-num {
+            font-size: 38px; font-weight: 800;
+            letter-spacing: -0.04em; line-height: 1;
+        }
+        .ring-unit { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        .hero-info { display: grid; gap: 10px; position: relative; z-index: 1; min-width: 0; }
+        .hero-tariff {
+            font-size: 20px; font-weight: 700; line-height: 1.2;
+            letter-spacing: -0.01em;
+            overflow-wrap: anywhere;
+        }
+        .hero-until { font-size: 13px; color: var(--muted); }
+
+        .pill {
+            display: inline-flex; align-items: center; gap: 6px;
             width: fit-content;
-            padding: 8px 12px;
+            padding: 6px 11px;
             border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 12px; font-weight: 700;
+            background: color-mix(in srgb, var(--pill, var(--muted)) 16%, transparent);
+            color: var(--pill, var(--muted));
+        }
+        .pill::before {
+            content: "";
+            width: 7px; height: 7px; border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 25%, transparent);
+        }
+        .pill.ok { --pill: var(--ok); }
+        .pill.warn { --pill: var(--warn); }
+        .pill.danger { --pill: var(--danger); }
+        .pill.ok::before { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 25%, transparent); }
+            50% { box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 0%, transparent); }
         }
 
-        .badge-ok { color: #d6ffdf; background: rgba(145,240,176,0.16); }
-        .badge-warn { color: #ffe2a1; background: rgba(255,224,138,0.16); }
-        .badge-danger { color: #ffe0e0; background: rgba(255,176,176,0.16); }
+        /* Alert */
+        .alert {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px 14px;
+            align-items: center;
+            border-color: color-mix(in srgb, var(--alert-c) 35%, transparent);
+            background: color-mix(in srgb, var(--alert-c) 12%, var(--surface));
+        }
+        .alert[hidden] { display: none; }
+        .alert.warn { --alert-c: var(--warn); }
+        .alert.danger { --alert-c: var(--danger); }
+        .alert-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: grid; place-items: center;
+            background: color-mix(in srgb, var(--alert-c) 22%, transparent);
+            color: var(--alert-c);
+        }
+        .alert-title { font-weight: 700; font-size: 15px; }
+        .alert-text { font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+        .btn {
+            grid-column: 1 / -1;
+            appearance: none; border: 0;
+            border-radius: 14px;
+            padding: 13px 16px;
+            font: inherit; font-weight: 700; font-size: 14px;
+            color: #fff;
+            background: var(--grad);
+            box-shadow: 0 10px 26px -8px rgba(157, 107, 255, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: transform 0.15s, filter 0.15s;
+        }
+        .btn:active { transform: scale(0.98); filter: brightness(0.95); }
 
-        .grid {
+        /* Tiles */
+        .tiles {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .card h2 {
-            font-size: 20px;
-            line-height: 1.1;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 16px;
-        }
-
-        .subscription {
-            display: grid;
             gap: 10px;
         }
-
-        .sub-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: center;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 12px 14px;
-            background: rgba(255,255,255,0.08);
+        .tile {
+            padding: 14px 16px;
+            display: grid; gap: 10px;
         }
-
-        .sub-row small {
-            display: block;
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 4px;
+        .tile-head {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--muted); font-size: 12px; font-weight: 500;
         }
+        .tile-head svg { width: 16px; height: 16px; color: var(--accent-2); flex-shrink: 0; filter: drop-shadow(0 0 4px rgba(157,107,255,0.8)); }
+        .tile-value { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+        .tile-value small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 2px; }
 
-        .sub-row b {
-            font-size: 15px;
+        /* Payments */
+        .section { padding: 18px 16px 10px; }
+        .section-head {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 0 4px 10px;
         }
+        .section-head h2 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+        .section-head span { font-size: 12px; color: var(--muted); }
 
-        .section-title {
-            margin-bottom: 10px;
-        }
-
-        .section-title p {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 4px;
-        }
-
-        .list {
+        .pay {
             display: grid;
-            gap: 8px;
-        }
-
-        .row {
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 12px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            grid-template-columns: auto 1fr auto;
             gap: 12px;
-            background: rgba(255,255,255,0.08);
+            align-items: center;
+            padding: 12px 4px;
+            border-top: 1px solid var(--border);
         }
-
-        .row small {
-            display: block;
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 4px;
+        .pay:first-child { border-top: 0; }
+        .pay-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: grid; place-items: center;
+            background: color-mix(in srgb, var(--pay-c) 15%, transparent);
+            color: var(--pay-c);
         }
-
-        .row b { font-size: 14px; }
-
-        .pay-ok { color: var(--green); font-size: 13px; font-weight: 700; }
-        .pay-pending { color: #ffe2a1; font-size: 13px; font-weight: 700; }
-        .pay-expired { color: #ffb0b0; font-size: 13px; font-weight: 700; }
+        .pay-icon svg { width: 20px; height: 20px; }
+        .pay.ok { --pay-c: var(--ok); }
+        .pay.warn { --pay-c: var(--warn); }
+        .pay.danger { --pay-c: var(--danger); }
+        .pay-title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+        .pay-date { font-size: 12px; color: var(--muted); margin-top: 3px; }
+        .pay-right { text-align: right; }
+        .pay-amount { font-size: 15px; font-weight: 700; white-space: nowrap; }
+        .pay-status { font-size: 11px; font-weight: 700; color: var(--pay-c); margin-top: 3px; }
 
         .empty {
-            border: 1px dashed var(--line);
-            border-radius: 14px;
-            padding: 16px;
             text-align: center;
+            padding: 26px 12px 22px;
             color: var(--muted);
-            background: rgba(255,255,255,0.05);
+            font-size: 14px;
         }
+        .empty svg { width: 38px; height: 38px; opacity: 0.5; margin-bottom: 8px; }
 
-        .muted { color: var(--muted); }
+        /* Skeleton */
+        .sk {
+            display: inline-block;
+            height: 1em; width: 70%;
+            border-radius: 8px;
+            vertical-align: middle;
+            background: linear-gradient(90deg, var(--faint) 0%, color-mix(in srgb, var(--faint) 40%, transparent) 50%, var(--faint) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite linear;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
         .footer {
-            margin-top: 8px;
+            text-align: center;
+            font-size: 12px;
             color: var(--muted);
-            font-size: 13px;
-            text-align: right;
+            padding: 6px 0 0;
         }
 
-        @media (max-width: 980px) {
-            .hero,
-            .grid { grid-template-columns: 1fr; }
-            .stats,
-            .actions { grid-template-columns: 1fr; }
+        @media (max-width: 360px) {
+            .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+            .hero-info { justify-items: center; }
         }
 
-        @media (max-width: 640px) {
-            .page { padding: 6px; }
-            .hero-main,
-            .hero-side,
-            .card { padding: 14px; }
-            .hero-topline { flex-direction: column; align-items: flex-start; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
+
+        /* GLOW brand */
+        .brand {
+            font-family: Michroma, Inter, sans-serif;
+            font-size: 17px;
+            letter-spacing: 0.16em;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 10%, #c8afff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 10px rgba(157, 107, 255, 0.65));
+            white-space: nowrap;
+        }
+        .brand .o { position: relative; display: inline-block; }
+        .brand .o::after {
+            content: "\2726";
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -54%);
+            font-size: 0.42em;
+            letter-spacing: 0;
+            -webkit-text-fill-color: #fff;
+            color: #fff;
+        }
+        .brand small {
+            font-size: 0.56em;
+            letter-spacing: 0.42em;
+            margin-left: 6px;
+            -webkit-text-fill-color: var(--accent-2);
+            color: var(--accent-2);
+            vertical-align: middle;
+        }
+        .logo-img {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(190, 150, 255, 0.45);
+            box-shadow: 0 0 0 4px rgba(157, 107, 255, 0.12), 0 0 26px rgba(157, 107, 255, 0.6);
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(157, 107, 255, 0.12), 0 0 22px rgba(157, 107, 255, 0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(157, 107, 255, 0.18), 0 0 34px rgba(170, 120, 255, 0.8); }
+        }
+        .fireflies { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .fireflies i {
+            position: absolute;
+            width: 4px; height: 4px; border-radius: 50%;
+            background: #e2ccff;
+            box-shadow: 0 0 6px 2px rgba(180, 130, 255, 0.9), 0 0 16px 4px rgba(140, 80, 255, 0.5);
+            opacity: 0;
+            animation: drift var(--d, 14s) linear infinite, blink var(--b, 3s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s), var(--delay, 0s);
+        }
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(var(--dx, 30px), -110vh); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            40%, 60% { opacity: var(--o, 0.8); }
+        }
+        .page { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
     <main class="page">
-        <section class="hero">
-            <div class="panel hero-main">
-                <div class="hero-topline">
-                    <span>Telegram mini app</span>
-                    <span class="screen-badge" id="screenState">Полноэкранный режим</span>
-                </div>
-                <h1>Личный кабинет</h1>
-                <p>Тут видно только подписку и историю оплат. Лишние данные убраны, чтобы кабинет был проще и чище.</p>
+        <header class="top">
+            <img class="logo-img" src="data:image/webp;base64,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" alt="GLOW VPN">
+            <div>
+                <div class="brand">GL<span class="o">O</span>W<small>VPN</small></div>
+                <div class="hello-sub" id="hello">Личный кабинет</div>
             </div>
-            <aside class="panel hero-side">
-                <div>
-                    <div class="side-label">Статус подписки</div>
-                    <div class="badge badge-warn" id="badgeStatus">Ожидание данных</div>
+            <div class="avatar" id="avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            </div>
+        </header>
+
+        <section class="card hero" id="hero">
+            <div class="hero-bg" aria-hidden="true"></div>
+            <div class="ring" id="ring">
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#e2c4ff"/>
+                            <stop offset="0.5" stop-color="#a66bff"/>
+                            <stop offset="1" stop-color="#6d28d9"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
+                    <circle class="bar" id="ringBar" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73"/>
+                </svg>
+                <div class="ring-center">
+                    <div class="ring-num" id="daysNum">–</div>
+                    <div class="ring-unit" id="daysUnit">дней</div>
                 </div>
-                <div>
-                    <div class="side-label">Осталось дней</div>
-                    <div class="big-number" id="daysLeft">--</div>
-                </div>
-                <div>
-                    <div class="side-label">Тариф</div>
-                    <div style="font-size: 26px; font-weight: 800; line-height: 1.05;" id="activeTariff">--</div>
-                </div>
-                <div>
-                    <div class="side-label">Устройств</div>
-                    <div style="font-size: 26px; font-weight: 800; line-height: 1.05;" id="deviceCount">--</div>
-                </div>
-            </aside>
+            </div>
+            <div class="hero-info">
+                <span class="pill" id="statusPill">Загрузка</span>
+                <div class="hero-tariff" id="tariff"><span class="sk"></span></div>
+                <div class="hero-until" id="until"><span class="sk" style="width: 60%"></span></div>
+            </div>
         </section>
 
-        <section class="grid">
-            <article class="panel card">
-                <div class="section-title">
-                    <h2>Подписка</h2>
-                    <p>Срок действия и предупреждения</p>
-                </div>
-
-                <div class="subscription">
-                    <div class="sub-row">
-                        <div>
-                            <small>Статус</small>
-                            <b id="subStatus">Нет данных</b>
-                        </div>
-                        <span class="badge badge-warn" id="subBadge">Ожидание</span>
-                    </div>
-                    <div class="sub-row">
-                        <div>
-                            <small>Устройств</small>
-                            <b id="deviceCountRow">--</b>
-                        </div>
-                        <span class="muted">device_count</span>
-                    </div>
-                    <div class="sub-row">
-                        <div>
-                            <small>Начало</small>
-                            <b id="startedAt">--</b>
-                        </div>
-                        <span class="muted">started_at</span>
-                    </div>
-                    <div class="sub-row">
-                        <div>
-                            <small>Окончание</small>
-                            <b id="expiresAt">--</b>
-                        </div>
-                        <span class="muted">expires_at</span>
-                    </div>
-                    <div class="sub-row">
-                        <div>
-                            <small>Первое предупреждение</small>
-                            <b id="warn3At">--</b>
-                        </div>
-                        <span class="muted">warned_3_at</span>
-                    </div>
-                    <div class="sub-row">
-                        <div>
-                            <small>Повторные предупреждения</small>
-                            <b id="warnMoreAt">--</b>
-                        </div>
-                        <span class="muted">warned_2_at / warned_1_at</span>
-                    </div>
-                </div>
-            </article>
-
-            <article class="panel card">
-                <div class="section-title">
-                    <h2>История платежей</h2>
-                    <p><span id="paymentsCount">0 платежей</span></p>
-                </div>
-                <div class="list" id="paymentsList">
-                    <div class="empty">Платежи ещё не загружены</div>
-                </div>
-            </article>
-
+        <section class="card alert" id="alert" hidden>
+            <div class="alert-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <div>
+                <div class="alert-title" id="alertTitle"></div>
+                <div class="alert-text" id="alertText"></div>
+            </div>
+            <button class="btn" id="renewBtn" type="button">Продлить в боте</button>
         </section>
 
-        <div class="footer">Данные подгружаются из БД в реальном времени.</div>
+        <section class="tiles">
+            <div class="card tile">
+                <div class="tile-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+                    Устройства
+                </div>
+                <div class="tile-value" id="devices"><span class="sk"></span></div>
+            </div>
+            <div class="card tile">
+                <div class="tile-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+                    Статус
+                </div>
+                <div class="tile-value" id="statusText"><span class="sk"></span></div>
+            </div>
+            <div class="card tile">
+                <div class="tile-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                    Начало
+                </div>
+                <div class="tile-value" id="startedAt"><span class="sk"></span></div>
+            </div>
+            <div class="card tile">
+                <div class="tile-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>
+                    Окончание
+                </div>
+                <div class="tile-value" id="expiresAt"><span class="sk"></span></div>
+            </div>
+        </section>
+
+        <section class="card section">
+            <div class="section-head">
+                <h2>История платежей</h2>
+                <span id="paymentsCount"></span>
+            </div>
+            <div id="paymentsList">
+                <div class="pay"><div class="pay-icon"><span class="sk" style="width:20px"></span></div><div><span class="sk"></span></div><div></div></div>
+                <div class="pay"><div class="pay-icon"><span class="sk" style="width:20px"></span></div><div><span class="sk"></span></div><div></div></div>
+            </div>
+        </section>
+
+        <div class="footer">✦ GLOW VPN · защищённое соединение</div>
     </main>
 
     <script>
         const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        const root = document.documentElement;
+
+        function applyTheme() {
+            root.dataset.theme = 'dark';
+            if (tg) {
+                try { tg.setHeaderColor('#07040f'); } catch (e) {}
+                try { tg.setBackgroundColor('#07040f'); } catch (e) {}
+                try { tg.setBottomBarColor && tg.setBottomBarColor('#07040f'); } catch (e) {}
+            }
+        }
+
         if (tg) {
             tg.ready();
             tg.expand();
-            window.addEventListener('load', () => {
-                try { tg.expand(); } catch (error) {}
-            });
-            if (tg.setHeaderColor) tg.setHeaderColor('#281a61');
-            if (tg.setBackgroundColor) tg.setBackgroundColor('#281a61');
-            const screenState = document.getElementById('screenState');
-            if (screenState) screenState.textContent = 'Открыт на весь экран';
+            
         }
+        applyTheme();
+
+        (function spawnFireflies() {
+            const box = document.createElement('div');
+            box.className = 'fireflies';
+            box.setAttribute('aria-hidden', 'true');
+            for (let i = 0; i < 14; i++) {
+                const f = document.createElement('i');
+                const size = 2 + Math.random() * 3;
+                f.style.cssText = `left:${Math.random() * 100}%;top:${100 + Math.random() * 20}%;width:${size}px;height:${size}px;` +
+                    `--d:${12 + Math.random() * 14}s;--b:${2 + Math.random() * 3}s;--delay:${-Math.random() * 20}s;` +
+                    `--dx:${(Math.random() - 0.5) * 120}px;--o:${0.4 + Math.random() * 0.6}`;
+                box.appendChild(f);
+            }
+            document.body.prepend(box);
+        })();
 
         const params = new URLSearchParams(window.location.search);
         const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
         const tgId = params.get('tg_id') || (tgUser && tgUser.id ? String(tgUser.id) : '');
         const apiUrl = tgId ? `/cabinet/api/profile?tg_id=${encodeURIComponent(tgId)}` : null;
 
-        const el = {
-            activeTariff: document.getElementById('activeTariff'),
-            deviceCount: document.getElementById('deviceCount'),
-            deviceCountRow: document.getElementById('deviceCountRow'),
-            daysLeft: document.getElementById('daysLeft'),
-            badgeStatus: document.getElementById('badgeStatus'),
-            subStatus: document.getElementById('subStatus'),
-            subBadge: document.getElementById('subBadge'),
-            startedAt: document.getElementById('startedAt'),
-            expiresAt: document.getElementById('expiresAt'),
-            warn3At: document.getElementById('warn3At'),
-            warnMoreAt: document.getElementById('warnMoreAt'),
-            paymentsList: document.getElementById('paymentsList'),
-            paymentsCount: document.getElementById('paymentsCount'),
+        const $ = (id) => document.getElementById(id);
+        const CIRC = 2 * Math.PI * 52;
+
+        const icons = {
+            check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+            clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+            cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+            receipt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>',
         };
 
         function escapeHtml(value) {
@@ -415,130 +527,202 @@
                 .replaceAll("'", '&#39;');
         }
 
-        function formatDate(value) {
-            if (!value) return '--';
-            return String(value).replace('T', ' ').slice(0, 16);
+        function plural(n, one, few, many) {
+            const a = Math.abs(n) % 100;
+            const b = a % 10;
+            if (a > 10 && a < 20) return many;
+            if (b === 1) return one;
+            if (b >= 2 && b <= 4) return few;
+            return many;
         }
 
-        function daysLabel(daysLeft) {
-            if (daysLeft === null || daysLeft === undefined) return '--';
-            if (daysLeft < 0) return 'Истекла';
-            return `${daysLeft} дн.`;
+        // Сервер хранит время в UTC без зоны: "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        function parseDate(value) {
+            if (!value) return null;
+            const d = new Date(String(value).replace(' ', 'T').slice(0, 19) + 'Z');
+            return Number.isNaN(d.getTime()) ? null : d;
         }
 
-        function setStatus(status, daysLeft) {
-            const isActive = status === 'ACTIVE';
-            const isExpired = status === 'EXPIRED' || (typeof daysLeft === 'number' && daysLeft < 0);
-            if (isActive && typeof daysLeft === 'number' && daysLeft <= 3) {
-                el.badgeStatus.textContent = 'Скоро закончится';
-                el.badgeStatus.className = 'badge badge-warn';
-                el.subBadge.textContent = 'Внимание';
-                el.subBadge.className = 'badge badge-warn';
-                return;
+        function fmtDate(value, withTime) {
+            const d = parseDate(value);
+            if (!d) return '—';
+            const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+            if (withTime) Object.assign(opts, { hour: '2-digit', minute: '2-digit' });
+            return d.toLocaleString('ru-RU', opts).replace(' г.', '');
+        }
+
+        function fmtMoney(value) {
+            const n = Number(value);
+            if (Number.isFinite(n)) return `${n.toLocaleString('ru-RU')} ₽`;
+            return `${escapeHtml(value)} ₽`;
+        }
+
+        function setRing(fraction, state) {
+            const f = Math.max(0, Math.min(1, fraction));
+            const ring = $('ring');
+            const strokes = { ok: 'url(#ringGrad)', warn: 'var(--warn)', danger: 'var(--danger)', none: 'var(--muted)' };
+            const glows = { ok: '#9d6bff', warn: '#ffc35c', danger: '#ff6b8e', none: 'transparent' };
+            ring.style.setProperty('--state', strokes[state] || 'url(#ringGrad)');
+            ring.style.setProperty('--ring-glow', glows[state] || '#9d6bff');
+            $('hero').style.setProperty('--state-glow', state === 'none' ? 'transparent' : `color-mix(in srgb, ${glows[state]} 32%, transparent)`);
+            requestAnimationFrame(() => {
+                $('ringBar').style.strokeDashoffset = String(CIRC * (1 - f));
+            });
+        }
+
+        function setPill(text, state) {
+            const pill = $('statusPill');
+            pill.textContent = text;
+            pill.className = `pill ${state === 'none' ? '' : state}`;
+        }
+
+        function showAlert(state, title, text) {
+            const alert = $('alert');
+            alert.className = `card alert ${state}`;
+            $('alertTitle').textContent = title;
+            $('alertText').textContent = text;
+            alert.hidden = false;
+        }
+
+        function renderGreeting() {
+            if (!tgUser) return;
+            if (tgUser.first_name) $('hello').textContent = `Привет, ${tgUser.first_name}!`;
+            const avatar = $('avatar');
+            if (tgUser.photo_url) {
+                const img = document.createElement('img');
+                img.src = tgUser.photo_url;
+                img.alt = '';
+                img.onerror = () => img.remove();
+                avatar.replaceChildren(img);
+            } else if (tgUser.first_name) {
+                avatar.textContent = tgUser.first_name.trim().charAt(0).toUpperCase();
             }
-            if (isExpired) {
-                el.badgeStatus.textContent = 'Истекла';
-                el.badgeStatus.className = 'badge badge-danger';
-                el.subBadge.textContent = 'Нет доступа';
-                el.subBadge.className = 'badge badge-danger';
-                return;
+        }
+
+        function renderNoSubscription(message) {
+            $('daysNum').textContent = '0';
+            $('daysUnit').textContent = 'дней';
+            setRing(0, 'none');
+            setPill('Нет подписки', 'none');
+            $('tariff').textContent = 'Подписка не оформлена';
+            $('until').textContent = message || 'Выберите тариф в боте, чтобы подключиться';
+            $('devices').textContent = '—';
+            $('statusText').textContent = 'Не активна';
+            $('startedAt').textContent = '—';
+            $('expiresAt').textContent = '—';
+            showAlert('warn', 'Подключите VPN', 'Вернитесь в бот и выберите подходящий тариф — есть бесплатный пробный период.');
+            $('renewBtn').textContent = 'Выбрать тариф в боте';
+        }
+
+        function renderUser(user) {
+            const days = typeof user.days_left === 'number' ? user.days_left : null;
+            const expired = user.status === 'EXPIRED' || (days !== null && days < 0);
+            const soon = !expired && days !== null && days <= 3;
+            const state = expired ? 'danger' : (soon ? 'warn' : 'ok');
+
+            const shownDays = days === null ? 0 : Math.max(0, days);
+            $('daysNum').textContent = String(shownDays);
+            $('daysUnit').textContent = expired ? 'истекла' : plural(shownDays, 'день', 'дня', 'дней');
+
+            const start = parseDate(user.started_at);
+            const end = parseDate(user.expires_at);
+            let fraction = 0;
+            if (!expired && start && end && end > start) {
+                fraction = (end - Date.now()) / (end - start);
+            } else if (!expired && days !== null) {
+                fraction = Math.min(1, days / 30);
             }
-            if (isActive) {
-                el.badgeStatus.textContent = 'Активна';
-                el.badgeStatus.className = 'badge badge-ok';
-                el.subBadge.textContent = 'Активна';
-                el.subBadge.className = 'badge badge-ok';
-                return;
+            setRing(expired ? 0 : Math.max(fraction, 0.03), state);
+
+            setPill(expired ? 'Истекла' : (soon ? 'Скоро закончится' : 'Активна'), state);
+            $('tariff').textContent = user.tariff || 'Тариф';
+            $('until').textContent = end
+                ? `${expired ? 'Закончилась' : 'Действует до'} ${fmtDate(user.expires_at)}`
+                : '';
+
+            const devices = Number(user.device_count || 1);
+            $('devices').innerHTML = `${devices}<small>${plural(devices, 'устройство', 'устройства', 'устройств')}</small>`;
+            $('statusText').innerHTML = `${expired ? 'Не активна' : 'Активна'}<small>${expired ? 'доступ закрыт' : 'VPN работает'}</small>`;
+            $('startedAt').textContent = fmtDate(user.started_at);
+            $('expiresAt').textContent = fmtDate(user.expires_at);
+
+            if (expired) {
+                showAlert('danger', 'Подписка закончилась', 'Продлите её в боте, чтобы снова пользоваться VPN.');
+            } else if (soon) {
+                const left = days === 0 ? 'сегодня' : `через ${days} ${plural(days, 'день', 'дня', 'дней')}`;
+                showAlert('warn', `Подписка закончится ${left}`, 'Продлите заранее, чтобы VPN не отключился.');
             }
-            el.badgeStatus.textContent = 'Нет подписки';
-            el.badgeStatus.className = 'badge badge-warn';
-            el.subBadge.textContent = 'Ожидание';
-            el.subBadge.className = 'badge badge-warn';
         }
 
         function renderPayments(payments) {
+            const list = $('paymentsList');
             if (!payments.length) {
-                el.paymentsList.innerHTML = '<div class="empty">Платежей пока нет</div>';
-                el.paymentsCount.textContent = '0 платежей';
+                $('paymentsCount').textContent = '';
+                list.innerHTML = `<div class="empty">${icons.receipt}<div>Платежей пока нет</div></div>`;
                 return;
             }
-
-            el.paymentsCount.textContent = `${payments.length} платежей`;
-            el.paymentsList.innerHTML = payments.map(payment => {
-                const paidAt = payment.paid_at || payment.created_at;
-                const status = String(payment.status || '').toUpperCase();
-                let badgeClass = 'pay-pending';
-                let badgeText = payment.status || 'PENDING';
-                if (status === 'CONFIRMED') {
-                    badgeClass = 'pay-ok';
-                    badgeText = 'Оплачен';
-                } else if (status === 'EXPIRED') {
-                    badgeClass = 'pay-expired';
-                    badgeText = 'Истек';
-                }
+            $('paymentsCount').textContent = `${payments.length} ${plural(payments.length, 'платёж', 'платежа', 'платежей')}`;
+            list.innerHTML = payments.map((p) => {
+                const status = String(p.status || '').toUpperCase();
+                let cls = 'warn', label = 'Ожидает оплаты', icon = icons.clock;
+                if (status === 'CONFIRMED') { cls = 'ok'; label = 'Оплачен'; icon = icons.check; }
+                else if (status === 'EXPIRED') { cls = 'danger'; label = 'Истёк'; icon = icons.cross; }
                 return `
-                    <div class="row">
+                    <div class="pay ${cls}">
+                        <div class="pay-icon">${icon}</div>
                         <div>
-                            <small>${formatDate(paidAt)} · ${escapeHtml(payment.tariff)}</small>
-                            <b>${escapeHtml(payment.amount)} руб.</b>
+                            <div class="pay-title">${escapeHtml(p.tariff || 'Оплата')}</div>
+                            <div class="pay-date">${fmtDate(p.paid_at || p.created_at, true)}</div>
                         </div>
-                        <span class="${badgeClass}">${escapeHtml(badgeText)}</span>
-                    </div>
-                `;
+                        <div class="pay-right">
+                            <div class="pay-amount">${fmtMoney(p.amount)}</div>
+                            <div class="pay-status">${label}</div>
+                        </div>
+                    </div>`;
             }).join('');
         }
 
+        function renderError(text) {
+            setRing(0, 'none');
+            $('daysNum').textContent = '–';
+            setPill('Ошибка', 'danger');
+            $('tariff').textContent = 'Не удалось загрузить';
+            $('until').textContent = text;
+            ['devices', 'statusText', 'startedAt', 'expiresAt'].forEach((id) => { $(id).textContent = '—'; });
+            $('paymentsCount').textContent = '';
+            $('paymentsList').innerHTML = `<div class="empty">${icons.receipt}<div>Данные недоступны</div></div>`;
+        }
+
+        $('renewBtn').addEventListener('click', () => {
+            if (tg) {
+                try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('medium'); } catch (e) {}
+                tg.close();
+            }
+        });
+
         async function loadProfile() {
+            renderGreeting();
             if (!apiUrl) {
-                document.querySelector('.hero-main p').textContent = 'Не удалось определить Telegram ID. Открой кабинет из кнопки в боте.';
-                el.paymentsList.innerHTML = '<div class="empty">Нет данных для загрузки</div>';
+                renderError('Откройте кабинет кнопкой в боте');
                 return;
             }
-
             const response = await fetch(apiUrl, { headers: { 'Accept': 'application/json' } });
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
 
-            const user = data.user;
-            const payments = data.payments || [];
-
-            if (!user) {
-                el.activeTariff.textContent = 'Нет подписки';
-                el.deviceCount.textContent = '--';
-                el.deviceCountRow.textContent = '--';
-                el.daysLeft.textContent = '--';
-                el.subStatus.textContent = 'Подписка не найдена';
-                el.startedAt.textContent = '--';
-                el.expiresAt.textContent = '--';
-                el.warn3At.textContent = '--';
-                el.warnMoreAt.textContent = '--';
-                setStatus('NONE', null);
-                el.paymentsList.innerHTML = '<div class="empty">Подписка ещё не оформлена</div>';
-                el.paymentsCount.textContent = '0 платежей';
-                return;
+            if (!data.user) {
+                renderNoSubscription();
+            } else {
+                renderUser(data.user);
             }
-
-            const deviceCount = Number(user.device_count || 1);
-            el.activeTariff.textContent = user.tariff || '--';
-            el.deviceCount.textContent = String(deviceCount);
-            el.deviceCountRow.textContent = String(deviceCount);
-            el.daysLeft.textContent = daysLabel(user.days_left);
-            el.subStatus.textContent = user.status === 'ACTIVE' ? 'Активна' : (user.status === 'EXPIRED' ? 'Истекла' : 'Нет данных');
-            el.startedAt.textContent = formatDate(user.started_at);
-            el.expiresAt.textContent = formatDate(user.expires_at);
-            el.warn3At.textContent = formatDate(user.warned_3_at);
-            el.warnMoreAt.textContent = `${formatDate(user.warned_2_at)} / ${formatDate(user.warned_1_at)}`;
-            setStatus(user.status, user.days_left);
-
-            renderPayments(payments);
+            renderPayments(data.payments || []);
         }
 
         loadProfile().catch(() => {
-            document.querySelector('.hero-main p').textContent = 'Не удалось загрузить данные кабинета. Попробуй открыть его еще раз из бота.';
-            el.paymentsList.innerHTML = '<div class="empty">Данные недоступны</div>';
-            if (tg && tg.showAlert) tg.showAlert('Не удалось загрузить личный кабинет');
+            renderError('Попробуйте открыть кабинет ещё раз из бота');
+            if (tg && tg.showAlert) {
+                try { tg.showAlert('Не удалось загрузить личный кабинет'); } catch (e) {}
+            }
         });
     </script>
 </body>

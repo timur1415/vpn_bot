@@ -1,781 +1,890 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Админ-панель VPN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>GLOW VPN · Админ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet" />
     <style>
-      :root {
-        --bg-1: #0a1f2e;
-        --bg-2: #123549;
-        --bg-3: #1f4f62;
-        --paper: rgba(250, 255, 255, 0.9);
-        --panel: rgba(243, 252, 255, 0.88);
-        --panel-strong: rgba(229, 245, 250, 0.96);
-        --line: rgba(18, 53, 73, 0.14);
-        --text: #0f2837;
-        --muted: rgba(15, 40, 55, 0.62);
-        --accent: #0d8ea3;
-        --good: #0f8f5f;
-        --bad: #d54545;
-        --warn: #bb7b00;
-        --shadow: 0 18px 42px rgba(7, 31, 44, 0.16);
-        --radius: 20px;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        min-height: 100%;
-      }
-      body {
-        margin: 0;
-        min-height: 100dvh;
-        font-family: "IBM Plex Sans", system-ui, sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(
-            circle at 14% 8%,
-            rgba(71, 207, 230, 0.23),
-            transparent 24%
-          ),
-          radial-gradient(
-            circle at 84% 12%,
-            rgba(255, 211, 145, 0.22),
-            transparent 22%
-          ),
-          radial-gradient(
-            circle at 76% 82%,
-            rgba(101, 198, 154, 0.19),
-            transparent 20%
-          ),
-          linear-gradient(
-            160deg,
-            var(--bg-1) 0%,
-            var(--bg-2) 48%,
-            var(--bg-3) 100%
-          );
-        overflow-x: hidden;
-      }
-
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(
-          rgba(255, 255, 255, 0.04),
-          rgba(255, 255, 255, 0.01)
-        );
-      }
-
-      .wrap {
-        width: 100%;
-        max-width: none;
-        min-height: 100dvh;
-        margin: 0;
-        padding: 8px;
-      }
-
-      .table-first {
-        margin-bottom: 8px;
-      }
-
-      .hero {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 8px;
-      }
-
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(6px);
-        animation: rise-in 420ms ease both;
-      }
-
-      @keyframes rise-in {
-        from {
-          transform: translateY(10px);
-          opacity: 0;
+        :root {
+            --bg: #07040f;
+            --bg-glow-1: rgba(139, 77, 255, 0.34);
+            --bg-glow-2: rgba(196, 120, 255, 0.16);
+            --surface: rgba(34, 19, 68, 0.42);
+            --surface-2: rgba(44, 26, 86, 0.62);
+            --border: rgba(178, 140, 255, 0.16);
+            --text: #f3eeff;
+            --muted: rgba(221, 206, 255, 0.6);
+            --faint: rgba(190, 160, 255, 0.12);
+            --accent: #9d6bff;
+            --accent-2: #d59bff;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #a66bff 55%, #d59bff 100%);
+            --neon: 0 0 22px rgba(157, 107, 255, 0.55);
+            --ok: #57e6a8;
+            --warn: #ffc35c;
+            --danger: #ff6b8e;
+            --info: #8fb2ff;
+            --shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --radius: 22px;
         }
-        to {
-          transform: translateY(0);
-          opacity: 1;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { min-height: 100%; }
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(640px 400px at 0% -10%, var(--bg-glow-1), transparent 70%),
+                radial-gradient(520px 360px at 110% 10%, var(--bg-glow-2), transparent 70%),
+                var(--bg);
+            background-attachment: fixed;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
         }
-      }
 
-      .hero-main,
-      .card {
-        padding: 14px;
-      }
+        button { font: inherit; color: inherit; }
 
-      .hero-main h1 {
-        margin: 0 0 8px;
-        font-size: clamp(28px, 4vw, 42px);
-        line-height: 1.05;
-        letter-spacing: -0.03em;
-        font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
-      }
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 16px 16px calc(28px + env(safe-area-inset-bottom));
+            display: grid;
+            gap: 14px;
+        }
 
-      .hero-main p,
-      .subtitle,
-      .hint,
-      .small-note,
-      .footer-note,
-      .section-label,
-      .topline {
-        color: var(--muted);
-      }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
 
-      .hero-main p {
-        max-width: 760px;
-        line-height: 1.55;
-        font-size: 14px;
-      }
+        /* Header */
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 2px 0;
+        }
+        .top-text { flex: 1; min-width: 0; }
+        .top h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+        .top p { font-size: 13px; color: var(--muted); margin-top: 5px; }
+        .icon-btn {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: grid; place-items: center;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .icon-btn:active { transform: scale(0.94); }
+        .icon-btn.spin svg { animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-      .topline {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 14px;
-        font-size: 13px;
-      }
-
-      .screen-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(13, 142, 163, 0.12);
-        border: 1px solid rgba(13, 142, 163, 0.25);
-        color: var(--text);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 8px;
-      }
-
-      .stat {
-        padding: 14px;
-        border-radius: 16px;
-        background: var(--panel-strong);
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow);
-      }
-
-      .stat small {
-        display: block;
-        color: var(--muted);
-        margin-bottom: 8px;
-        font-size: 12px;
-      }
-
-      .stat strong {
-        display: block;
-        font-size: 30px;
-        line-height: 1;
-      }
-
-      .good {
-        color: var(--good);
-      }
-      .bad {
-        color: var(--bad);
-      }
-      .warn {
-        color: var(--warn);
-      }
-
-      .table-wrap {
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        overflow: auto;
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 18px 48px rgba(8, 26, 46, 0.12);
-        width: 100%;
-        backdrop-filter: blur(10px);
-      }
-
-      .table-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin: 0 0 10px;
-      }
-
-      .bulk-delete-btn {
-        border: 1px solid rgba(213, 69, 69, 0.3);
-        background: linear-gradient(135deg, rgba(213, 69, 69, 0.14), rgba(213, 69, 69, 0.22));
-        color: #8d2c2c;
-        border-radius: 12px;
-        padding: 10px 14px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 0.18s ease, filter 0.18s ease;
-      }
-
-      .bulk-delete-btn:hover {
-        transform: translateY(-1px);
-        filter: brightness(0.98);
-      }
-
-      .bulk-delete-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .section-title {
-        margin: 0 0 10px;
-        font-size: 18px;
-        letter-spacing: -0.01em;
-      }
-
-      .trial-wrap {
-        margin-top: 10px;
-      }
-
-      .hint-inline {
-        color: var(--muted);
-        font-size: 13px;
-        margin-bottom: 12px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 1120px;
-      }
-
-      th,
-      td {
-        padding: 12px 10px;
-        border-bottom: 1px solid rgba(18, 53, 73, 0.08);
-        text-align: left;
-        vertical-align: middle;
-        font-size: 14px;
-      }
-
-      th {
-        position: sticky;
-        top: 0;
-        background: rgba(231, 246, 250, 0.96);
-        color: rgba(15, 40, 55, 0.72);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-size: 11px;
-        font-weight: 700;
-      }
-
-      tbody tr {
-        transition: background 0.2s ease;
-      }
-
-      tbody tr:hover {
-        background: rgba(13, 142, 163, 0.05);
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 700;
-        border: 1px solid rgba(18, 53, 73, 0.14);
-      }
-
-      .device-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 34px;
-        padding: 6px 8px;
-        border-radius: 10px;
-        background: rgba(13, 142, 163, 0.08);
-        border: 1px solid rgba(13, 142, 163, 0.15);
-        color: var(--text);
-        font-weight: 700;
-      }
-
-      .status-active {
-        background: rgba(15, 143, 95, 0.14);
-        color: #0c6e49;
-      }
-      .status-expired {
-        background: rgba(213, 69, 69, 0.13);
-        color: #9b2f2f;
-      }
-      .days-ok {
-        color: var(--good);
-        font-weight: 700;
-      }
-      .days-warn {
-        color: var(--warn);
-        font-weight: 700;
-      }
-      .days-bad {
-        color: var(--bad);
-        font-weight: 700;
-      }
-
-      .row-actions {
-        min-width: 132px;
-      }
-
-      .delete-btn {
-        border: 1px solid rgba(213, 69, 69, 0.35);
-        background: rgba(213, 69, 69, 0.12);
-        color: #8f2626;
-        border-radius: 10px;
-        padding: 8px 10px;
-        font-size: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: transform 0.18s ease, background 0.18s ease;
-      }
-
-      .delete-btn:hover {
-        background: rgba(213, 69, 69, 0.18);
-        transform: translateY(-1px);
-      }
-
-      .delete-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .loader {
-        padding: 26px;
-        text-align: center;
-        color: var(--muted);
-      }
-
-      .footer-note {
-        margin-top: 12px;
-        font-size: 13px;
-        text-align: right;
-        color: var(--muted);
-      }
-
-      @media (max-width: 980px) {
+        /* Stats */
         .stats {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 10px;
         }
-      }
-
-      @media (max-width: 640px) {
-        .wrap {
-          padding: 6px;
-        }
-        .hero-main,
-        .card,
         .stat {
-          padding: 12px;
+            appearance: none;
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s, border-color 0.2s;
+            animation: rise 0.45s cubic-bezier(.2,.8,.2,1) both;
+        }
+        .stat:active { transform: scale(0.97); }
+        .stat.static { cursor: default; }
+        .stat.static:active { transform: none; }
+        .stat.selected { border-color: color-mix(in srgb, var(--c) 55%, transparent); }
+        .stat::after {
+            content: "";
+            position: absolute;
+            right: -30px; top: -30px;
+            width: 90px; height: 90px; border-radius: 50%;
+            background: radial-gradient(circle, color-mix(in srgb, var(--c) 28%, transparent), transparent 70%);
+        }
+        .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+        .stat-value {
+            font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+            margin-top: 8px; line-height: 1;
+            color: var(--c);
+        }
+        .stat:nth-child(1) { --c: var(--accent-2); animation-delay: 0s; }
+        .stat:nth-child(2) { --c: var(--accent); animation-delay: 0.03s; }
+        .stat:nth-child(3) { --c: var(--ok); animation-delay: 0.06s; }
+        .stat:nth-child(4) { --c: var(--warn); animation-delay: 0.09s; }
+        .stat:nth-child(5) { --c: var(--danger); animation-delay: 0.12s; }
+        .stat:nth-child(6) { --c: var(--info); animation-delay: 0.15s; }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: none; }
         }
 
-        .stats {
-          grid-template-columns: 1fr;
+        /* Toolbar */
+        .toolbar {
+            display: grid;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            padding: 10px 0;
+            margin: -4px 0;
+            background: linear-gradient(rgba(7, 4, 15, 0.92) 70%, transparent);
+        }
+        .search-row { display: flex; gap: 10px; }
+        .search {
+            flex: 1;
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 14px;
+            height: 46px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--muted);
+        }
+        .search:focus-within { border-color: color-mix(in srgb, var(--accent) 70%, transparent); box-shadow: 0 0 0 4px rgba(157, 107, 255, 0.15); }
+        .search input {
+            flex: 1; min-width: 0;
+            border: 0; outline: 0; background: transparent;
+            font: inherit; font-size: 15px; color: var(--text);
+        }
+        .search input::placeholder { color: var(--muted); }
+
+        .danger-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            height: 46px; padding: 0 14px;
+            border-radius: 14px;
+            border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+            background: color-mix(in srgb, var(--danger) 12%, transparent);
+            color: var(--danger);
+            font-weight: 700; font-size: 13px;
+            cursor: pointer; white-space: nowrap;
+            transition: transform 0.15s, opacity 0.2s;
+        }
+        .danger-btn:active { transform: scale(0.97); }
+        .danger-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .chips {
+            display: flex; gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip {
+            appearance: none;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 13px; font-weight: 600;
+            color: var(--muted);
+            cursor: pointer; white-space: nowrap;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .chip b {
+            font-size: 11px; font-weight: 700;
+            padding: 2px 7px; border-radius: 999px;
+            background: var(--faint);
+        }
+        .chip.active {
+            color: #fff;
+            background: var(--grad);
+            border-color: transparent;
+            box-shadow: 0 6px 18px -6px rgba(157, 107, 255, 0.9);
+        }
+        .chip.active b { background: rgba(255, 255, 255, 0.22); }
+
+        /* Users */
+        .list-head {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 0 4px;
+            font-size: 13px; color: var(--muted);
+        }
+        .users {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 10px;
+        }
+        .user {
+            padding: 14px;
+            display: grid;
+            gap: 12px;
+            animation: rise 0.35s cubic-bezier(.2,.8,.2,1) both;
+        }
+        .user-top {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+        }
+        .u-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            display: grid; place-items: center;
+            font-weight: 800; font-size: 16px; color: #fff;
+            background: linear-gradient(135deg, hsl(var(--h) 85% 72%), hsl(calc(var(--h) + 25) 75% 48%));
+            box-shadow: 0 0 16px -2px hsl(var(--h) 90% 60% / 0.55);
+        }
+        .u-name { font-weight: 700; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .u-name.none { color: var(--muted); font-weight: 600; }
+        .u-id {
+            font-size: 12px; color: var(--muted); margin-top: 2px;
+            font-variant-numeric: tabular-nums;
+            cursor: pointer;
+        }
+        .u-id:active { color: var(--accent); }
+
+        .pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 11px; font-weight: 700;
+            background: color-mix(in srgb, var(--pill) 15%, transparent);
+            color: var(--pill);
+            white-space: nowrap;
+        }
+        .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .pill.ok { --pill: var(--ok); }
+        .pill.warn { --pill: var(--warn); }
+        .pill.danger { --pill: var(--danger); }
+
+        .u-tariff {
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        .tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: var(--faint);
+            font-size: 12px; font-weight: 600;
+        }
+        .tag svg { width: 14px; height: 14px; color: var(--muted); }
+        .tag.free { background: color-mix(in srgb, var(--info) 15%, transparent); color: var(--info); }
+        .tag.free svg { color: currentColor; }
+
+        .progress { display: grid; gap: 6px; }
+        .progress-row {
+            display: flex; justify-content: space-between;
+            font-size: 12px; color: var(--muted);
+        }
+        .progress-row b { color: var(--pc); font-weight: 700; }
+        .bar {
+            height: 6px; border-radius: 999px;
+            background: var(--faint);
+            overflow: hidden;
+        }
+        .bar span {
+            display: block; height: 100%;
+            border-radius: inherit;
+            background: var(--pc);
+            box-shadow: 0 0 10px var(--pc);
+            transition: width 0.8s cubic-bezier(.2,.8,.2,1);
+        }
+        .progress.ok { --pc: #a66bff; }
+        .progress.warn { --pc: var(--warn); }
+        .progress.danger { --pc: var(--danger); }
+        .progress.none { --pc: var(--muted); }
+
+        .user-bottom {
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .dates { display: flex; gap: 14px; font-size: 11px; color: var(--muted); }
+        .dates b { display: block; color: var(--text); font-size: 12px; font-weight: 600; margin-top: 2px; }
+
+        .del-btn {
+            appearance: none;
+            width: 38px; height: 38px; border-radius: 11px;
+            display: grid; place-items: center;
+            border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent);
+            background: color-mix(in srgb, var(--danger) 9%, transparent);
+            color: var(--danger);
+            cursor: pointer; flex-shrink: 0;
+            transition: transform 0.15s, background 0.2s;
+        }
+        .del-btn:active { transform: scale(0.92); }
+        .del-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 16px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .empty svg { width: 40px; height: 40px; opacity: 0.5; margin-bottom: 10px; }
+
+        .sk {
+            display: block; height: 14px; border-radius: 8px;
+            background: linear-gradient(90deg, var(--faint) 0%, color-mix(in srgb, var(--faint) 40%, transparent) 50%, var(--faint) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite linear;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        .toast {
+            position: fixed;
+            left: 50%; bottom: calc(20px + env(safe-area-inset-bottom));
+            transform: translate(-50%, 20px);
+            opacity: 0;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: var(--text);
+            color: var(--bg);
+            font-size: 14px; font-weight: 600;
+            box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.25s, transform 0.25s;
+            pointer-events: none;
+            max-width: calc(100% - 32px);
+            z-index: 20;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        @media (max-width: 900px) {
+            .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 520px) {
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .users { grid-template-columns: 1fr; }
+            .danger-btn span { display: none; }
+            .danger-btn { width: 46px; padding: 0; justify-content: center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
 
-        .topline {
-          flex-direction: column;
-          align-items: flex-start;
+        /* GLOW brand */
+        .brand {
+            font-family: Michroma, Inter, sans-serif;
+            font-size: 17px;
+            letter-spacing: 0.16em;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 10%, #c8afff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 10px rgba(157, 107, 255, 0.65));
+            white-space: nowrap;
         }
-      }
+        .brand .o { position: relative; display: inline-block; }
+        .brand .o::after {
+            content: "\2726";
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -54%);
+            font-size: 0.42em;
+            letter-spacing: 0;
+            -webkit-text-fill-color: #fff;
+            color: #fff;
+        }
+        .brand small {
+            font-size: 0.56em;
+            letter-spacing: 0.42em;
+            margin-left: 6px;
+            -webkit-text-fill-color: var(--accent-2);
+            color: var(--accent-2);
+            vertical-align: middle;
+        }
+        .logo-img {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(190, 150, 255, 0.45);
+            box-shadow: 0 0 0 4px rgba(157, 107, 255, 0.12), 0 0 26px rgba(157, 107, 255, 0.6);
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(157, 107, 255, 0.12), 0 0 22px rgba(157, 107, 255, 0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(157, 107, 255, 0.18), 0 0 34px rgba(170, 120, 255, 0.8); }
+        }
+        .fireflies { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .fireflies i {
+            position: absolute;
+            width: 4px; height: 4px; border-radius: 50%;
+            background: #e2ccff;
+            box-shadow: 0 0 6px 2px rgba(180, 130, 255, 0.9), 0 0 16px 4px rgba(140, 80, 255, 0.5);
+            opacity: 0;
+            animation: drift var(--d, 14s) linear infinite, blink var(--b, 3s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s), var(--delay, 0s);
+        }
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(var(--dx, 30px), -110vh); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            40%, 60% { opacity: var(--o, 0.8); }
+        }
+        .page { position: relative; z-index: 1; }
     </style>
-  </head>
-  <body>
-    <main class="wrap">
-      <section class="hero">
-        <div class="panel hero-main">
-          <div class="topline">
-            <span>Telegram mini app</span>
-            <span class="screen-badge" id="screenState"
-              >Полноэкранный режим</span
-            >
-          </div>
-          <h1>Панель управления VPN</h1>
-          <p>
-            Новый формат: чистая таблица подписок, выделенный блок бесплатного
-            тарифа и более читабельная статистика.
-          </p>
-        </div>
-      </section>
+</head>
+<body>
+    <main class="page">
+        <header class="top">
+            <img class="logo-img" src="data:image/webp;base64,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" alt="GLOW VPN">
+            <div class="top-text">
+                <div class="brand">GL<span class="o">O</span>W<small>ADMIN</small></div>
+                <p id="updatedAt">Загрузка…</p>
+            </div>
+            <button class="icon-btn" id="refreshBtn" type="button" aria-label="Обновить">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+            </button>
+        </header>
 
-      <section class="table-first table-wrap">
-        <div class="table-actions">
-          <button type="button" id="deleteAllExpiredBtn" class="bulk-delete-btn">Удалить всех истекших</button>
-        </div>
-        <table id="usersTable">
-          <thead>
-            <tr>
-              <th>Telegram ID</th>
-              <th>Username</th>
-              <th>Тариф</th>
-              <th>Устройств</th>
-              <th>Статус</th>
-              <th>Старт</th>
-              <th>Окончание</th>
-              <th>Осталось</th>
-              <th>Добавлен</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody id="usersBody">
-            <tr>
-              <td colspan="10" class="loader">Загрузка...</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+        <section class="stats">
+            <div class="card stat static">
+                <div class="stat-label">Посетили бота</div>
+                <div class="stat-value" id="statVisitors">–</div>
+            </div>
+            <button class="card stat" type="button" data-filter="all">
+                <div class="stat-label">Подписок</div>
+                <div class="stat-value" id="statTotal">–</div>
+            </button>
+            <button class="card stat" type="button" data-filter="active">
+                <div class="stat-label">Активных</div>
+                <div class="stat-value" id="statActive">–</div>
+            </button>
+            <button class="card stat" type="button" data-filter="soon">
+                <div class="stat-label">Скоро закончатся</div>
+                <div class="stat-value" id="statSoon">–</div>
+            </button>
+            <button class="card stat" type="button" data-filter="expired">
+                <div class="stat-label">Истекших</div>
+                <div class="stat-value" id="statExpired">–</div>
+            </button>
+            <button class="card stat" type="button" data-filter="free">
+                <div class="stat-label">Бесплатный тариф</div>
+                <div class="stat-value" id="statFree">–</div>
+            </button>
+        </section>
 
-      <section class="stats">
-        <div class="stat">
-          <small>Посетили бота</small><strong id="statVisitors">0</strong>
-        </div>
-        <div class="stat">
-          <small>Всего</small><strong id="statTotal">0</strong>
-        </div>
-        <div class="stat">
-          <small>Активных</small><strong class="good" id="statActive">0</strong>
-        </div>
-        <div class="stat">
-          <small>Истекших</small><strong class="bad" id="statExpired">0</strong>
-        </div>
-        <div class="stat">
-          <small>Скоро закончатся</small
-          ><strong class="warn" id="statSoon">0</strong>
-        </div>
-        <div class="stat">
-          <small>Бесплатный тариф</small><strong id="statFree">0</strong>
-        </div>
-      </section>
+        <section class="toolbar">
+            <div class="search-row">
+                <label class="search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+                    <input id="search" type="search" placeholder="Поиск по username, ID, тарифу" autocomplete="off" />
+                </label>
+                <button class="danger-btn" id="deleteAllExpiredBtn" type="button" title="Удалить всех истекших">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+                    <span>Удалить истекших</span>
+                </button>
+            </div>
+            <div class="chips" id="chips">
+                <button class="chip active" type="button" data-filter="all">Все <b id="chipAll">0</b></button>
+                <button class="chip" type="button" data-filter="active">Активные <b id="chipActive">0</b></button>
+                <button class="chip" type="button" data-filter="soon">Скоро истекут <b id="chipSoon">0</b></button>
+                <button class="chip" type="button" data-filter="expired">Истекшие <b id="chipExpired">0</b></button>
+                <button class="chip" type="button" data-filter="free">Бесплатные <b id="chipFree">0</b></button>
+            </div>
+        </section>
 
-      <section class="panel card trial-wrap">
-        <h2 class="section-title">Пользователи бесплатного тарифа</h2>
-        <div class="hint-inline">Показываются все пользователи с тарифом, где есть слово "бесплат".</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Telegram ID</th>
-                <th>Username</th>
-                <th>Устройств</th>
-                <th>Статус</th>
-                <th>Старт</th>
-                <th>Окончание</th>
-                <th>Осталось</th>
-              </tr>
-            </thead>
-            <tbody id="trialBody">
-              <tr>
-                <td colspan="7" class="loader">Загрузка...</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="list-head">
+            <span id="listTitle">Пользователи</span>
+            <span id="listCount"></span>
         </div>
-      </section>
 
-      <div class="footer-note">Данные подгружаются из БД.</div>
+        <section class="users" id="users">
+            <div class="card user"><span class="sk" style="width:60%"></span><span class="sk" style="width:40%"></span><span class="sk"></span></div>
+            <div class="card user"><span class="sk" style="width:55%"></span><span class="sk" style="width:35%"></span><span class="sk"></span></div>
+            <div class="card user"><span class="sk" style="width:65%"></span><span class="sk" style="width:45%"></span><span class="sk"></span></div>
+        </section>
     </main>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-      const tg =
-        window.Telegram && window.Telegram.WebApp
-          ? window.Telegram.WebApp
-          : null;
-      if (tg) {
-        tg.ready();
-        tg.expand();
-        window.addEventListener("load", () => {
-          try {
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        const root = document.documentElement;
+
+        function applyTheme() {
+            root.dataset.theme = 'dark';
+            if (tg) {
+                try { tg.setHeaderColor('#07040f'); } catch (e) {}
+                try { tg.setBackgroundColor('#07040f'); } catch (e) {}
+                try { tg.setBottomBarColor && tg.setBottomBarColor('#07040f'); } catch (e) {}
+            }
+        }
+
+        if (tg) {
+            tg.ready();
             tg.expand();
-          } catch (error) {}
-        });
-        if (tg.setHeaderColor) tg.setHeaderColor("#271a5f");
-        if (tg.setBackgroundColor) tg.setBackgroundColor("#271a5f");
-        const screenState = document.getElementById("screenState");
-        if (screenState) screenState.textContent = "Открыт на весь экран";
-      }
+            
+        }
+        applyTheme();
 
-      const params = new URLSearchParams(window.location.search);
-      const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-      const tgId = params.get("tg_id") || (tgUser && tgUser.id ? String(tgUser.id) : "");
-      const apiParams = new URLSearchParams();
-      if (tgId) {
-        apiParams.set("tg_id", tgId);
-      }
-      const apiUrl = `/admin/api/users${apiParams.toString() ? `?${apiParams.toString()}` : ""}`;
-      const body = document.getElementById("usersBody");
-      const trialBody = document.getElementById("trialBody");
-      const deleteAllExpiredBtn = document.getElementById("deleteAllExpiredBtn");
-      let allRows = [];
-      let visitorsCount = 0;
+        (function spawnFireflies() {
+            const box = document.createElement('div');
+            box.className = 'fireflies';
+            box.setAttribute('aria-hidden', 'true');
+            for (let i = 0; i < 14; i++) {
+                const f = document.createElement('i');
+                const size = 2 + Math.random() * 3;
+                f.style.cssText = `left:${Math.random() * 100}%;top:${100 + Math.random() * 20}%;width:${size}px;height:${size}px;` +
+                    `--d:${12 + Math.random() * 14}s;--b:${2 + Math.random() * 3}s;--delay:${-Math.random() * 20}s;` +
+                    `--dx:${(Math.random() - 0.5) * 120}px;--o:${0.4 + Math.random() * 0.6}`;
+                box.appendChild(f);
+            }
+            document.body.prepend(box);
+        })();
 
-      function escapeHtml(value) {
-        return String(value ?? "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#39;");
-      }
+        const params = new URLSearchParams(window.location.search);
+        const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+        const tgId = params.get("tg_id") || (tgUser && tgUser.id ? String(tgUser.id) : "");
 
-      function formatDays(daysLeft) {
-        if (daysLeft === null || daysLeft === undefined) return "-";
-        if (daysLeft < 0) return "Истекла";
-        const mod10 = daysLeft % 10;
-        const mod100 = daysLeft % 100;
-        let unit = "дней";
-        if (mod10 === 1 && mod100 !== 11) unit = "день";
-        else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) unit = "дня";
-        return `${daysLeft} ${unit}`;
-      }
-
-      function formatDateTime(value) {
-        if (!value) return "-";
-        const safe = String(value).replace(" ", "T");
-        const dt = new Date(safe);
-        if (Number.isNaN(dt.getTime())) return escapeHtml(value);
-        return dt.toLocaleString("ru-RU", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      }
-
-      function renderStats(users) {
-        document.getElementById("statVisitors").textContent = visitorsCount;
-        document.getElementById("statTotal").textContent = users.length;
-        document.getElementById("statActive").textContent = users.filter(
-          (user) => user.status === "ACTIVE",
-        ).length;
-        document.getElementById("statExpired").textContent = users.filter(
-          (user) => user.status === "EXPIRED",
-        ).length;
-        document.getElementById("statSoon").textContent = users.filter(
-          (user) =>
-            typeof user.days_left === "number" &&
-            user.days_left >= 0 &&
-            user.days_left <= 3,
-        ).length;
-        document.getElementById("statFree").textContent = users.filter((user) =>
-          String(user.tariff || "").toLowerCase().includes("бесплат"),
-        ).length;
-      }
-
-      function renderRows(users) {
-        if (!users.length) {
-          body.innerHTML =
-            '<tr><td colspan="10" class="loader">Пользователей пока нет</td></tr>';
-          return;
+        function apiQuery(extra) {
+            const q = new URLSearchParams();
+            if (tgId) q.set("tg_id", tgId);
+            Object.entries(extra || {}).forEach(([k, v]) => q.set(k, v));
+            const s = q.toString();
+            return s ? `?${s}` : "";
         }
 
-        body.innerHTML = users
-          .map((user) => {
-            const username = user.username
-              ? `@${escapeHtml(user.username)}`
-              : "-";
-            const deviceCount = Number(user.device_count || 1);
-            const statusClass =
-              user.status === "ACTIVE" ? "status-active" : "status-expired";
-            const daysClass =
-              user.days_left === null
-                ? "muted"
-                : user.days_left < 0
-                  ? "days-bad"
-                  : user.days_left <= 3
-                    ? "days-warn"
-                    : "days-ok";
-            const startedAt = formatDateTime(user.started_at);
-            const expiresAt = formatDateTime(user.expires_at);
-            const createdAt = formatDateTime(user.created_at);
-            const actionsCell = `<button class="delete-btn" data-telegram-id="${user.telegram_id}">Удалить из БД</button>`;
-            return `
-                    <tr>
-                        <td>${user.telegram_id}</td>
-                        <td>${username}</td>
-                        <td>${escapeHtml(user.tariff)}</td>
-                        <td><span class="device-badge">${deviceCount}</span></td>
-                        <td><span class="badge ${statusClass}">${escapeHtml(user.status)}</span></td>
-                        <td>${startedAt}</td>
-                        <td>${expiresAt}</td>
-                        <td class="${daysClass}">${formatDays(user.days_left)}</td>
-                        <td>${createdAt}</td>
-                        <td class="row-actions">${actionsCell}</td>
-                    </tr>
-                `;
-          })
-          .join("");
-      }
+        const $ = (id) => document.getElementById(id);
+        const usersEl = $("users");
+        const searchEl = $("search");
+        const deleteAllExpiredBtn = $("deleteAllExpiredBtn");
+        const refreshBtn = $("refreshBtn");
 
-      function loadUsers() {
-        if (!tgId) {
-          body.innerHTML =
-            '<tr><td colspan="10" class="loader">Не удалось определить Telegram ID</td></tr>';
-          trialBody.innerHTML =
-            '<tr><td colspan="7" class="loader">Не удалось определить Telegram ID</td></tr>';
-          return;
+        let allRows = [];
+        let loaded = false;
+        let filter = "all";
+        let query = "";
+
+        const FILTER_TITLES = {
+            all: "Все пользователи",
+            active: "Активные",
+            soon: "Скоро истекут",
+            expired: "Истекшие",
+            free: "Бесплатный тариф",
+        };
+
+        const icons = {
+            trash: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+            tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>',
+            phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>',
+            gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8S10.5 3 8 3.5 7 8 12 8zm0 0s1.5-5 4-4.5S17 8 12 8z"/></svg>',
+            users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7M16 4a4 4 0 0 1 0 8M22 21c0-3-1.8-5.6-4.5-6.6"/></svg>',
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
         }
 
-        fetch(apiUrl)
-          .then((response) => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-          })
-          .then((data) => {
-            allRows = data.users || [];
-            visitorsCount = Number(data.visitors_count || 0);
-            renderStats(allRows);
-            renderRows(allRows);
-            renderTrialRows(
-              allRows.filter((user) =>
-                String(user.tariff || "").toLowerCase().includes("бесплат"),
-              ),
-            );
-          })
-          .catch(() => {
-            body.innerHTML =
-              '<tr><td colspan="10" class="loader">Не удалось загрузить данные</td></tr>';
-            trialBody.innerHTML =
-              '<tr><td colspan="7" class="loader">Не удалось загрузить данные</td></tr>';
-          });
-      }
-
-      function renderTrialRows(users) {
-        if (!users.length) {
-          trialBody.innerHTML =
-            '<tr><td colspan="7" class="loader">Пользователей с бесплатным тарифом пока нет</td></tr>';
-          return;
+        function plural(n, one, few, many) {
+            const a = Math.abs(n) % 100;
+            const b = a % 10;
+            if (a > 10 && a < 20) return many;
+            if (b === 1) return one;
+            if (b >= 2 && b <= 4) return few;
+            return many;
         }
 
-        trialBody.innerHTML = users
-          .map((user) => {
-            const username = user.username
-              ? `@${escapeHtml(user.username)}`
-              : "-";
-            const deviceCount = Number(user.device_count || 1);
-            const statusClass =
-              user.status === "ACTIVE" ? "status-active" : "status-expired";
-            const daysClass =
-              user.days_left === null
-                ? "muted"
-                : user.days_left < 0
-                  ? "days-bad"
-                  : user.days_left <= 3
-                    ? "days-warn"
-                    : "days-ok";
-            const startedAt = formatDateTime(user.started_at);
-            const expiresAt = formatDateTime(user.expires_at);
+        // Сервер хранит время в UTC без зоны: "YYYY-MM-DD HH:MM:SS[.ffffff]"
+        function parseDate(value) {
+            if (!value) return null;
+            const d = new Date(String(value).replace(" ", "T").slice(0, 19) + "Z");
+            return Number.isNaN(d.getTime()) ? null : d;
+        }
 
-            return `
-              <tr>
-                <td>${user.telegram_id}</td>
-                <td>${username}</td>
-                <td><span class="device-badge">${deviceCount}</span></td>
-                <td><span class="badge ${statusClass}">${escapeHtml(user.status)}</span></td>
-                <td>${startedAt}</td>
-                <td>${expiresAt}</td>
-                <td class="${daysClass}">${formatDays(user.days_left)}</td>
-              </tr>
-            `;
-          })
-          .join("");
-      }
+        function fmtDate(value) {
+            const d = parseDate(value);
+            if (!d) return "—";
+            return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit", year: "2-digit" });
+        }
 
-      body.addEventListener("click", (event) => {
-        const button = event.target.closest(".delete-btn");
-        if (!button) return;
+        const isFree = (u) => String(u.tariff || "").toLowerCase().includes("бесплат");
+        const isExpired = (u) => u.status === "EXPIRED" || (typeof u.days_left === "number" && u.days_left < 0);
+        const isSoon = (u) => !isExpired(u) && typeof u.days_left === "number" && u.days_left >= 0 && u.days_left <= 3;
+        const isActive = (u) => u.status === "ACTIVE" && !isExpired(u);
 
-        const telegramId = button.getAttribute("data-telegram-id");
-        if (!telegramId) return;
+        const FILTERS = {
+            all: () => true,
+            active: isActive,
+            soon: isSoon,
+            expired: isExpired,
+            free: isFree,
+        };
 
-        const approved = window.confirm(`Удалить пользователя ${telegramId} из БД полностью?`);
-        if (!approved) return;
-
-        button.disabled = true;
-        fetch(`/admin/api/users/${telegramId}?${apiParams.toString()}&force=true`, {
-          method: "DELETE",
-        })
-          .then(async (response) => {
-            if (response.ok) return;
-            let detail = "Не удалось удалить пользователя";
+        function haptic(type) {
             try {
-              const payload = await response.json();
-              if (payload && payload.detail) detail = payload.detail;
-            } catch (error) {}
-            throw new Error(detail);
-          })
-          .then(() => {
-            loadUsers();
-          })
-          .catch((error) => {
-            window.alert(error.message || "Ошибка при удалении");
-          })
-          .finally(() => {
-            button.disabled = false;
-          });
-      });
+                if (!tg || !tg.HapticFeedback) return;
+                if (type === "select") tg.HapticFeedback.selectionChanged();
+                else if (type === "success" || type === "error" || type === "warning") tg.HapticFeedback.notificationOccurred(type);
+                else tg.HapticFeedback.impactOccurred(type || "light");
+            } catch (e) {}
+        }
 
-      if (deleteAllExpiredBtn) {
-        deleteAllExpiredBtn.addEventListener("click", () => {
-          const expiredCount = allRows.filter(
-            (user) => user.status === "EXPIRED" || (typeof user.days_left === "number" && user.days_left < 0),
-          ).length;
+        let toastTimer = null;
+        function toast(text) {
+            const el = $("toast");
+            el.textContent = text;
+            el.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+        }
 
-          if (expiredCount === 0) {
-            window.alert("Истекших пользователей для удаления нет");
-            return;
-          }
-
-          const approved = window.confirm(`Удалить всех истекших пользователей (${expiredCount})?`);
-          if (!approved) return;
-
-          deleteAllExpiredBtn.disabled = true;
-          fetch(`/admin/api/users/delete-expired?${apiParams.toString()}`, {
-            method: "DELETE",
-          })
-            .then(async (response) => {
-              if (!response.ok) throw new Error("Не удалось удалить истекшие подписки");
-              const payload = await response.json();
-              return Number(payload.deleted_count || 0);
-            })
-            .then((deletedCount) => {
-              loadUsers();
-              window.alert(`Удалено пользователей: ${deletedCount}`);
-            })
-            .catch((error) => {
-              window.alert(error.message || "Ошибка при удалении");
-            })
-            .finally(() => {
-              deleteAllExpiredBtn.disabled = false;
+        function confirmDialog(text) {
+            return new Promise((resolve) => {
+                if (tg && tg.showConfirm && tg.isVersionAtLeast && tg.isVersionAtLeast("6.2")) {
+                    try { tg.showConfirm(text, (ok) => resolve(Boolean(ok))); return; } catch (e) {}
+                }
+                resolve(window.confirm(text));
             });
-        });
-      }
+        }
 
-      loadUsers();
+        function hue(id) {
+            let h = 0;
+            const s = String(id);
+            for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360;
+            return 245 + (h % 70);
+        }
+
+        function renderStats() {
+            const counts = {
+                all: allRows.length,
+                active: allRows.filter(isActive).length,
+                soon: allRows.filter(isSoon).length,
+                expired: allRows.filter(isExpired).length,
+                free: allRows.filter(isFree).length,
+            };
+            $("statTotal").textContent = counts.all;
+            $("statActive").textContent = counts.active;
+            $("statSoon").textContent = counts.soon;
+            $("statExpired").textContent = counts.expired;
+            $("statFree").textContent = counts.free;
+            $("chipAll").textContent = counts.all;
+            $("chipActive").textContent = counts.active;
+            $("chipSoon").textContent = counts.soon;
+            $("chipExpired").textContent = counts.expired;
+            $("chipFree").textContent = counts.free;
+            deleteAllExpiredBtn.disabled = counts.expired === 0;
+        }
+
+        function userCard(u, index) {
+            const expired = isExpired(u);
+            const soon = isSoon(u);
+            const state = expired ? "danger" : soon ? "warn" : "ok";
+            const statusText = expired ? "Истекла" : soon ? "Скоро" : "Активна";
+            const days = typeof u.days_left === "number" ? u.days_left : null;
+
+            const start = parseDate(u.started_at);
+            const end = parseDate(u.expires_at);
+            let pct = 0;
+            if (!expired && start && end && end > start) {
+                pct = Math.max(3, Math.min(100, ((end - Date.now()) / (end - start)) * 100));
+            }
+
+            let daysText = "—";
+            if (days !== null) {
+                daysText = days < 0
+                    ? `истекла ${Math.abs(days)} ${plural(Math.abs(days), "день", "дня", "дней")} назад`
+                    : days === 0 ? "последний день" : `${days} ${plural(days, "день", "дня", "дней")}`;
+            }
+
+            const name = u.username
+                ? `<div class="u-name">@${escapeHtml(u.username)}</div>`
+                : `<div class="u-name none">Без username</div>`;
+            const initial = u.username ? escapeHtml(u.username.charAt(0).toUpperCase()) : "#";
+            const devices = Number(u.device_count || 1);
+            const free = isFree(u);
+            const tid = escapeHtml(u.telegram_id);
+
+            return `
+                <article class="card user" style="animation-delay:${Math.min(index, 12) * 0.03}s">
+                    <div class="user-top">
+                        <div class="u-avatar" style="--h:${hue(u.telegram_id)}">${initial}</div>
+                        <div style="min-width:0">
+                            ${name}
+                            <div class="u-id" data-copy="${tid}" title="Скопировать ID">ID ${tid}</div>
+                        </div>
+                        <span class="pill ${state}">${statusText}</span>
+                    </div>
+                    <div class="u-tariff">
+                        <span class="tag ${free ? "free" : ""}">${free ? icons.gift : icons.tag}${escapeHtml(u.tariff || "—")}</span>
+                        <span class="tag">${icons.phone}${devices} ${plural(devices, "устройство", "устройства", "устройств")}</span>
+                    </div>
+                    <div class="progress ${days === null ? "none" : state}">
+                        <div class="progress-row"><span>Осталось</span><b>${daysText}</b></div>
+                        <div class="bar"><span style="width:${pct}%"></span></div>
+                    </div>
+                    <div class="user-bottom">
+                        <div class="dates">
+                            <div>Старт<b>${fmtDate(u.started_at)}</b></div>
+                            <div>Конец<b>${fmtDate(u.expires_at)}</b></div>
+                            <div>Добавлен<b>${fmtDate(u.created_at)}</b></div>
+                        </div>
+                        <button class="del-btn" type="button" data-delete="${tid}" aria-label="Удалить пользователя">${icons.trash}</button>
+                    </div>
+                </article>`;
+        }
+
+        function renderList() {
+            const q = query.trim().toLowerCase().replace(/^@/, "");
+            const rows = allRows.filter(FILTERS[filter]).filter((u) => {
+                if (!q) return true;
+                return [u.username, u.telegram_id, u.tariff].some((v) => String(v ?? "").toLowerCase().includes(q));
+            });
+
+            $("listTitle").textContent = FILTER_TITLES[filter];
+            $("listCount").textContent = `${rows.length} ${plural(rows.length, "пользователь", "пользователя", "пользователей")}`;
+
+            if (!rows.length) {
+                usersEl.innerHTML = `<div class="empty">${icons.users}<div>${allRows.length ? "Никого не найдено" : "Пользователей пока нет"}</div></div>`;
+                return;
+            }
+            usersEl.innerHTML = rows.map(userCard).join("");
+        }
+
+        function setFilter(next) {
+            if (!FILTERS[next]) return;
+            filter = next;
+            document.querySelectorAll("[data-filter]").forEach((el) => {
+                const on = el.dataset.filter === next;
+                el.classList.toggle(el.classList.contains("chip") ? "active" : "selected", on);
+            });
+            const chip = document.querySelector(`.chip[data-filter="${next}"]`);
+            if (chip) chip.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+            if (loaded) renderList();
+        }
+
+        function showError(text) {
+            usersEl.innerHTML = `<div class="empty">${icons.users}<div>${escapeHtml(text)}</div></div>`;
+            $("listCount").textContent = "";
+        }
+
+        async function loadUsers() {
+            if (!tgId) {
+                showError("Не удалось определить Telegram ID");
+                $("updatedAt").textContent = "Нет доступа";
+                return;
+            }
+            refreshBtn.classList.add("spin");
+            try {
+                const response = await fetch(`/admin/api/users${apiQuery()}`, { headers: { Accept: "application/json" } });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                allRows = data.users || [];
+                loaded = true;
+                $("statVisitors").textContent = Number(data.visitors_count || 0);
+                renderStats();
+                renderList();
+                const now = new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+                $("updatedAt").textContent = `Панель управления · ${now}`;
+            } catch (e) {
+                showError("Не удалось загрузить данные");
+                $("updatedAt").textContent = "Ошибка загрузки";
+            } finally {
+                refreshBtn.classList.remove("spin");
+            }
+        }
+
+        async function deleteUser(button) {
+            const id = button.dataset.delete;
+            const user = allRows.find((u) => String(u.telegram_id) === id);
+            const who = user && user.username ? `@${user.username}` : `ID ${id}`;
+            const active = user && !isExpired(user);
+            const text = active
+                ? `⚠️ У ${who} АКТИВНАЯ подписка (${user.tariff || "тариф"}). Удалить пользователя из БД полностью?`
+                : `Удалить ${who} из БД полностью?`;
+
+            haptic("warning");
+            if (!(await confirmDialog(text))) return;
+
+            button.disabled = true;
+            try {
+                const response = await fetch(`/admin/api/users/${encodeURIComponent(id)}${apiQuery({ force: "true" })}`, { method: "DELETE" });
+                if (!response.ok) {
+                    let detail = "Не удалось удалить пользователя";
+                    try {
+                        const payload = await response.json();
+                        if (payload && payload.detail) detail = payload.detail;
+                    } catch (e) {}
+                    throw new Error(detail);
+                }
+                haptic("success");
+                const card = button.closest(".user");
+                if (card) {
+                    card.style.transition = "opacity 0.25s, transform 0.25s";
+                    card.style.opacity = "0";
+                    card.style.transform = "scale(0.96)";
+                }
+                toast(`${who} удалён`);
+                setTimeout(loadUsers, 250);
+            } catch (e) {
+                haptic("error");
+                toast(e.message || "Ошибка при удалении");
+                button.disabled = false;
+            }
+        }
+
+        usersEl.addEventListener("click", (event) => {
+            const del = event.target.closest("[data-delete]");
+            if (del) { deleteUser(del); return; }
+            const copy = event.target.closest("[data-copy]");
+            if (copy && navigator.clipboard) {
+                navigator.clipboard.writeText(copy.dataset.copy)
+                    .then(() => { haptic("select"); toast("ID скопирован"); })
+                    .catch(() => {});
+            }
+        });
+
+        document.querySelectorAll("[data-filter]").forEach((el) => {
+            el.addEventListener("click", () => { haptic("select"); setFilter(el.dataset.filter); });
+        });
+
+        let searchTimer = null;
+        searchEl.addEventListener("input", () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => { query = searchEl.value; renderList(); }, 120);
+        });
+
+        refreshBtn.addEventListener("click", () => { haptic("light"); loadUsers(); });
+
+        deleteAllExpiredBtn.addEventListener("click", async () => {
+            const count = allRows.filter(isExpired).length;
+            if (count === 0) { toast("Истекших пользователей нет"); return; }
+            haptic("warning");
+            const ok = await confirmDialog(`Удалить всех истекших пользователей (${count})?`);
+            if (!ok) return;
+
+            deleteAllExpiredBtn.disabled = true;
+            try {
+                const response = await fetch(`/admin/api/users/delete-expired${apiQuery()}`, { method: "DELETE" });
+                if (!response.ok) throw new Error("Не удалось удалить истекшие подписки");
+                const payload = await response.json();
+                const deleted = Number(payload.deleted_count || 0);
+                haptic("success");
+                toast(`Удалено: ${deleted} ${plural(deleted, "пользователь", "пользователя", "пользователей")}`);
+                await loadUsers();
+            } catch (e) {
+                haptic("error");
+                toast(e.message || "Ошибка при удалении");
+                renderStats();
+            }
+        });
+
+        setFilter("all");
+        loadUsers();
     </script>
-  </body>
+</body>
 </html>
