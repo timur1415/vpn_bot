@@ -90,10 +90,16 @@ async def payment_callback(request: Request):
             await bot_app.bot.send_message(
                 chat_id=payment.telegram_id,
                 text=(
-                    f"✅ Оплата прошла успешно!\n"
-                    f"Тариф: {payment.tariff}\n"
-                    f"Устройств: {device_count}\n\n"
-                    f"Спасибо за покупку! Ваш VPN-ключ будет отправлен в ближайшее время."
+                    f"✦ GLOW VPN ✦\n\n"
+                    f"💜 Оплата прошла успешно — спасибо, что выбрали нас!\n"
+                    f"┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n"
+                    f"🧾 Тариф: {payment.tariff}\n"
+                    f"📱 Устройств: {device_count}\n\n"
+                    f"Что дальше:\n"
+                    f"1️⃣ Менеджер пришлёт персональную ссылку для подключения\n"
+                    f"2️⃣ И видеоинструкцию: как установить приложение и включить VPN\n\n"
+                    f"⏳ Обычно это занимает 5–15 минут.\n"
+                    f"🌙 Срок подписки можно посмотреть в Личном кабинете (/start)."
                 ),
             )
         except Exception as e:
