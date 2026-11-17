@@ -1,9 +1,22 @@
 from telegram.ext import ContextTypes
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
+import html
+import logging
+
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from config.states import MAIN_MENU, REVIEWS
 
 from config.config import REVIEW
+from handlers.ui import BRAND, DIVIDER, home_button, media, photo
+
+logger = logging.getLogger(__name__)
+
+THANKS_TEXT = (
+    f"{BRAND}\n\n"
+    "💜 <b>Спасибо за отзыв!</b>\n"
+    f"{DIVIDER}\n"
+    "Мы читаем каждый отзыв — он помогает делать GLOW VPN лучше."
+)
 
 
 async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -17,23 +30,18 @@ async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         ],
         [InlineKeyboardButton("✍️ Оставить отзыв", callback_data="leave_review", style='success')],
-        [InlineKeyboardButton("🏠 В главное меню", callback_data="main_menu", style='danger')],
+        [home_button()],
     ]
 
-    markup = InlineKeyboardMarkup(keyboard)
-
-    await query.edit_message_media(
-        media=InputMediaPhoto(
-            media=open("photo/flow.png", "rb"),
-            caption=(
-                "<b>Отзывы наших клиентов</b>\n\n"
-                "Присоединяйтесь к числу довольных пользователей и оставьте свой отзыв.\n"
-                "Это помогает нам делать сервис лучше."
-            ),
-            parse_mode="HTML",
-        ),
-        reply_markup=markup,
+    caption = (
+        f"{BRAND}\n\n"
+        "⭐ <b>Отзывы</b>\n"
+        f"{DIVIDER}\n"
+        "Почитайте, что говорят наши пользователи, или поделитесь своим впечатлением.\n\n"
+        "<i>Каждый отзыв помогает нам делать сервис лучше 💜</i>"
     )
+
+    await query.edit_message_media(media=media(caption), reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 async def leave_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -43,28 +51,37 @@ async def leave_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["review_message_id"] = query.message.message_id
     context.user_data["review_chat_id"] = update.effective_chat.id
 
+    caption = (
+        f"{BRAND}\n\n"
+        "✍️ <b>Ваш отзыв</b>\n"
+        f"{DIVIDER}\n"
+        "Напишите отзыв <b>одним сообщением</b> прямо в этот чат.\n"
+        "Что понравилось, что можно улучшить — нам важно всё."
+    )
+
     await query.edit_message_media(
-        media=InputMediaPhoto(
-            media=open("photo/flow.png", "rb"),
-            caption=(
-                "<b>Оставить отзыв</b>\n\n"
-                "Напишите свой отзыв одним сообщением.\n"
-                "После отправки я сразу покажу подтверждение здесь же."
-            ),
-            parse_mode="HTML",
-        ),
+        media=media(caption),
+        reply_markup=InlineKeyboardMarkup([[home_button("✖️ Отмена")]]),
     )
     return REVIEWS
 
 
 async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["review"] = update.message.text
-    keyboard = [[InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")]]
-    markup = InlineKeyboardMarkup(keyboard)
+    markup = InlineKeyboardMarkup([[home_button()]])
+    user = update.effective_user
+    author = html.escape(user.first_name or "Без имени")
+    if user.username:
+        author += f" (@{html.escape(user.username)})"
     try:
         await context.bot.send_message(
             chat_id=REVIEW,
-            text=f"Новый отзыв от {update.effective_user.first_name}: {context.user_data['review']}",
+            text=(
+                "⭐ <b>Новый отзыв</b>\n"
+                f"От: {author} · ID <code>{user.id}</code>\n\n"
+                f"{html.escape(context.user_data['review'])}"
+            ),
+            parse_mode="HTML",
         )
 
         chat_id = context.user_data.get("review_chat_id", update.effective_chat.id)
@@ -73,32 +90,22 @@ async def finish_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.edit_message_media(
                 chat_id=chat_id,
                 message_id=message_id,
-                media=InputMediaPhoto(
-                    media=open("photo/flow.png", "rb"),
-                    caption=(
-                        "<b>Спасибо за ваш отзыв!</b>\n\n"
-                        "Мы ценим ваше мнение и будем работать над улучшением сервиса."
-                    ),
-                    parse_mode="HTML",
-                ),
+                media=media(THANKS_TEXT),
                 reply_markup=markup,
             )
         else:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
-                photo=open("photo/flow.png", "rb"),
-                caption=(
-                    "<b>Спасибо за ваш отзыв!</b>\n\n"
-                    "Мы ценим ваше мнение и будем работать над улучшением сервиса."
-                ),
+                photo=photo(),
+                caption=THANKS_TEXT,
                 reply_markup=markup,
                 parse_mode="HTML",
             )
     except Exception as e:
-        print(f"Error sending review to admin: {e}")
+        logger.error("Error sending review to admin: %s", e)
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Произошла ошибка при отправке вашего отзыва. Пожалуйста, попробуйте позже.",
+            text="😔 Не получилось отправить отзыв. Попробуйте ещё раз чуть позже.",
             reply_markup=markup,
         )
     return MAIN_MENU

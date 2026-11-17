@@ -1,13 +1,15 @@
 import asyncio
+import html
 import logging
 from contextlib import asynccontextmanager
 from datetime import datetime
 
 from fastapi import FastAPI
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 
 from bot_init import create_aplication
 from config.config import ADMIN_ID, SECRET_TOKEN, TELEGRAM_WEBHOOK_PATH, WEBHOOK_URL
+from handlers.ui import BRAND, DIVIDER, PHOTO_SHOP, photo, plural
 from db.db import (
     delete_paid_user_if_expired,
     init_db,
@@ -76,15 +78,36 @@ async def _send_subscription_reminders(app: FastAPI):
                         continue
 
                     days_text = "сегодня" if days_left == 0 else f"через {days_left} дн."
-                    keyboard = InlineKeyboardMarkup(
-                        [[InlineKeyboardButton("💳 Продлить подписку", callback_data="buy")]]
+                    days_phrase = (
+                        "сегодня"
+                        if days_left == 0
+                        else f"через {days_left} {plural(days_left, 'день', 'дня', 'дней')}"
                     )
-                    await app.state.bot_app.bot.send_message(
+                    keyboard = InlineKeyboardMarkup(
+                        [
+                            [InlineKeyboardButton("💜 Продлить подписку", callback_data="buy", style="success")],
+                            [
+                                InlineKeyboardButton(
+                                    "🌙 Личный кабинет",
+                                    web_app=WebAppInfo(
+                                        url=f"{WEBHOOK_URL}/cabinet?tg_id={paid_user.telegram_id}"
+                                    ),
+                                    style="primary",
+                                )
+                            ],
+                        ]
+                    )
+                    await app.state.bot_app.bot.send_photo(
                         chat_id=paid_user.telegram_id,
-                        text=(
-                            f"⚠️ Подписка заканчивается {days_text}\n"
-                            f"Тариф: {paid_user.tariff}"
+                        photo=photo(PHOTO_SHOP),
+                        caption=(
+                            f"{BRAND}\n\n"
+                            f"⏳ <b>Подписка закончится {days_phrase}</b>\n"
+                            f"{DIVIDER}\n"
+                            f"Тариф: <b>{html.escape(str(paid_user.tariff or '—'))}</b>\n\n"
+                            "Продлите заранее, чтобы VPN не отключился в самый неподходящий момент 💜"
                         ),
+                        parse_mode="HTML",
                         reply_markup=keyboard,
                     )
 
