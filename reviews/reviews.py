@@ -26,16 +26,16 @@ async def reviews_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton(
-                "👀 Посмотреть отзывы", url="https://t.me/+WUxKV7A4n601MTVi", style='primary'
+                "📖 Читать отзывы", url="https://t.me/+WUxKV7A4n601MTVi", style='primary'
             )
         ],
-        [InlineKeyboardButton("✍️ Оставить отзыв", callback_data="leave_review", style='success')],
+        [InlineKeyboardButton("🪶 Оставить отзыв", callback_data="leave_review", style='success')],
         [home_button()],
     ]
 
     caption = (
         f"{BRAND}\n\n"
-        "⭐ <b>Отзывы</b>\n"
+        "🌠 <b>Отзывы</b>\n"
         f"{DIVIDER}\n"
         "Почитайте, что говорят наши пользователи, или поделитесь своим впечатлением.\n\n"
         "<i>Каждый отзыв помогает нам делать сервис лучше 💜</i>"
@@ -53,7 +53,7 @@ async def leave_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     caption = (
         f"{BRAND}\n\n"
-        "✍️ <b>Ваш отзыв</b>\n"
+        "🪶 <b>Ваш отзыв</b>\n"
         f"{DIVIDER}\n"
         "Напишите отзыв <b>одним сообщением</b> прямо в этот чат.\n"
         "Что понравилось, что можно улучшить — нам важно всё."

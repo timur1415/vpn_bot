@@ -16,14 +16,14 @@ async def legal_docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("🔐 Политика конфиденциальности", url=PRIVACY_POLICY_URL, style="primary")],
-        [InlineKeyboardButton("📝 Пользовательское соглашение", url=USER_AGREEMENT_URL, style="primary")],
+        [InlineKeyboardButton("🗝 Политика конфиденциальности", url=PRIVACY_POLICY_URL, style="primary")],
+        [InlineKeyboardButton("📜 Пользовательское соглашение", url=USER_AGREEMENT_URL, style="primary")],
         [home_button()],
     ]
 
     caption = (
         f"{BRAND}\n\n"
-        "📄 <b>Документы</b>\n"
+        "📜 <b>Документы</b>\n"
         f"{DIVIDER}\n"
         "Мы бережно относимся к вашим данным и честно описываем условия работы сервиса.\n\n"
         "Откройте нужный документ кнопкой ниже 👇"
@@ -37,16 +37,16 @@ async def support_contacts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     keyboard = [
-        [InlineKeyboardButton("💬 Написать в поддержку", url=SUPPORT_URL, style="success")],
+        [InlineKeyboardButton("🛟 Написать в поддержку", url=SUPPORT_URL, style="success")],
         [home_button()],
     ]
 
     caption = (
         f"{BRAND}\n\n"
-        "💬 <b>Поддержка</b>\n"
+        "🛟 <b>Поддержка</b>\n"
         f"{DIVIDER}\n"
         "Поможем с подключением, оплатой и любыми вопросами по VPN.\n\n"
-        f"👤 Telegram: {SUPPORT_USERNAME}\n\n"
+        f"🦋 Telegram: {SUPPORT_USERNAME}\n\n"
         "<i>Чтобы мы ответили быстрее, опишите проблему и укажите устройство "
         "(iPhone, Android, Windows, macOS, ТВ).</i>"
     )
@@ -71,10 +71,10 @@ def _tariffs_caption() -> str:
 
     return (
         f"{BRAND}\n\n"
-        "💎 <b>Тарифы и цены</b>\n"
-        "🎁 Пробный период — <b>3 дня бесплатно</b> <i>(один раз)</i>\n\n"
+        "🪐 <b>Тарифы и цены</b>\n"
+        "🪄 Пробный период — <b>3 дня бесплатно</b> <i>(один раз)</i>\n\n"
         + "\n".join(blocks)
-        + "\n✅ Доступ к VPN на весь срок и помощь с подключением."
+        + "\n💜 Доступ к VPN на весь срок и помощь с подключением."
     )
 
 

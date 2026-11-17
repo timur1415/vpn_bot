@@ -37,18 +37,18 @@ TARIFFS = {
 
 
 PLANS = {
-    1: {"name": "Start", "icon": "📱", "trial": "buy_free3days_1", "suffix": ""},
-    3: {"name": "Plus", "icon": "💻", "trial": "buy_free3days_3", "suffix": "_3config"},
-    8: {"name": "Family", "icon": "👨‍👩‍👧‍👦", "trial": "buy_free3days_8", "suffix": "_8config"},
+    1: {"name": "Start", "icon": "🌒", "trial": "buy_free3days_1", "suffix": ""},
+    3: {"name": "Plus", "icon": "🌓", "trial": "buy_free3days_3", "suffix": "_3config"},
+    8: {"name": "Family", "icon": "🌕", "trial": "buy_free3days_8", "suffix": "_8config"},
 }
 
 # (часть ключа TARIFFS, иконка, подпись, месяцев)
 PERIODS = [
-    ("7days", "🗓", "7 дней", None),
-    ("1month", "📅", "1 месяц", 1),
-    ("3month", "🧭", "3 месяца", 3),
-    ("6month", "🚀", "6 месяцев", 6),
-    ("12month", "🏆", "12 месяцев", 12),
+    ("7days", "🫧", "7 дней", None),
+    ("1month", "🌙", "1 месяц", 1),
+    ("3month", "🔭", "3 месяца", 3),
+    ("6month", "☄️", "6 месяцев", 6),
+    ("12month", "👑", "12 месяцев", 12),
 ]
 
 
@@ -81,19 +81,19 @@ def describe_tariff(key: str):
 
 
 CONTACT_NOTE = (
-    "⚠️ <i>Проверьте, что в профиле Telegram указан username "
+    "🔔 <i>Проверьте, что в профиле Telegram указан username "
     "и вам можно написать в личные сообщения.</i>"
 )
 
 FREE_TRIAL_INFO_TEXT = (
     f"{BRAND}\n\n"
-    "🎁 <b>Пробный период активирован!</b>\n"
+    "🪄 <b>Пробный период активирован!</b>\n"
     f"{DIVIDER}\n"
     "3 дня GLOW VPN — бесплатно. Приятного пользования 💜\n\n"
     "<b>Что дальше:</b>\n"
     "1️⃣ Менеджер пришлёт персональную ссылку для подключения\n"
     "2️⃣ И видеоинструкцию: как установить приложение, добавить подписку и включить VPN\n\n"
-    "⏳ Обычно это занимает 5–15 минут.\n\n"
+    "🕰 Обычно это занимает 5–15 минут.\n\n"
     f"{CONTACT_NOTE}"
 )
 
@@ -138,12 +138,12 @@ async def how_config(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     caption = (
         f"{BRAND}\n\n"
-        "⚡ <b>Подключение VPN</b>\n"
+        "🛸 <b>Подключение VPN</b>\n"
         f"{DIVIDER}\n"
         "<b>Шаг 1 из 2</b> — сколько устройств подключаем?\n\n"
-        "📱 <b>Start</b> — 1 устройство\n"
-        "💻 <b>Plus</b> — 3 устройства\n"
-        "👨‍👩‍👧‍👦 <b>Family</b> — 8 устройств\n\n"
+        "🌒 <b>Start</b> — 1 устройство\n"
+        "🌓 <b>Plus</b> — 3 устройства\n"
+        "🌕 <b>Family</b> — 8 устройств\n\n"
         "<i>Телефон, ноутбук, планшет, ТВ — каждое считается отдельно.</i>"
     )
 
@@ -163,7 +163,7 @@ async def _show_plan(update: Update, device_count: int):
     keyboard = []
     if not free_trial_used:
         keyboard.append([
-            InlineKeyboardButton("🎁 Попробовать 3 дня бесплатно", callback_data=plan["trial"], style="primary")
+            InlineKeyboardButton("🪄 Попробовать 3 дня бесплатно", callback_data=plan["trial"], style="primary")
         ])
     for key, icon, label, amount, saving in plan_options(device_count):
         text = f"{icon} {label} · {amount} ₽"
@@ -171,8 +171,8 @@ async def _show_plan(update: Update, device_count: int):
             text += f" · −{saving}%"
         keyboard.append([InlineKeyboardButton(text, callback_data=key, style="success")])
     keyboard.append([
-        InlineKeyboardButton("⬅️ Назад", callback_data="buy", style="primary"),
-        home_button("🏠 Меню"),
+        InlineKeyboardButton("⟵ Назад", callback_data="buy", style="primary"),
+        home_button("🌌 Меню"),
     ])
 
     caption = (
@@ -184,7 +184,7 @@ async def _show_plan(update: Update, device_count: int):
         "Чем дольше срок, тем ниже цена за месяц 💜\n\n"
     )
     if not free_trial_used:
-        caption += "🎁 Не уверены? Сначала попробуйте 3 дня бесплатно.\n\n"
+        caption += "🪄 Не уверены? Сначала попробуйте 3 дня бесплатно.\n\n"
     caption += "<i>После выбора появится кнопка оплаты.</i>"
 
     await query.edit_message_media(
@@ -243,7 +243,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reply_markup=InlineKeyboardMarkup([
                     [
                         InlineKeyboardButton(
-                            "🌙 Личный кабинет",
+                            "🔮 Личный кабинет",
                             web_app=WebAppInfo(url=f"{WEBHOOK_URL}/cabinet?tg_id={user_id}"),
                             style="primary",
                         )
@@ -270,13 +270,13 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_caption(
                 caption=(
                     f"{BRAND}\n\n"
-                    "🎁 <b>Пробный период уже использован</b>\n"
+                    "🕯 <b>Пробный период уже использован</b>\n"
                     f"{DIVIDER}\n"
                     "Бесплатные 3 дня можно активировать только один раз.\n\n"
                     "Выберите тариф — от 59 ₽, а на длинных сроках выгода до 50% 💜"
                 ),
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("⚡ Выбрать тариф", callback_data="buy", style="success")],
+                    [InlineKeyboardButton("🛸 Выбрать тариф", callback_data="buy", style="success")],
                     [home_button()],
                 ]),
                 parse_mode="HTML",
@@ -312,8 +312,8 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.error("Failed to save payment to DB: %s", e)
 
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton(f"💳 Оплатить {tariff['amount']} ₽", url=payment_url, style='success')],
-        [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy", style='primary')],
+        [InlineKeyboardButton(f"🪙 Оплатить {tariff['amount']} ₽", url=payment_url, style='success')],
+        [InlineKeyboardButton("⟵ Назад к тарифам", callback_data="buy", style='primary')],
     ])
 
     await query.edit_message_caption(
