@@ -10,7 +10,7 @@ PHOTO_MAIN = "glow.jpg"      # светлячок — главное меню и
 PHOTO_SHOP = "glow_orb.jpg"  # портал — выбор тарифа и оформление
 
 BRAND = "✦ <b>GLOW VPN</b> ✦"
-DIVIDER = "⋆ ˚｡⋆ ✦ ⋆｡˚ ⋆"
+DIVIDER = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
 
 
 @lru_cache(maxsize=None)
@@ -27,11 +27,11 @@ def media(caption: str, name: str = PHOTO_MAIN) -> InputMediaPhoto:
     return InputMediaPhoto(media=photo(name), caption=caption, parse_mode="HTML")
 
 
-def home_button(text: str = "🌌 Главное меню") -> InlineKeyboardButton:
+def home_button(text: str = "🏠 Главное меню") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, callback_data="main_menu", style="danger")
 
 
-def buy_button(text: str = "🛸 Подключить VPN") -> InlineKeyboardButton:
+def buy_button(text: str = "⚡ Подключить VPN") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, callback_data="buy", style="success")
 
 

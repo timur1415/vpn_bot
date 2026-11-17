@@ -28,23 +28,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton(
-                "🔮 Личный кабинет",
+                "🌙 Личный кабинет",
                 web_app=WebAppInfo(
                     url=f"{WEBHOOK_URL}/cabinet?tg_id={update.effective_user.id}"
                 ),
                 style="primary",
             )
         ],
-        [buy_button("🪄 Попробовать бесплатно" if not trial_used else "🛸 Подключить VPN")],
+        [buy_button("🎁 Попробовать бесплатно" if not trial_used else "⚡ Подключить VPN")],
         [
-            InlineKeyboardButton("🪐 Тарифы", callback_data="tariffs", style="primary"),
-            InlineKeyboardButton("💫 Почему GLOW", callback_data="why_vpn", style="primary"),
+            InlineKeyboardButton("💎 Тарифы", callback_data="tariffs", style="primary"),
+            InlineKeyboardButton("✨ Почему GLOW", callback_data="why_vpn", style="primary"),
         ],
         [
-            InlineKeyboardButton("🌠 Отзывы", callback_data="reviews", style="primary"),
-            InlineKeyboardButton("📜 Документы", callback_data="legal_docs", style="primary"),
+            InlineKeyboardButton("⭐ Отзывы", callback_data="reviews", style="primary"),
+            InlineKeyboardButton("📄 Документы", callback_data="legal_docs", style="primary"),
         ],
-        [InlineKeyboardButton("🛟 Поддержка", callback_data="support", style="primary")],
+        [InlineKeyboardButton("💬 Поддержка", callback_data="support", style="primary")],
     ]
 
     if update.effective_user and update.effective_user.id == ADMIN_ID:
@@ -52,7 +52,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             0,
             [
                 InlineKeyboardButton(
-                    "🗝 Админ-панель",
+                    "🛠 Админ-панель",
                     web_app=WebAppInfo(url=f"{WEBHOOK_URL}/admin?tg_id={ADMIN_ID}"),
                     style="danger",
                 )
@@ -65,15 +65,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Привет, <b>{first_name}</b>! 👋\n"
         "Быстрый и стабильный VPN — без рекламы и сложных настроек.\n"
         f"{DIVIDER}\n"
-        "☄️ Высокая скорость\n"
-        "🛡 Современное шифрование\n"
-        "🪐 До 8 устройств в одной подписке\n"
-        "🛟 Живая поддержка и помощь с подключением\n"
+        "⚡ Высокая скорость\n"
+        "🔒 Современное шифрование\n"
+        "📱 До 8 устройств в одной подписке\n"
+        "💬 Живая поддержка и помощь с подключением\n"
     )
     if not trial_used:
-        caption += "\n🪄 <b>3 дня бесплатно</b> — попробуйте прямо сейчас."
+        caption += "\n🎁 <b>3 дня бесплатно</b> — попробуйте прямо сейчас."
     else:
-        caption += "\n🔮 Подписка и платежи — в <b>Личном кабинете</b>."
+        caption += "\n🌙 Подписка и платежи — в <b>Личном кабинете</b>."
 
     if update.callback_query:
         query = update.callback_query

@@ -85,10 +85,10 @@ async def _send_subscription_reminders(app: FastAPI):
                     )
                     keyboard = InlineKeyboardMarkup(
                         [
-                            [InlineKeyboardButton("🔮 Продлить подписку", callback_data="buy", style="success")],
+                            [InlineKeyboardButton("💜 Продлить подписку", callback_data="buy", style="success")],
                             [
                                 InlineKeyboardButton(
-                                    "🔮 Личный кабинет",
+                                    "🌙 Личный кабинет",
                                     web_app=WebAppInfo(
                                         url=f"{WEBHOOK_URL}/cabinet?tg_id={paid_user.telegram_id}"
                                     ),
@@ -102,7 +102,7 @@ async def _send_subscription_reminders(app: FastAPI):
                         photo=photo(PHOTO_SHOP),
                         caption=(
                             f"{BRAND}\n\n"
-                            f"🕯 <b>Подписка закончится {days_phrase}</b>\n"
+                            f"⏳ <b>Подписка закончится {days_phrase}</b>\n"
                             f"{DIVIDER}\n"
                             f"Тариф: <b>{html.escape(str(paid_user.tariff or '—'))}</b>\n\n"
                             "Продлите заранее, чтобы VPN не отключился в самый неподходящий момент 💜"
