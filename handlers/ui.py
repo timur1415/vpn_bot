@@ -12,6 +12,20 @@ PHOTO_SHOP = "glow_orb.jpg"  # портал — выбор тарифа и оф�
 BRAND = "✦ <b>GLOW VPN</b> ✦"
 DIVIDER = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
 
+SUPPORT_USERNAME = "@i1i1i1iij"
+SUPPORT_URL = f"https://t.me/{SUPPORT_USERNAME.replace('@', '')}"
+
+# Без username менеджер не сможет написать пользователю первым.
+USERNAME_NOTE = (
+    "❗ <b>Важно:</b> чтобы менеджер мог с вами связаться, в профиле Telegram "
+    "обязательно должен быть указан <b>username</b>.\n"
+    f"Если username нет — напишите в поддержку сами: {SUPPORT_USERNAME}"
+)
+NO_USERNAME_WARNING = (
+    "❗ <b>У вас не указан username</b> — менеджер не сможет написать вам первым. "
+    f"Напишите в поддержку сами: {SUPPORT_USERNAME}"
+)
+
 
 @lru_cache(maxsize=None)
 def _photo_bytes(name: str) -> bytes:
@@ -33,6 +47,10 @@ def home_button(text: str = "🏠 Главное меню") -> InlineKeyboardBut
 
 def buy_button(text: str = "⚡ Подключить VPN") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, callback_data="buy", style="success")
+
+
+def support_button(text: str = "💬 Написать в поддержку") -> InlineKeyboardButton:
+    return InlineKeyboardButton(text, url=SUPPORT_URL, style="primary")
 
 
 def plural(n: int, one: str, few: str, many: str) -> str:

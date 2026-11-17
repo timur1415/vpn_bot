@@ -11,7 +11,7 @@ from telegram.ext import ContextTypes
 from config.config import ADMIN_ID, WEBHOOK_URL
 from config.states import MAIN_MENU
 from db.db import has_used_free_trial, register_bot_visit
-from handlers.ui import BRAND, DIVIDER, buy_button, media, photo
+from handlers.ui import BRAND, DIVIDER, NO_USERNAME_WARNING, buy_button, media, photo, support_button
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -46,6 +46,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ],
         [InlineKeyboardButton("💬 Поддержка", callback_data="support", style="primary")],
     ]
+    if not update.effective_user.username:
+        keyboard.insert(1, [support_button("❗ Нет username — написать в поддержку")])
 
     if update.effective_user and update.effective_user.id == ADMIN_ID:
         keyboard.insert(
@@ -74,6 +76,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption += "\n🎁 <b>3 дня бесплатно</b> — попробуйте прямо сейчас."
     else:
         caption += "\n🌙 Подписка и платежи — в <b>Личном кабинете</b>."
+    if not update.effective_user.username:
+        caption += f"\n\n{NO_USERNAME_WARNING}"
 
     if update.callback_query:
         query = update.callback_query

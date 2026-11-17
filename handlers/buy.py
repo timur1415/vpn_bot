@@ -6,7 +6,16 @@ from telegram.ext import ContextTypes
 
 from config.config import ADMIN_ID, WEBHOOK_URL
 from db.db import activate_free_trial, get_paid_user, has_used_free_trial, save_payment
-from handlers.ui import BRAND, DIVIDER, PHOTO_SHOP, home_button, media, plural
+from handlers.ui import (
+    BRAND,
+    DIVIDER,
+    PHOTO_SHOP,
+    USERNAME_NOTE,
+    home_button,
+    media,
+    plural,
+    support_button,
+)
 from server.payment_client import create_payment
 
 logger = logging.getLogger(__name__)
@@ -80,10 +89,7 @@ def describe_tariff(key: str):
     return None
 
 
-CONTACT_NOTE = (
-    "⚠️ <i>Проверьте, что в профиле Telegram указан username "
-    "и вам можно написать в личные сообщения.</i>"
-)
+CONTACT_NOTE = USERNAME_NOTE
 
 FREE_TRIAL_INFO_TEXT = (
     f"{BRAND}\n\n"
@@ -248,6 +254,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             style="primary",
                         )
                     ],
+                    *([] if username else [[support_button()]]),
                     [home_button()],
                 ]),
                 parse_mode="HTML",
@@ -313,6 +320,7 @@ async def buy_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton(f"💳 Оплатить {tariff['amount']} ₽", url=payment_url, style='success')],
+        *([] if username else [[support_button()]]),
         [InlineKeyboardButton("⬅️ Назад к тарифам", callback_data="buy", style='primary')],
     ])
 

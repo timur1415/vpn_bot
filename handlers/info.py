@@ -2,13 +2,21 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 from handlers.buy import PLANS, plan_options
-from handlers.ui import BRAND, DIVIDER, PHOTO_SHOP, buy_button, home_button, media, plural
+from handlers.ui import (
+    BRAND,
+    DIVIDER,
+    PHOTO_SHOP,
+    SUPPORT_URL,
+    SUPPORT_USERNAME,
+    buy_button,
+    home_button,
+    media,
+    plural,
+)
 
 
 PRIVACY_POLICY_URL = "https://telegra.ph/Politika-konfidencialnosti-09-30-168"
 USER_AGREEMENT_URL = "https://telegra.ph/Polzovatelskoe-soglashenie-09-30-50"
-SUPPORT_USERNAME = "@i1i1i1iij"
-SUPPORT_URL = f"https://t.me/{SUPPORT_USERNAME.replace('@', '')}"
 
 
 async def legal_docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
